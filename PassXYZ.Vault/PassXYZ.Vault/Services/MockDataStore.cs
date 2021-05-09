@@ -1,8 +1,9 @@
-﻿using PassXYZ.Vault.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using KeePassLib;
 
 namespace PassXYZ.Vault.Services
 {
@@ -14,12 +15,15 @@ namespace PassXYZ.Vault.Services
         {
             items = new List<Item>()
             {
-                new Item { Id = Guid.NewGuid().ToString(), Text = "First item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Second item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Third item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fourth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Fifth item", Description="This is an item description." },
-                new Item { Id = Guid.NewGuid().ToString(), Text = "Sixth item", Description="This is an item description." }
+                new PwGroup(true, true)
+                {
+                    Name = "Group01",
+                    Notes = "The first Group"
+                },
+                new PwEntry(true, true)
+                {
+                    Name = "Entry01"
+                }
             };
         }
 
@@ -32,7 +36,7 @@ namespace PassXYZ.Vault.Services
 
         public async Task<bool> UpdateItemAsync(Item item)
         {
-            var oldItem = items.Where((Item arg) => arg.Id == item.Id).FirstOrDefault();
+            var oldItem = items.Where((Item arg) => arg.Uuid == item.Uuid).FirstOrDefault();
             items.Remove(oldItem);
             items.Add(item);
 

@@ -1,4 +1,4 @@
-﻿using PassXYZ.Vault.Models;
+﻿using KeePassLib;
 using PassXYZ.Vault.ViewModels;
 using System;
 using System.Collections.Generic;

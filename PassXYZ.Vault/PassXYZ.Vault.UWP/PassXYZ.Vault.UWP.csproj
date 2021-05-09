@@ -148,10 +148,14 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
-    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.12"/>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.12" />
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\KPCLib\KPCLib\KPCLib.csproj">
+      <Project>{e873407f-2fd6-49cc-b46a-363294defe5d}</Project>
+      <Name>KPCLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PassXYZ.Vault\PassXYZ.Vault.csproj">
       <Project>{E87E5151-8B97-4531-B8A2-4B9F556776C3}</Project>
       <Name>PassXYZ.Vault</Name>

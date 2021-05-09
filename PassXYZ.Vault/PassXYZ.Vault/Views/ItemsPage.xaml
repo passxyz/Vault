@@ -4,7 +4,7 @@
              x:Class="PassXYZ.Vault.Views.ItemsPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"  
-             xmlns:model="clr-namespace:PassXYZ.Vault.Models"  
+             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"  
              x:Name="BrowseItemsPage">
 
     <ContentPage.ToolbarItems>
@@ -20,8 +20,8 @@
                 SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Padding="10" x:DataType="model:Item">
-                        <Label Text="{Binding Text}" 
+                    <StackLayout Padding="10" x:DataType="kpclib:Item">
+                        <Label Text="{Binding Name}"
                             LineBreakMode="NoWrap" 
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />

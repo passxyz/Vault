@@ -1,4 +1,4 @@
-﻿using PassXYZ.Vault.Models;
+﻿using KeePassLib;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -49,11 +49,10 @@ namespace PassXYZ.Vault.ViewModels
 
         private async void OnSave()
         {
-            Item newItem = new Item()
+            Item newItem = new PwGroup(true, true)
             {
-                Id = Guid.NewGuid().ToString(),
-                Text = Text,
-                Description = Description
+                Name = Text,
+                Notes = Description
             };
 
             await DataStore.AddItemAsync(newItem);
