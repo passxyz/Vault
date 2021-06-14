@@ -13,32 +13,16 @@ namespace PassXYZ.Vault.Services
     public class DataStore : IDataStore<Item>
     {
         readonly List<Item> items;
+        PasswordDb db = null;
 
         public DataStore()
         {
-            ImageSource imgSource1 = "icon_about.png";
-            ImageSource imgSource2 = "icon_feed.png";
-            // ImageSource imgSource3 = ItemExtensions.GetImageByUrl("http://www.cmbchina.com")
+            const string TEST_DB = "pass_d_E8f4pEk.xyz";
+            const string TEST_DB_KEY = "12345";
 
-            items = new List<Item>()
-            {
-                new PwGroup(true, true)
-                {
-                    Name = "New PwGroup01",
-                    Notes = "The first Group"
-                },
-                new PwEntry(true, true)
-                {
-                    Name = "New PwEntry01",
-                    //ImgSource = imgSource2
-                },
-                new PwGroup(true, true)
-                {
-                    Name = "New PwGroup02",
-                    Notes = "The first Group",
-                    ImgSource = imgSource1
-                }
-            };
+            db = PasswordDb.Instance;
+            db.Open(TEST_DB, TEST_DB_KEY);
+            items = db.CurrentGroup.GetItems();
         }
 
         public async Task<bool> AddItemAsync(Item item)
