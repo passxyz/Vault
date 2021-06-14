@@ -13,7 +13,7 @@ namespace PassXYZ.Vault
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
+            DependencyService.Register<DataStore>();
             MainPage = new AppShell();
         }
 

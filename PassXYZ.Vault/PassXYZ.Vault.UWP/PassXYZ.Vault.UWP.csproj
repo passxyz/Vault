@@ -152,6 +152,14 @@
     <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\KPCLib\KPCLib\KPCLib.csproj">
+      <Project>{23b3e37e-a262-4371-ac98-8af6976bbc27}</Project>
+      <Name>KPCLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\KPCLib\PassXYZLib\PassXYZLib.csproj">
+      <Project>{2ba8fcc0-3f26-47d6-a266-24f217411cd8}</Project>
+      <Name>PassXYZLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PassXYZ.Vault\PassXYZ.Vault.csproj">
       <Project>{E87E5151-8B97-4531-B8A2-4B9F556776C3}</Project>
       <Name>PassXYZ.Vault</Name>

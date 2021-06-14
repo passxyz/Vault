@@ -1,10 +1,12 @@
-﻿using KeePassLib;
-using PassXYZ.Vault.Views;
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+
+using KeePassLib;
+using PassXYZLib;
+using PassXYZ.Vault.Views;
 
 namespace PassXYZ.Vault.ViewModels
 {
@@ -38,6 +40,12 @@ namespace PassXYZ.Vault.ViewModels
                 var items = await DataStore.GetItemsAsync(true);
                 foreach (var item in items)
                 {
+                    ImageSource imgSource = (ImageSource)item.ImgSource;
+                    if(item.ImgSource == null) 
+                    {
+                        item.SetIcon();
+                    }
+                    Debug.WriteLine($"{item.Name}-{imgSource}");
                     Items.Add(item);
                 }
             }

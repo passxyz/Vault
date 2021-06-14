@@ -4,25 +4,39 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using KeePassLib;
+using PassXYZLib;
+
+using Xamarin.Forms;
 
 namespace PassXYZ.Vault.Services
 {
-    public class MockDataStore : IDataStore<Item>
+    public class DataStore : IDataStore<Item>
     {
         readonly List<Item> items;
 
-        public MockDataStore()
+        public DataStore()
         {
+            ImageSource imgSource1 = "icon_about.png";
+            ImageSource imgSource2 = "icon_feed.png";
+            // ImageSource imgSource3 = ItemExtensions.GetImageByUrl("http://www.cmbchina.com")
+
             items = new List<Item>()
             {
                 new PwGroup(true, true)
                 {
-                    Name = "Group01",
+                    Name = "New PwGroup01",
                     Notes = "The first Group"
                 },
                 new PwEntry(true, true)
                 {
-                    Name = "Entry01"
+                    Name = "New PwEntry01",
+                    //ImgSource = imgSource2
+                },
+                new PwGroup(true, true)
+                {
+                    Name = "New PwGroup02",
+                    Notes = "The first Group",
+                    ImgSource = imgSource1
                 }
             };
         }
