@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +11,18 @@ using Xamarin.Forms;
 
 namespace PassXYZ.Vault.Services
 {
+    public static class TEST_DB
+    {
+        public static string PATH 
+        { 
+            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "pass_d_E8f4pEk.xyz"); } 
+        }
+
+        public static string KEY = "12345";
+
+        public static string RES_PATH = "PassXYZ.Vault.data.pass_d_E8f4pEk.xyz";
+    }
+
     public class DataStore : IDataStore<Item>
     {
         readonly List<Item> items;
@@ -17,11 +30,8 @@ namespace PassXYZ.Vault.Services
 
         public DataStore()
         {
-            const string TEST_DB = "pass_d_E8f4pEk.xyz";
-            const string TEST_DB_KEY = "12345";
-
             db = PasswordDb.Instance;
-            db.Open(TEST_DB, TEST_DB_KEY);
+            db.Open(TEST_DB.PATH, TEST_DB.KEY);
             items = db.CurrentGroup.GetItems();
         }
 

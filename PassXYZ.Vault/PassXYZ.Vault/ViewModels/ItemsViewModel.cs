@@ -41,11 +41,11 @@ namespace PassXYZ.Vault.ViewModels
                 foreach (var item in items)
                 {
                     ImageSource imgSource = (ImageSource)item.ImgSource;
-                    if(item.ImgSource == null) 
+                    if(item.ImgSource == null)
                     {
                         item.SetIcon();
                     }
-                    Debug.WriteLine($"{item.Name}-{imgSource}");
+                    // Debug.WriteLine($"{item.Name}-{imgSource}");
                     Items.Add(item);
                 }
             }
