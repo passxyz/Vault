@@ -21,7 +21,6 @@ namespace PassXYZ.Vault.ViewModels
 
         public ItemsViewModel()
         {
-            Title = "Browse";
             Items = new ObservableCollection<Item>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
@@ -34,6 +33,8 @@ namespace PassXYZ.Vault.ViewModels
         {
             IsBusy = true;
 
+            Debug.WriteLine($"ItemsViewModel: {Shell.Current.CurrentState.Location}");
+            Title = DataStore.CurrentGroup.Name;
             try
             {
                 Items.Clear();
@@ -80,13 +81,26 @@ namespace PassXYZ.Vault.ViewModels
             await Shell.Current.GoToAsync(nameof(NewItemPage));
         }
 
-        async void OnItemSelected(Item item)
+        private async void OnItemSelected(Item item)
         {
             if (item == null)
+            {
                 return;
+            }
 
-            // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+            if (item.IsGroup)
+            {
+                Routing.RegisterRoute($"//{DataStore.CurrentGroup.Name}/{item.Name}", typeof(ItemsPage));
+                DataStore.CurrentGroup = item;
+                await ExecuteLoadItemsCommand();
+                Debug.WriteLine($"ItemsViewModel: go to page {item.Name}");
+                await Shell.Current.GoToAsync($"{item.Name}");
+            }
+            else
+            {
+                // This will push the ItemDetailPage onto the navigation stack
+                await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+            }
         }
     }
 }

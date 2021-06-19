@@ -25,14 +25,29 @@ namespace PassXYZ.Vault.Services
 
     public class DataStore : IDataStore<Item>
     {
-        readonly List<Item> items;
-        PasswordDb db = null;
+        List<Item> items;
+        private readonly PasswordDb db = null;
 
         public DataStore()
         {
             db = PasswordDb.Instance;
             db.Open(TEST_DB.PATH, TEST_DB.KEY);
-            items = db.CurrentGroup.GetItems();
+            items = db.RootGroup.GetItems();
+        }
+
+        public Item RootGroup
+        {
+            get => db.RootGroup;
+        }
+
+        public Item CurrentGroup
+        {
+            get => db.CurrentGroup;
+            set
+            {
+                db.CurrentGroup = (PwGroup)value;
+                items = db.CurrentGroup.GetItems();
+            }
         }
 
         public async Task<bool> AddItemAsync(Item item)

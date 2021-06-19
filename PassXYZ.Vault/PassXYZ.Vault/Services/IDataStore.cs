@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using KeePassLib;
+
 namespace PassXYZ.Vault.Services
 {
     public interface IDataStore<T>
@@ -11,5 +13,7 @@ namespace PassXYZ.Vault.Services
         Task<bool> DeleteItemAsync(string id);
         Task<T> GetItemAsync(string id);
         Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = false);
+        Item CurrentGroup { get; set; }
+        Item RootGroup { get; }
     }
 }
