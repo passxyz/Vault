@@ -31,14 +31,14 @@ namespace PassXYZ.Vault.Services
         public DataStore()
         {
             db = PasswordDb.Instance;
-            db.Open(TEST_DB.PATH, TEST_DB.KEY);
-            items = db.RootGroup.GetItems();
         }
 
         public Item RootGroup
         {
             get => db.RootGroup;
         }
+
+        public string CurrentPath => db.CurrentPath;
 
         public Item CurrentGroup
         {
@@ -47,6 +47,14 @@ namespace PassXYZ.Vault.Services
             {
                 db.CurrentGroup = (PwGroup)value;
                 items = db.CurrentGroup.GetItems();
+            }
+        }
+
+        public void SetCurrentToParent()
+        {
+            if (!CurrentGroup.Uuid.Equals(RootGroup.Uuid))
+            {
+                CurrentGroup = db.CurrentGroup.ParentGroup;
             }
         }
 
@@ -82,6 +90,22 @@ namespace PassXYZ.Vault.Services
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
         {
             return await Task.FromResult(items);
+        }
+
+        public async Task<bool> LoginAsync(string path, string key)
+        {
+            db.Open(TEST_DB.PATH, TEST_DB.KEY);
+            if (db.IsOpen)
+            {
+                items = db.RootGroup.GetItems();
+            }
+
+            return await Task.FromResult(db.IsOpen);
+        }
+
+        public void Logout()
+        {
+            if (db.IsOpen) { db.Close(); }
         }
     }
 }

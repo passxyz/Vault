@@ -14,6 +14,10 @@ namespace PassXYZ.Vault.Services
         Task<T> GetItemAsync(string id);
         Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = false);
         Item CurrentGroup { get; set; }
+        string CurrentPath { get; }
+        void SetCurrentToParent();
         Item RootGroup { get; }
+        Task<bool> LoginAsync(string path, string key);
+        void Logout();
     }
 }

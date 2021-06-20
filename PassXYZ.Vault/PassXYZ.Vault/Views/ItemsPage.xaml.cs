@@ -21,6 +21,16 @@ namespace PassXYZ.Vault.Views
             InitializeComponent();
 
             BindingContext = _viewModel = new ItemsViewModel();
+            // This is needed for iOS build. It seems iOS build back button can
+            // not work well without this.
+            Shell.SetBackButtonBehavior(this, new BackButtonBehavior()
+            {
+                Command = new Command(async () => {
+                    _viewModel.IsBackButtonClicked = true;
+                    await Navigation.PopAsync();
+
+                })
+            });
         }
 
         protected override void OnAppearing()

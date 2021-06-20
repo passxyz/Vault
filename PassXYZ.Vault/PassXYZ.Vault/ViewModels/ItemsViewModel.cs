@@ -18,6 +18,10 @@ namespace PassXYZ.Vault.ViewModels
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
         public Command<Item> ItemTapped { get; }
+        public bool IsRootGroup => DataStore.CurrentGroup.Uuid.Equals(DataStore.RootGroup.Uuid);
+        public bool IsItemGroupSelected { get; set; }
+        private bool _isBackButtonClicked = false;
+        public bool IsBackButtonClicked { get => _isBackButtonClicked; set { _isBackButtonClicked = value; } }
 
         public ItemsViewModel()
         {
@@ -33,21 +37,48 @@ namespace PassXYZ.Vault.ViewModels
         {
             IsBusy = true;
 
-            Debug.WriteLine($"ItemsViewModel: {Shell.Current.CurrentState.Location}");
-            Title = DataStore.CurrentGroup.Name;
             try
             {
-                Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
-                foreach (var item in items)
+                if (DataStore.RootGroup != null)
                 {
-                    ImageSource imgSource = (ImageSource)item.ImgSource;
-                    if(item.ImgSource == null)
+                    if (AppShell.CurrentAppShell != null)
                     {
-                        item.SetIcon();
+                        //Debug.WriteLine($"ItemsViewModel: {Shell.Current.CurrentState.Location}");
+                        Debug.WriteLine($"ItemsViewModel: C:{AppShell.CurrentAppShell.CurrentRoute}, T:{AppShell.CurrentAppShell.TargetRoute}");
+                        //Debug.WriteLine($"ItemsViewModel: {DataStore.CurrentPath}");
                     }
-                    // Debug.WriteLine($"{item.Name}-{imgSource}");
-                    Items.Add(item);
+
+                    if (AppShell.CurrentAppShell.TargetRoute.Equals("..") || IsBackButtonClicked)
+                    {
+                        if(!IsItemGroupSelected) 
+                        {
+                            if(!IsRootGroup && AppShell.CurrentAppShell.CurrentRoute.EndsWith("group")) 
+                            {
+                                DataStore.SetCurrentToParent();
+                                Debug.WriteLine($"ItemsViewModel: back to group {DataStore.CurrentGroup.Name}");
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"ItemsViewModel: back from route {AppShell.CurrentAppShell.CurrentRoute}");
+                            }
+                        }
+                    }
+
+                    Title = DataStore.CurrentGroup.Name;
+                    Items.Clear();
+                    var items = await DataStore.GetItemsAsync(true);
+                    foreach (var item in items)
+                    {
+                        ImageSource imgSource = (ImageSource)item.ImgSource;
+                        if (item.ImgSource == null)
+                        {
+                            item.SetIcon();
+                        }
+                        // Debug.WriteLine($"{item.Name}-{imgSource}");
+                        Items.Add(item);
+                    }
+                    IsItemGroupSelected = false;
+                    IsBackButtonClicked = false;
                 }
             }
             catch (Exception ex)
@@ -90,11 +121,14 @@ namespace PassXYZ.Vault.ViewModels
 
             if (item.IsGroup)
             {
-                Routing.RegisterRoute($"//{DataStore.CurrentGroup.Name}/{item.Name}", typeof(ItemsPage));
                 DataStore.CurrentGroup = item;
+                if (!IsRootGroup)
+                {
+                    await Shell.Current.GoToAsync($"group");
+                    IsItemGroupSelected = true;
+                    Debug.WriteLine($"ItemsViewModel: selected group {item.Name}.");
+                }
                 await ExecuteLoadItemsCommand();
-                Debug.WriteLine($"ItemsViewModel: go to page {item.Name}");
-                await Shell.Current.GoToAsync($"{item.Name}");
             }
             else
             {
