@@ -14,7 +14,7 @@
                     HasUnevenRows="False"
                     SelectionMode="None">
             <ListView.Header>
-                <StackLayout Orientation="Horizontal">
+                <StackLayout Padding="10" Orientation="Horizontal">
                     <Label Text="{Binding Text}" FontSize="Medium" FontAttributes="Bold"/>
                 </StackLayout>
             </ListView.Header>
@@ -50,7 +50,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <StackLayout Orientation="Horizontal">
+                <StackLayout Padding="10" Orientation="Horizontal">
                     <Label Text="{Binding Description}" />
                 </StackLayout>
             </ListView.Footer>

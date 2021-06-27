@@ -16,6 +16,7 @@ namespace PassXYZ.Vault
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
+            Routing.RegisterRoute(nameof(NotesPage), typeof(NotesPage));
             Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));
             Routing.RegisterRoute("group", typeof(ItemsPage));
             CurrentAppShell = this;

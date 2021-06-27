@@ -132,8 +132,15 @@ namespace PassXYZ.Vault.ViewModels
             }
             else
             {
-                // This will push the ItemDetailPage onto the navigation stack
-                await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+                var pwEntry = (PwEntry)item;
+                if(pwEntry.IsNotes()) 
+                {
+                    await Shell.Current.GoToAsync($"{nameof(NotesPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+                }
+                else 
+                {
+                    await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+                }
             }
         }
     }

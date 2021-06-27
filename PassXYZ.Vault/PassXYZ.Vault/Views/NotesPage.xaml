@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PassXYZ.Vault.Views.NotesPage"
+             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
+             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
+             xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="10">
+                <Label Text="{Binding Text}"                       
+                       FontSize="Large"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="CenterAndExpand" />
+                <Label Text="{Binding Description}" Margin="10" />
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
