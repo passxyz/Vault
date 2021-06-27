@@ -10,12 +10,12 @@
     <RefreshView x:DataType="local:ItemDetailViewModel" Command="{Binding LoadFieldsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
         <ListView x:Name="FieldsListView"
                     ItemsSource="{Binding Fields}"
-                    VerticalOptions="Center"
-                    HasUnevenRows="False"
+                    VerticalOptions="CenterAndExpand"
+                    HasUnevenRows="True"
                     SelectionMode="None">
             <ListView.Header>
                 <StackLayout Padding="10" Orientation="Horizontal">
-                    <Label Text="{Binding Text}" FontSize="Medium" FontAttributes="Bold"/>
+                    <Label Text="{Binding Text}" FontSize="Large" FontAttributes="Bold"/>
                 </StackLayout>
             </ListView.Header>
             <ListView.ItemTemplate>
@@ -32,11 +32,12 @@
                                 <Label Text="{Binding Key}"
                                     LineBreakMode="NoWrap" 
                                     Style="{DynamicResource ListItemTextStyle}" 
-                                    FontSize="16" />
+                                    FontAttributes="Bold"
+                                    FontSize="Medium" />
                                 <Label Text="{Binding Value}" 
-                                    LineBreakMode="NoWrap"
+                                    LineBreakMode="WordWrap"
                                     Style="{DynamicResource ListItemDetailTextStyle}"
-                                    FontSize="13" />
+                                    FontSize="Small" />
                                 <StackLayout.GestureRecognizers>
                                     <TapGestureRecognizer 
                                     NumberOfTapsRequired="1"
@@ -51,7 +52,7 @@
             </ListView.ItemTemplate>
             <ListView.Footer>
                 <StackLayout Padding="10" Orientation="Horizontal">
-                    <Label Text="{Binding Description}" />
+                    <Label Text="{Binding Description}" FontSize="Small" Style="{DynamicResource ListItemDetailTextStyle}" />
                 </StackLayout>
             </ListView.Footer>
         </ListView>

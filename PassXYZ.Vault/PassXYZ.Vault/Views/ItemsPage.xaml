@@ -34,11 +34,12 @@
                                 <Label Text="{Binding Name}"
                                     LineBreakMode="NoWrap" 
                                     Style="{DynamicResource ListItemTextStyle}" 
-                                    FontSize="16" />
+                                    FontAttributes="Bold"
+                                    FontSize="Small" />
                                 <Label Text="{Binding Description}" 
                                     LineBreakMode="NoWrap"
                                     Style="{DynamicResource ListItemDetailTextStyle}"
-                                    FontSize="13" />
+                                    FontSize="Small" />
                                 <StackLayout.GestureRecognizers>
                                     <TapGestureRecognizer 
                                     NumberOfTapsRequired="1"

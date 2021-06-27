@@ -14,7 +14,10 @@
                        FontAttributes="Bold"
                        VerticalOptions="Center" 
                        HorizontalOptions="CenterAndExpand" />
-                <Label Text="{Binding Description}" Margin="10" />
+                <Label Text="{Binding Description}" 
+                       FontSize="Small"
+                       Style="{DynamicResource ListItemDetailTextStyle}"
+                       Margin="10" />
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
