@@ -2,13 +2,59 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PassXYZ.Vault.Views.ItemDetailPage"
+             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
+             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
+             xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
              Title="{Binding Title}">
 
-    <StackLayout Spacing="20" Padding="15">
-        <Label Text="Text:" FontSize="Medium" />
-        <Label Text="{Binding Text}" FontSize="Small"/>
-        <Label Text="Description:" FontSize="Medium" />
-        <Label Text="{Binding Description}" FontSize="Small"/>
-    </StackLayout>
-    
+    <RefreshView x:DataType="local:ItemDetailViewModel" Command="{Binding LoadFieldsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <ListView x:Name="FieldsListView"
+                    ItemsSource="{Binding Fields}"
+                    VerticalOptions="Center"
+                    HasUnevenRows="False"
+                    SelectionMode="None">
+            <ListView.Header>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="{Binding Text}" FontSize="Medium" FontAttributes="Bold"/>
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Padding="10" Orientation="Horizontal" x:DataType="passxyzlib:Field" >
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Grid>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding Key}"
+                                    LineBreakMode="NoWrap" 
+                                    Style="{DynamicResource ListItemTextStyle}" 
+                                    FontSize="16" />
+                                <Label Text="{Binding Value}" 
+                                    LineBreakMode="NoWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="13" />
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemDetailViewModel}}, Path=FieldTapped}"
+                                    CommandParameter="{Binding .}">
+                                    </TapGestureRecognizer>
+                                </StackLayout.GestureRecognizers>
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Footer>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="{Binding Description}" />
+                </StackLayout>
+            </ListView.Footer>
+        </ListView>
+    </RefreshView>
+
 </ContentPage>

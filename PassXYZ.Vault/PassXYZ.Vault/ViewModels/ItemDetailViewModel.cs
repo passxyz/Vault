@@ -1,5 +1,7 @@
 ﻿using KeePassLib;
+using PassXYZLib;
 using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -12,6 +14,12 @@ namespace PassXYZ.Vault.ViewModels
         private string itemId;
         private string text;
         private string description;
+        private PwEntry dataEntry = null;
+
+        public ObservableCollection<Field> Fields { get; set; }
+        public Command LoadFieldsCommand { get; }
+        public Command<Field> FieldTapped { get; }
+
         public string Id { get; set; }
 
         public string Text
@@ -39,6 +47,25 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        public ItemDetailViewModel()
+        {
+            Fields = new ObservableCollection<Field>();
+            LoadFieldsCommand = new Command(() => ExecuteLoadFieldsCommand());
+            FieldTapped = new Command<Field>(OnFieldSelected);
+        }
+
+        private void ExecuteLoadFieldsCommand()
+        {
+            if (dataEntry != null)
+            {
+                var fields = dataEntry.GetFields();
+                foreach (var field in fields)
+                {
+                    Fields.Add(field);
+                }
+            }
+        }
+
         public async void LoadItemId(string itemId)
         {
             try
@@ -47,12 +74,24 @@ namespace PassXYZ.Vault.ViewModels
                 Id = item.Id;
                 Text = item.Name;
                 Title = Text;
-                Description = item.Description;
+                dataEntry = (PwEntry)item;
+
+                Description = dataEntry.GetNotes();
+                ExecuteLoadFieldsCommand();
             }
             catch (Exception)
             {
                 Debug.WriteLine("Failed to Load Item");
             }
+        }
+
+        private void OnFieldSelected(Field field)
+        {
+            if (field == null)
+            {
+                return;
+            }
+            Debug.WriteLine($"Field {field.Key} selected");
         }
     }
 }
