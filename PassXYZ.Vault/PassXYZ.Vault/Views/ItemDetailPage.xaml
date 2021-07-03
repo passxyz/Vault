@@ -20,7 +20,18 @@
             </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ViewCell>
+                    <ViewCell BindingContextChanged="OnBindingContextChanged">
+                        <ViewCell.ContextActions>
+                            <!-- Disable this, need to implement the group copy
+                                <MenuItem Clicked="OnMenuCopy" CommandParameter="{Binding .}"
+                                      Text="{i18n:TranslateExtension Text=action_id_copy}" />
+                                -->
+                            <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}" 
+                                      Text="Edit" />
+                            <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
+                                      Text="Delete" IsDestructive="True" />
+                        </ViewCell.ContextActions>
+
                         <StackLayout Padding="10" Orientation="Horizontal" x:DataType="passxyzlib:Field" >
                             <Grid >
                                 <Grid.ColumnDefinitions>
