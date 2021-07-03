@@ -17,6 +17,7 @@
                 <Label Text="{Binding Description}" 
                        FontSize="Small"
                        Style="{DynamicResource ListItemDetailTextStyle}"
+                       TextType="Html"
                        Margin="10" />
             </StackLayout>
         </ScrollView>

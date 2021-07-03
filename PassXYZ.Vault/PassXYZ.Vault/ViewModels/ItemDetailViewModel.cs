@@ -76,7 +76,8 @@ namespace PassXYZ.Vault.ViewModels
                 Title = Text;
                 dataEntry = (PwEntry)item;
 
-                Description = dataEntry.GetNotes();
+                Description = Markdig.Markdown.ToHtml(dataEntry.GetNotes());
+                // Description = dataEntry.GetNotes();
                 ExecuteLoadFieldsCommand();
             }
             catch (Exception)

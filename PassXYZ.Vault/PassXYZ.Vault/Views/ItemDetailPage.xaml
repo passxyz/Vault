@@ -52,7 +52,10 @@
             </ListView.ItemTemplate>
             <ListView.Footer>
                 <StackLayout Padding="10" Orientation="Horizontal">
-                    <Label Text="{Binding Description}" FontSize="Small" Style="{DynamicResource ListItemDetailTextStyle}" />
+                    <Label Text="{Binding Description}" 
+                           FontSize="Small" 
+                           TextType ="Html"
+                           Style="{DynamicResource ListItemDetailTextStyle}" />
                 </StackLayout>
             </ListView.Footer>
         </ListView>
