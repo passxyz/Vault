@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             x:Class="PassXYZ.Vault.Views.FieldEditPage">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked" Icon="ic_passxyz_cancel.png" />
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked" Icon="ic_passxyz_save.png" />
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="5, 5, 5, 5">
+                <!-- Name -->
+                <StackLayout Orientation="Horizontal">
+                    <Image x:Name="ImageField" Source="ic_passxyz_title.png" VerticalOptions="Center" HorizontalOptions="Start"/>
+                    <Entry x:Name="KeyField" 
+                       VerticalOptions="Center" 
+                       HorizontalOptions="FillAndExpand"></Entry>
+                </StackLayout>
+                <!-- Notes -->
+                <Editor x:Name="ValueField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Editor>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

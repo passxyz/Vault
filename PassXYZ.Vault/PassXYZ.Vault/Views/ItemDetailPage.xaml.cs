@@ -55,7 +55,10 @@ namespace PassXYZ.Vault.Views
         {
             var mi = (MenuItem)sender;
 
-            if (mi.CommandParameter is Field field) { }
+            if (mi.CommandParameter is Field field)
+            {
+                _viewModel.Update(field);
+            }
         }
 
         private void OnMenuDeleteAsync(object sender, EventArgs e)

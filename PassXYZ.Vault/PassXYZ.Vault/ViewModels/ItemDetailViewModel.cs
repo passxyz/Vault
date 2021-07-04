@@ -6,6 +6,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
+using PassXYZ.Vault.Views;
+
 namespace PassXYZ.Vault.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
@@ -47,6 +49,8 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        public static Field SelectedField = null;
+
         public ItemDetailViewModel()
         {
             Fields = new ObservableCollection<Field>();
@@ -86,6 +90,37 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        /// <summary>
+        /// Update a field.
+        /// </summary>
+        /// <param name="field">an instance of Field</param>
+        public async void Update(Field field)
+        {
+            if (field == null)
+            {
+                return;
+            }
+
+            // Set the static field first before we call FieldEditPage
+            SelectedField = field;
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage()));
+
+            string key = field.IsEncoded? field.EncodedKey: field.Key;
+            if (dataEntry.Strings.Exists(key))
+            {
+                dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, field.Value));
+                Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
+            }
+            else
+            {
+                Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
+            }
+        }
+
+        /// <summary>
+        /// Delete a field.
+        /// </summary>
+        /// <param name="field">an instance of Field</param>
         public void Deleted(Field field)
         {
             if (field == null)
