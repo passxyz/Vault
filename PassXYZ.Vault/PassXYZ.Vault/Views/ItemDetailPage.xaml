@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.ItemDetailPage"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
              xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
@@ -22,14 +23,12 @@
                 <DataTemplate>
                     <ViewCell BindingContextChanged="OnBindingContextChanged">
                         <ViewCell.ContextActions>
-                            <!-- Disable this, need to implement the group copy
-                                <MenuItem Clicked="OnMenuCopy" CommandParameter="{Binding .}"
-                                      Text="{i18n:TranslateExtension Text=action_id_copy}" />
-                                -->
+                            <MenuItem Clicked="OnMenuCopyAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_copy}" />
                             <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}" 
-                                      Text="Edit" />
+                                      Text="{x:Static resources:AppResources.action_id_edit}" />
                             <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
-                                      Text="Delete" IsDestructive="True" />
+                                      Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
                         </ViewCell.ContextActions>
 
                         <StackLayout Padding="10" Orientation="Horizontal" x:DataType="passxyzlib:Field" >

@@ -1,44 +1,67 @@
-﻿using PassXYZ.Vault.ViewModels;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
-using KeePassLib;
 using PassXYZLib;
+
+using PassXYZ.Vault.Resx;
+using PassXYZ.Vault.ViewModels;
+using System.Threading.Tasks;
 
 namespace PassXYZ.Vault.Views
 {
     public partial class ItemDetailPage : ContentPage
     {
-        ItemDetailViewModel _viewModel;
+        private MenuItem showAction;
         public ItemDetailPage()
         {
             InitializeComponent();
-            BindingContext = _viewModel = new ItemDetailViewModel();
+            BindingContext = new ItemDetailViewModel();
         }
 
         private void OnMenuShow(object sender, EventArgs e)
         {
-            var mi = ((MenuItem)sender);
-            Field field = mi.CommandParameter as Field;
-            Debug.WriteLine($"ItemDetailPage: Show Context Action clicked: {field.Key}");
-            if(field != null) { field.ShowPassword(); }
-            // CrossClipboard.Current.SetText(Value);
+            var mi = (MenuItem)sender;
+
+            if (mi.CommandParameter is Field field)
+            {
+                if (field.IsHide)
+                {
+                    field.ShowPassword();
+                    showAction.Text = AppResources.action_id_hide;
+                }
+                else
+                {
+                    field.HidePassword();
+                    showAction.Text = AppResources.action_id_show;
+                }
+            }
+        }
+
+        private async void OnMenuCopyAsync(object sender, EventArgs e)
+        {
+            var mi = (MenuItem)sender;
+
+            if (mi.CommandParameter is Field field)
+            {
+                await Clipboard.SetTextAsync(field.Value);
+            }
         }
 
         private void OnMenuEdit(object sender, EventArgs e)
         {
             var mi = (MenuItem)sender;
-            Field field = mi.CommandParameter as Field;
-            Debug.WriteLine($"ItemDetailPage: Edit Context Action clicked: {field.Key}");
+
+            if (mi.CommandParameter is Field field) { }
         }
 
         private void OnMenuDeleteAsync(object sender, EventArgs e)
         {
-            var mi = ((MenuItem)sender);
-            Field field = mi.CommandParameter as Field;
-            Debug.WriteLine($"ItemDetailPage: Delete Context Action clicked: {field.Key}");
+            var mi = (MenuItem)sender;
+
+            if (mi.CommandParameter is Field field) { }
         }
 
         private void OnBindingContextChanged(object sender, EventArgs e)
@@ -53,12 +76,11 @@ namespace PassXYZ.Vault.Views
             var field = theViewCell.BindingContext as Field;
             if (field != null)
             {
-                // Debug.WriteLine($"ItemDetailPage: OnBindingContextChanged: {field.Key} {field.IsProtected}");
                 if (field.IsProtected)
                 {
-                    var showAction = new MenuItem
+                    showAction = new MenuItem
                     {
-                        Text = "Show"
+                        Text = AppResources.action_id_show
                     };
                     showAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
                     showAction.Clicked += OnMenuShow;
