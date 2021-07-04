@@ -86,6 +86,37 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        public void Deleted(Field field)
+        {
+            if (field == null)
+            {
+                return;
+            }
+
+            string key;
+            if (Fields.Remove(field))
+            {
+                key = field.IsEncoded ? field.EncodedKey : field.Key;
+            }
+            else
+            {
+                return;
+            }
+
+            if (dataEntry.Strings.Exists(key))
+            {
+                if (dataEntry.Strings.Remove(key))
+                {
+
+                    Debug.WriteLine($"ItemDetailViewModel: Field {field.Key} deleted.");
+                }
+                else
+                {
+                    Debug.WriteLine($"ItemDetailViewModel: Cannot delete field {field.Key}.");
+                }
+            }
+        }
+
         private void OnFieldSelected(Field field)
         {
             if (field == null)

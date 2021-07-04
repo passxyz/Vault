@@ -14,11 +14,12 @@ namespace PassXYZ.Vault.Views
 {
     public partial class ItemDetailPage : ContentPage
     {
+        private ItemDetailViewModel _viewModel;
         private MenuItem showAction;
         public ItemDetailPage()
         {
             InitializeComponent();
-            BindingContext = new ItemDetailViewModel();
+            BindingContext = _viewModel = new ItemDetailViewModel();
         }
 
         private void OnMenuShow(object sender, EventArgs e)
@@ -61,7 +62,10 @@ namespace PassXYZ.Vault.Views
         {
             var mi = (MenuItem)sender;
 
-            if (mi.CommandParameter is Field field) { }
+            if (mi.CommandParameter is Field field)
+            {
+                _viewModel.Deleted(field);
+            }
         }
 
         private void OnBindingContextChanged(object sender, EventArgs e)
