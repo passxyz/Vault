@@ -1,11 +1,41 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
              xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.FieldEditPage">
+    
+    <ContentPage.Resources>
+        <!-- Define a visual state for the Selected state of the CollectionView -->
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{StaticResource Primary}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+    
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked" Icon="ic_passxyz_cancel.png" />
-        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked" Icon="ic_passxyz_save.png" />
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked">
+            <ToolbarItem.IconImageSource>
+                <iconsR:IconSource Icon="WindowClose" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Save" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>

@@ -49,8 +49,6 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
-        public static Field SelectedField = null;
-
         public ItemDetailViewModel()
         {
             Fields = new ObservableCollection<Field>();
@@ -101,20 +99,21 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            // Set the static field first before we call FieldEditPage
-            SelectedField = field;
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage()));
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(field.Key, field.Value, (string k, string v) => {
+                string key = field.IsEncoded ? field.EncodedKey : field.Key;
+                if (dataEntry.Strings.Exists(key))
+                {
+                    field.Value = v;
+                    // We cannot set to field.Value, since it will return a masked string for protected data
+                    dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+                    Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
+                }
+                else
+                {
+                    Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
+                }
+            })));
 
-            string key = field.IsEncoded? field.EncodedKey: field.Key;
-            if (dataEntry.Strings.Exists(key))
-            {
-                dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, field.Value));
-                Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
-            }
-            else
-            {
-                Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
-            }
         }
 
         /// <summary>

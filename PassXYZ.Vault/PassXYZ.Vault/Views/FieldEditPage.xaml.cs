@@ -14,17 +14,21 @@ namespace PassXYZ.Vault.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FieldEditPage : ContentPage
     {
-        private FieldEditViewModel _viewModel;
-        public FieldEditPage()
+        private Action<string, string> _updateAction;
+
+        public FieldEditPage(string key, string value, Action<string, string> updateAction)
         {
             InitializeComponent();
-            BindingContext = _viewModel = new FieldEditViewModel();
-            Title = KeyField.Text = _viewModel.Key;
-            ValueField.Text = _viewModel.Value;
+
+            Title = KeyField.Text = key;
+            KeyField.IsVisible = false;
+            ValueField.Text = value;
+            _updateAction = updateAction;
         }
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
+            _updateAction?.Invoke(KeyField.Text, ValueField.Text);
             _ = await Navigation.PopModalAsync();
         }
 
