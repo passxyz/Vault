@@ -43,13 +43,13 @@
             <StackLayout Padding="5, 5, 5, 5">
                 <!-- Name -->
                 <StackLayout Orientation="Horizontal">
-                    <Image x:Name="ImageField" Source="ic_passxyz_title.png" VerticalOptions="Center" HorizontalOptions="Start"/>
-                    <Entry x:Name="KeyField" 
+                    <Entry x:Name="keyField" 
                        VerticalOptions="Center" 
                        HorizontalOptions="FillAndExpand"></Entry>
+                    <CheckBox x:Name="checkBox" />
                 </StackLayout>
                 <!-- Notes -->
-                <Editor x:Name="ValueField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Editor>
+                <Editor x:Name="valueField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Editor>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

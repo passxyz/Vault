@@ -20,6 +20,7 @@ namespace PassXYZ.Vault.ViewModels
 
         public ObservableCollection<Field> Fields { get; set; }
         public Command LoadFieldsCommand { get; }
+        public Command AddFieldCommand { get; }
         public Command<Field> FieldTapped { get; }
 
         public string Id { get; set; }
@@ -54,6 +55,7 @@ namespace PassXYZ.Vault.ViewModels
             Fields = new ObservableCollection<Field>();
             LoadFieldsCommand = new Command(() => ExecuteLoadFieldsCommand());
             FieldTapped = new Command<Field>(OnFieldSelected);
+            AddFieldCommand = new Command(OnAddField);
         }
 
         private void ExecuteLoadFieldsCommand()
@@ -99,7 +101,7 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(field.Key, field.Value, (string k, string v) => {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage((string k, string v, bool isProtected) => {
                 string key = field.IsEncoded ? field.EncodedKey : field.Key;
                 if (dataEntry.Strings.Exists(key))
                 {
@@ -112,8 +114,7 @@ namespace PassXYZ.Vault.ViewModels
                 {
                     Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
                 }
-            })));
-
+            }, field.Key, field.Value)));
         }
 
         /// <summary>
@@ -149,6 +150,27 @@ namespace PassXYZ.Vault.ViewModels
                     Debug.WriteLine($"ItemDetailViewModel: Cannot delete field {field.Key}.");
                 }
             }
+        }
+
+        private async void OnAddField(object obj)
+        {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage((string k, string v, bool isProtected) => {
+                Field field;
+                string key = k;
+                if (dataEntry.IsPxEntry())
+                {
+                    key = dataEntry.EncodeKey(k);
+                    field = new Field(k, v, isProtected, key);
+                }
+                else
+                {
+                    field = new Field(k, v, isProtected);
+                }
+
+                Fields.Add(field);
+                dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+            })));
+            Debug.WriteLine($"ItemDetailViewModel: Add field");
         }
 
         private void OnFieldSelected(Field field)

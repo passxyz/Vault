@@ -8,6 +8,10 @@
              xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
              Title="{Binding Title}">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddFieldCommand}" />
+    </ContentPage.ToolbarItems>
+    
     <RefreshView x:DataType="local:ItemDetailViewModel" Command="{Binding LoadFieldsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
         <ListView x:Name="FieldsListView"
                     ItemsSource="{Binding Fields}"

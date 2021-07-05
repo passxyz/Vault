@@ -14,21 +14,37 @@ namespace PassXYZ.Vault.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class FieldEditPage : ContentPage
     {
-        private Action<string, string> _updateAction;
+        private Action<string, string, bool> _updateAction;
+        private bool _isNewField = true;
 
-        public FieldEditPage(string key, string value, Action<string, string> updateAction)
+        public FieldEditPage(Action<string, string, bool> updateAction, string key = "", string value = "")
         {
             InitializeComponent();
 
-            Title = KeyField.Text = key;
-            KeyField.IsVisible = false;
-            ValueField.Text = value;
+            Title = keyField.Text = key;
+            if(!string.IsNullOrEmpty(key))
+            {
+                keyField.IsVisible = false;
+                checkBox.IsVisible = false;
+                _isNewField = false;
+            }
+            
+            valueField.Text = value;
+
             _updateAction = updateAction;
         }
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            _updateAction?.Invoke(KeyField.Text, ValueField.Text);
+            bool isProtected = checkBox.IsChecked;
+            if(_isNewField)
+            {
+                _updateAction?.Invoke(keyField.Text, valueField.Text, isProtected);
+            }
+            else
+            {
+                _updateAction?.Invoke(keyField.Text, valueField.Text, false);
+            }
             _ = await Navigation.PopModalAsync();
         }
 
