@@ -4,6 +4,7 @@ using PassXYZ.Vault.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,27 @@ namespace PassXYZ.Vault.Views
 
                 })
             });
+        }
+
+        private void OnMenuEdit(object sender, EventArgs e)
+        {
+            var mi = (MenuItem)sender;
+
+            if (mi.CommandParameter is Item item)
+            {
+                _viewModel.Update(item);
+            }
+        }
+
+        private void OnMenuDeleteAsync(object sender, EventArgs e)
+        {
+            var mi = (MenuItem)sender;
+
+            if (mi.CommandParameter is Item item)
+            {
+                //_viewModel.Deleted(item);
+                Debug.WriteLine("ItemsPage: OnMenuDeleteAsync clicked");
+            }
         }
 
         protected override void OnAppearing()

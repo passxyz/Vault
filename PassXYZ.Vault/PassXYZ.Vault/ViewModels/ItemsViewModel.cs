@@ -41,12 +41,12 @@ namespace PassXYZ.Vault.ViewModels
             {
                 if (DataStore.RootGroup != null)
                 {
-                    if (AppShell.CurrentAppShell != null)
-                    {
-                        //Debug.WriteLine($"ItemsViewModel: {Shell.Current.CurrentState.Location}");
-                        Debug.WriteLine($"ItemsViewModel: C:{AppShell.CurrentAppShell.CurrentRoute}, T:{AppShell.CurrentAppShell.TargetRoute}");
-                        //Debug.WriteLine($"ItemsViewModel: {DataStore.CurrentPath}");
-                    }
+                    //if (AppShell.CurrentAppShell != null)
+                    //{
+                    //    Debug.WriteLine($"ItemsViewModel: {Shell.Current.CurrentState.Location}");
+                    //    Debug.WriteLine($"ItemsViewModel: C:{AppShell.CurrentAppShell.CurrentRoute}, T:{AppShell.CurrentAppShell.TargetRoute}");
+                    //    Debug.WriteLine($"ItemsViewModel: {DataStore.CurrentPath}");
+                    //}
 
                     if (AppShell.CurrentAppShell.TargetRoute.Equals("..") || IsBackButtonClicked)
                     {
@@ -143,5 +143,24 @@ namespace PassXYZ.Vault.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// Update an item. The item can be a group or an entry.
+        /// </summary>
+        /// <param name="item">an instance of Item</param>
+        public async void Update(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage((string k, string v, bool isProtected) => {
+                item.Notes = v;
+                //Debug.WriteLine($"ItemsViewModel: Update item {item.Name}.");
+            }, item.Name, item.Notes)));
+        }
+
+
     }
 }

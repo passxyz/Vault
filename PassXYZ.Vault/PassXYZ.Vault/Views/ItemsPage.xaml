@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.ItemsPage"
              Title="{Binding Title}"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"  
@@ -23,6 +24,13 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}" 
+                                      Text="{x:Static resources:AppResources.action_id_edit}" />
+                            <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
+                        </ViewCell.ContextActions>
+
                         <StackLayout Padding="10" Orientation="Horizontal" x:DataType="kpclib:Item" >
                             <Grid >
                                 <Grid.ColumnDefinitions>
@@ -32,12 +40,14 @@
                             </Grid>
                             <StackLayout Padding="10">
                                 <Label Text="{Binding Name}"
-                                    LineBreakMode="NoWrap" 
-                                    Style="{DynamicResource ListItemTextStyle}" 
+                                    LineBreakMode="NoWrap"
+                                    MaxLines="1"
+                                    Style="{DynamicResource ListItemTextStyle}"
                                     FontAttributes="Bold"
                                     FontSize="Small" />
                                 <Label Text="{Binding Description}" 
-                                    LineBreakMode="NoWrap"
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="1"
                                     Style="{DynamicResource ListItemDetailTextStyle}"
                                     FontSize="Small" />
                                 <StackLayout.GestureRecognizers>
