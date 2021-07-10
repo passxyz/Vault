@@ -34,6 +34,15 @@ namespace PassXYZ.Vault.Views
             _updateAction = updateAction;
         }
 
+        public FieldEditPage(Action<string, string, bool> updateAction, string key, string value, bool isKeyVisible = false):this(updateAction, key, value)
+        {
+            // This is the same as the another constructor, except this part
+            if (isKeyVisible)
+            {
+                keyField.IsVisible = true;
+            }
+        }
+
         private async void OnSaveClicked(object sender, EventArgs e)
         {
             bool isProtected = checkBox.IsChecked;

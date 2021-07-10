@@ -156,9 +156,9 @@ namespace PassXYZ.Vault.ViewModels
             }
 
             await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage((string k, string v, bool isProtected) => {
+                item.Name = k;
                 item.Notes = v;
-                //Debug.WriteLine($"ItemsViewModel: Update item {item.Name}.");
-            }, item.Name, item.Notes)));
+            }, item.Name, item.Notes, true)));
         }
 
         /// <summary>
