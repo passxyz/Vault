@@ -55,6 +55,16 @@ namespace PassXYZ.Vault.Views
             }
         }
 
+        void OnTap(object sender, ItemTappedEventArgs args)
+        {
+            var item = args.Item as Item;
+            if (item == null)
+            {
+                return;
+            }
+            _viewModel.OnItemSelected(item);
+        }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();

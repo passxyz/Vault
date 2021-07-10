@@ -112,7 +112,7 @@ namespace PassXYZ.Vault.ViewModels
             await Shell.Current.GoToAsync(nameof(NewItemPage));
         }
 
-        private async void OnItemSelected(Item item)
+        public async void OnItemSelected(Item item)
         {
             if (item == null)
             {
@@ -126,18 +126,17 @@ namespace PassXYZ.Vault.ViewModels
                 {
                     await Shell.Current.GoToAsync($"group");
                     IsItemGroupSelected = true;
-                    Debug.WriteLine($"ItemsViewModel: selected group {item.Name}.");
                 }
                 await ExecuteLoadItemsCommand();
             }
             else
             {
                 var pwEntry = (PwEntry)item;
-                if(pwEntry.IsNotes()) 
+                if (pwEntry.IsNotes())
                 {
                     await Shell.Current.GoToAsync($"{nameof(NotesPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
                 }
-                else 
+                else
                 {
                     await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
                 }
