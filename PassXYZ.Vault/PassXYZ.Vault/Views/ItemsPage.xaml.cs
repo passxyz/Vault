@@ -44,13 +44,13 @@ namespace PassXYZ.Vault.Views
             }
         }
 
-        private void OnMenuDeleteAsync(object sender, EventArgs e)
+        private async void OnMenuDeleteAsync(object sender, EventArgs e)
         {
             var mi = (MenuItem)sender;
 
             if (mi.CommandParameter is Item item)
             {
-                //_viewModel.Deleted(item);
+                await _viewModel.DeletedAsync(item);
                 Debug.WriteLine("ItemsPage: OnMenuDeleteAsync clicked");
             }
         }

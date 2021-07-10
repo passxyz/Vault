@@ -161,6 +161,27 @@ namespace PassXYZ.Vault.ViewModels
             }, item.Name, item.Notes)));
         }
 
+        /// <summary>
+        /// Delete an item.
+        /// </summary>
+        /// <param name="item">an instance of Item</param>
+        public async Task DeletedAsync(Item item)
+        {
+            if (item == null)
+            {
+                return;
+            }
+
+            if (Items.Remove(item))
+            {
+                _ = await DataStore.DeleteItemAsync(item.Id);
+            }
+            else
+            {
+                return;
+            }
+
+        }
 
     }
 }

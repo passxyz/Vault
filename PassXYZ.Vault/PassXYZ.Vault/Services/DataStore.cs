@@ -25,7 +25,7 @@ namespace PassXYZ.Vault.Services
 
     public class DataStore : IDataStore<Item>
     {
-        List<Item> items;
+        private List<Item> items;
         private readonly PasswordDb db = null;
 
         public DataStore()
@@ -76,8 +76,18 @@ namespace PassXYZ.Vault.Services
 
         public async Task<bool> DeleteItemAsync(string id)
         {
-            var oldItem = items.Where((Item arg) => arg.Id == id).FirstOrDefault();
-            items.Remove(oldItem);
+            Item oldItem = items.FirstOrDefault((Item arg) => arg.Id == id);
+            if (items.Remove(oldItem))
+            {
+                if (oldItem.IsGroup)
+                {
+                    db.DeleteGroup(oldItem as PwGroup);
+                }
+                else
+                {
+                    db.DeleteEntry(oldItem as PwEntry);
+                }
+            }
 
             return await Task.FromResult(true);
         }
