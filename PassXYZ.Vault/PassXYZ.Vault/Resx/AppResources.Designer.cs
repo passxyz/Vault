@@ -1593,6 +1593,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to PxEntry.
+        /// </summary>
+        internal static string item_subtype_pxentry {
+            get {
+                return ResourceManager.GetString("item_subtype_pxentry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Template.
         /// </summary>
         internal static string item_subtype_template {

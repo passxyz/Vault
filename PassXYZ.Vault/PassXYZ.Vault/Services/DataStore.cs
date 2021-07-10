@@ -61,6 +61,14 @@ namespace PassXYZ.Vault.Services
         public async Task<bool> AddItemAsync(Item item)
         {
             items.Add(item);
+            if(item.IsGroup)
+            {
+                db.CurrentGroup.AddGroup(item as PwGroup, true);
+            }
+            else
+            {
+                db.CurrentGroup.AddEntry(item as PwEntry, true);
+            }
 
             return await Task.FromResult(true);
         }

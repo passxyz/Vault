@@ -7,6 +7,7 @@ using Xamarin.Forms;
 using KeePassLib;
 using PassXYZLib;
 using PassXYZ.Vault.Views;
+using PassXYZ.Vault.Resx;
 
 namespace PassXYZ.Vault.ViewModels
 {
@@ -109,7 +110,47 @@ namespace PassXYZ.Vault.ViewModels
 
         private async void OnAddItem(object obj)
         {
-            await Shell.Current.GoToAsync(nameof(NewItemPage));
+            string[] templates = {
+                AppResources.item_subtype_group,
+                AppResources.item_subtype_entry,
+                AppResources.item_subtype_notes,
+                AppResources.item_subtype_pxentry
+            };
+
+            var template = await Shell.Current.DisplayActionSheet(AppResources.pt_id_choosetemplate, AppResources.action_id_cancel, null, templates);
+            ItemSubType type;
+            if (template == AppResources.item_subtype_entry)
+            {
+                type = ItemSubType.Entry;
+            }
+            else if (template == AppResources.item_subtype_pxentry)
+            {
+                type = ItemSubType.PxEntry;
+            }
+            else if (template == AppResources.item_subtype_group)
+            {
+                type = ItemSubType.Group;
+            }
+            else if (template == AppResources.item_subtype_notes)
+            {
+                type = ItemSubType.Notes;
+            }
+            else if (template == AppResources.action_id_cancel)
+            {
+                type = ItemSubType.None;
+                Debug.WriteLine("Canceled the Template selection.");
+            }
+            else
+            {
+                type = ItemSubType.None;
+                Debug.WriteLine("Canceled the Template selection.");
+            }
+
+            if (type != ItemSubType.None)
+            {
+                //await Shell.Current.GoToAsync(nameof(NewItemPage));
+                await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new NewItemPage(type)));
+            }
         }
 
         public async void OnItemSelected(Item item)

@@ -961,4 +961,7 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="action_id_hide" xml:space="preserve">
     <value>Hide</value>
   </data>
+  <data name="item_subtype_pxentry" xml:space="preserve">
+    <value>PxEntry</value>
+  </data>
 </root>

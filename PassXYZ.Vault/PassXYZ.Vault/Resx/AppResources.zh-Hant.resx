@@ -919,4 +919,7 @@
   <data name="action_id_hide" xml:space="preserve">
     <value>隱藏</value>
   </data>
+  <data name="item_subtype_pxentry" xml:space="preserve">
+    <value>條目 (PxEntry)</value>
+  </data>
 </root>
