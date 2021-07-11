@@ -4,11 +4,69 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx" 
+             xmlns:viewmodels="clr-namespace:PassXYZ.Vault.ViewModels"
              x:Class="PassXYZ.Vault.Views.LoginPage"
              Shell.NavBarIsVisible="False">
     <ContentPage.Content>
-        <StackLayout Padding="10,0,10,0" VerticalOptions="Center">
+        <!--StackLayout Padding="10,0,10,0" VerticalOptions="Center">
             <Button VerticalOptions="Center" Text="Login" Command="{Binding LoginCommand}"/>
+        </StackLayout-->
+        <StackLayout Padding="10,30">
+            <Image Source="passxyz_logo.png" Aspect="AspectFit"></Image>
+            <StackLayout Padding="20,10">
+                <Label FontSize="Small"  HorizontalOptions="Center" 
+                       Text="{x:Static resources:AppResources.LoginPageWelcomeMessage}" />
+                <Frame>
+                    <StackLayout x:DataType="viewmodels:LoginViewModel">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <!-- Row 1 (Username) -->
+                            <Image Source="ic_entry_username.png" Grid.Row="0" Grid.Column="0" />
+                            <Entry x:Name="usernameEntry" 
+                                   Placeholder="{x:Static resources:AppResources.field_id_username}" 
+                                   ReturnType="Next"
+                                   TextChanged="OnUsernameFilled"
+                                   HorizontalOptions="Fill" 
+                                   Grid.Row="0" Grid.Column="1" />
+                            <Button x:Name="switchUsersButton" Grid.Row="0" Grid.Column="2" 
+                                    Image="ic_passxyz_rightarrow.png" VerticalOptions="End" IsVisible="False"
+                                    Clicked="OnSwitchUsersClicked" BackgroundColor="White" BorderColor="White"
+                                    HeightRequest="32"  WidthRequest="32" BorderWidth="0"/>
+                            <!-- Row 2 (Password) -->
+                            <Image Source="ic_entry_password.png" Grid.Row="1" Grid.Column="0" />
+                            <Entry x:Name="passwordEntry" 
+                                   Placeholder="{x:Static resources:AppResources.field_id_password}" 
+                                   IsPassword="true" 
+                                   TextChanged="OnPasswordFilled"
+                                   HorizontalOptions="Fill" 
+                                   Grid.Row="1" Grid.Column="1" />
+                            <Button x:Name="fpButton" Grid.Row="1" Grid.Column="2" 
+                                    Image="ic_passxyz_fingerprint.png" VerticalOptions="End" IsVisible="False"
+                                    Clicked="OnFingerprintClicked" BackgroundColor="White" BorderColor="White"
+                                    HeightRequest="34"  WidthRequest="36" BorderWidth="0"/>
+                            <!-- Row 4 (Login Button) -->
+                            <Button Text="{x:Static resources:AppResources.LoginPageTitle}" 
+                                TextColor="White"  
+                                BackgroundColor="Gray" 
+                                HorizontalOptions="Fill" 
+                                Command="{Binding LoginCommand}" Grid.Row="3" Grid.Column="1" />
+                        </Grid>
+                    </StackLayout>
+                </Frame>
+                <Label x:Name="messageLabel" />
+            </StackLayout>
         </StackLayout>
+
     </ContentPage.Content>
 </ContentPage>

@@ -112,7 +112,7 @@ namespace PassXYZ.Vault.Services
 
         public async Task<bool> LoginAsync(string path, string key)
         {
-            db.Open(TEST_DB.PATH, TEST_DB.KEY);
+            db.Open(TEST_DB.PATH, key);
             if (db.IsOpen)
             {
                 items = db.RootGroup.GetItems();
