@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
              xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.ItemDetailPage"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
@@ -9,7 +11,11 @@
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Command="{Binding AddFieldCommand}" />
+        <ToolbarItem Text=" " Command="{Binding AddFieldCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsR:IconSource Icon="PlusSquare"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <RefreshView x:DataType="local:ItemDetailViewModel" Command="{Binding LoadFieldsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
