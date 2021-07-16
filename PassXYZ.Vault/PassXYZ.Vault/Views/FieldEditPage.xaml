@@ -28,12 +28,26 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked">
             <ToolbarItem.IconImageSource>
-                <iconsR:IconSource Icon="WindowClose" />
+                <iconsR:IconSource Icon="WindowClose">
+                    <iconsR:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsR:IconSource.Color>
+                </iconsR:IconSource>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
         <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked">
             <ToolbarItem.IconImageSource>
-                <iconsS:IconSource Icon="Save" />
+                <iconsR:IconSource Icon="Save">
+                    <iconsR:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsR:IconSource.Color>
+                </iconsR:IconSource>
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
