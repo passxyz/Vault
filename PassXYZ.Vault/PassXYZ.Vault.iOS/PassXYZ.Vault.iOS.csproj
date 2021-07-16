@@ -148,4 +148,7 @@
       <Name>PassXYZ.Vault</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\passxyz_logo.png" />
+  </ItemGroup>
 </Project>

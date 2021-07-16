@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
@@ -32,7 +34,11 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <!-- Row 1 (Username) -->
-                            <Image Source="ic_entry_username.png" Grid.Row="0" Grid.Column="0" />
+                            <Image Grid.Row="0" Grid.Column="0" IsVisible="False">
+                                <Image.Source>
+                                    <iconsS:IconSource Icon="User" />
+                                </Image.Source>
+                            </Image>
                             <Entry x:Name="usernameEntry" 
                                    Placeholder="{x:Static resources:AppResources.field_id_username}" 
                                    ReturnType="Next"
@@ -40,11 +46,19 @@
                                    HorizontalOptions="Fill" 
                                    Grid.Row="0" Grid.Column="1" />
                             <Button x:Name="switchUsersButton" Grid.Row="0" Grid.Column="2" 
-                                    Image="ic_passxyz_rightarrow.png" VerticalOptions="End" IsVisible="False"
+                                    VerticalOptions="End" IsVisible="False"
                                     Clicked="OnSwitchUsersClicked" BackgroundColor="White" BorderColor="White"
-                                    HeightRequest="32"  WidthRequest="32" BorderWidth="0"/>
+                                    HeightRequest="32"  WidthRequest="32" BorderWidth="0">
+                                <Button.ImageSource>
+                                    <iconsS:IconSource Icon="ChevronRight" />
+                                </Button.ImageSource>
+                            </Button>
                             <!-- Row 2 (Password) -->
-                            <Image Source="ic_entry_password.png" Grid.Row="1" Grid.Column="0" />
+                            <Image Grid.Row="1" Grid.Column="0" IsVisible="False">
+                                <Image.Source>
+                                    <iconsS:IconSource Icon="Key" />
+                                </Image.Source>
+                            </Image>
                             <Entry x:Name="passwordEntry" 
                                    Placeholder="{x:Static resources:AppResources.field_id_password}" 
                                    IsPassword="true" 
@@ -52,9 +66,13 @@
                                    HorizontalOptions="Fill" 
                                    Grid.Row="1" Grid.Column="1" />
                             <Button x:Name="fpButton" Grid.Row="1" Grid.Column="2" 
-                                    Image="ic_passxyz_fingerprint.png" VerticalOptions="End" IsVisible="False"
+                                    VerticalOptions="End" IsVisible="False"
                                     Clicked="OnFingerprintClicked" BackgroundColor="White" BorderColor="White"
-                                    HeightRequest="34"  WidthRequest="36" BorderWidth="0"/>
+                                    HeightRequest="34"  WidthRequest="36" BorderWidth="0">
+                                <Button.ImageSource>
+                                    <iconsS:IconSource Icon="Fingerprint" />
+                                </Button.ImageSource>
+                            </Button>
                             <!-- Row 4 (Login Button) -->
                             <Button Text="{x:Static resources:AppResources.LoginPageTitle}" 
                                 TextColor="White"  
