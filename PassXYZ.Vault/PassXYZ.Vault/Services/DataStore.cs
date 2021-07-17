@@ -11,16 +11,28 @@ using Xamarin.Forms;
 
 namespace PassXYZ.Vault.Services
 {
+    public class EmbeddedDatabase
+    {
+        public string Path;
+        public string Key;
+        public string ResourcePath;
+
+        public EmbeddedDatabase(string path, string key, string rpath)
+        {
+            Path = path;
+            Key = key;
+            ResourcePath = rpath;
+        }
+    }
+
     public static class TEST_DB
     {
-        public static string PATH 
-        { 
-            get { return Path.Combine(PxDataFile.DataFilePath, "pass_d_E8f4pEk.xyz"); } 
-        }
-
-        public static string KEY = "12345";
-
-        public static string RES_PATH = "PassXYZ.Vault.data.pass_d_E8f4pEk.xyz";
+        public static EmbeddedDatabase[] DataFiles = new EmbeddedDatabase[]
+        {
+            new EmbeddedDatabase(Path.Combine(PxDataFile.DataFilePath, "pass_d_E8f4pEk.xyz"), "12345", "PassXYZ.Vault.data.pass_d_E8f4pEk.xyz"),
+            new EmbeddedDatabase(Path.Combine(PxDataFile.DataFilePath, "pass_e_JyHzpRxcopt.xyz"), "123123", "PassXYZ.Vault.data.pass_e_JyHzpRxcopt.xyz"),
+            new EmbeddedDatabase(Path.Combine(PxDataFile.KeyFilePath, "pass_k_JyHzpRxcopt.k4xyz"), "", "PassXYZ.Vault.data.pass_k_JyHzpRxcopt.k4xyz")
+        };
     }
 
     public class DataStore : IDataStore<Item>
@@ -112,7 +124,7 @@ namespace PassXYZ.Vault.Services
 
         public async Task<bool> LoginAsync(PassXYZLib.User user)
         {
-            db.Open(user.Path, user.Password);
+            db.Open(user);
             if (db.IsOpen)
             {
                 items = db.RootGroup.GetItems();
