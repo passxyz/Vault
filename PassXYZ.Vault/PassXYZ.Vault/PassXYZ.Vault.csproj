@@ -7,10 +7,12 @@
 
   <ItemGroup>
     <None Remove="data\pass_d_E8f4pEk.xyz" />
+    <None Remove="data\pass_e_JyHzpRxcopt.xyz" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="data\pass_d_E8f4pEk.xyz" />
+    <EmbeddedResource Include="data\pass_e_JyHzpRxcopt.xyz" />
   </ItemGroup>
 
   <ItemGroup>

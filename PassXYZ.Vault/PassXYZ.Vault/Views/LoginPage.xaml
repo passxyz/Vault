@@ -42,7 +42,7 @@
                             <Entry x:Name="usernameEntry" 
                                    Placeholder="{x:Static resources:AppResources.field_id_username}" 
                                    ReturnType="Next"
-                                   TextChanged="OnUsernameFilled"
+                                   Text="{Binding Username}"
                                    HorizontalOptions="Fill" 
                                    Grid.Row="0" Grid.Column="1" />
                             <Button x:Name="switchUsersButton" Grid.Row="0" Grid.Column="2" 
@@ -62,7 +62,7 @@
                             <Entry x:Name="passwordEntry" 
                                    Placeholder="{x:Static resources:AppResources.field_id_password}" 
                                    IsPassword="true" 
-                                   TextChanged="OnPasswordFilled"
+                                   Text="{Binding Password}"
                                    HorizontalOptions="Fill" 
                                    Grid.Row="1" Grid.Column="1" />
                             <Button x:Name="fpButton" Grid.Row="1" Grid.Column="2" 

@@ -17,7 +17,7 @@ namespace PassXYZ.Vault.Services
         string CurrentPath { get; }
         void SetCurrentToParent();
         Item RootGroup { get; }
-        Task<bool> LoginAsync(string path, string key);
+        Task<bool> LoginAsync(PassXYZLib.User user);
         void Logout();
     }
 }

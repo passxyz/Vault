@@ -15,11 +15,12 @@ namespace PassXYZ.Vault.ViewModels
         private string _password;
         public Command LoginCommand { get; }
         public Command SignUpCommand { get; }
-        public string Username 
+        public string Username
         {
             get => _username;
             set => SetProperty(ref _username, value);
         }
+
         public string Password
         {
             get => _password;
@@ -36,8 +37,8 @@ namespace PassXYZ.Vault.ViewModels
 
         private bool ValidateLogin()
         {
-            return !String.IsNullOrWhiteSpace(_username)
-                && !String.IsNullOrWhiteSpace(_password);
+            return !string.IsNullOrWhiteSpace(_username)
+                && !string.IsNullOrWhiteSpace(_password);
         }
 
         public void OnAppearing()
@@ -50,7 +51,12 @@ namespace PassXYZ.Vault.ViewModels
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             try
             {
-                bool status = await DataStore.LoginAsync(Username, Password);
+                bool status = await DataStore.LoginAsync(new PassXYZLib.User
+                {
+                    Username = Username,
+                    Password = Password
+                });
+
                 if (status)
                 {
                     if (AppShell.CurrentAppShell != null)
@@ -64,9 +70,9 @@ namespace PassXYZ.Vault.ViewModels
                     }
                 }
             }
-            catch (KeePassLib.Keys.InvalidCompositeKeyException) 
+            catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("", AppResources.LoginErrorMessage, AppResources.alert_id_ok);
+                await Shell.Current.DisplayAlert(AppResources.LoginErrorMessage, ex.Message, AppResources.alert_id_ok);
             }
         }
         private async void OnSignUpClicked(object obj)

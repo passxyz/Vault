@@ -15,7 +15,7 @@ namespace PassXYZ.Vault.Services
     {
         public static string PATH 
         { 
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "pass_d_E8f4pEk.xyz"); } 
+            get { return Path.Combine(PxDataFile.DataFilePath, "pass_d_E8f4pEk.xyz"); } 
         }
 
         public static string KEY = "12345";
@@ -110,9 +110,9 @@ namespace PassXYZ.Vault.Services
             return await Task.FromResult(items);
         }
 
-        public async Task<bool> LoginAsync(string path, string key)
+        public async Task<bool> LoginAsync(PassXYZLib.User user)
         {
-            db.Open(TEST_DB.PATH, key);
+            db.Open(user.Path, user.Password);
             if (db.IsOpen)
             {
                 items = db.RootGroup.GetItems();
