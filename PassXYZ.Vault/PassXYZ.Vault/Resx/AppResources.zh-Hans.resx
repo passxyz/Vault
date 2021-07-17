@@ -922,4 +922,10 @@
   <data name="item_subtype_pxentry" xml:space="preserve">
     <value>条目 (PxEntry)</value>
   </data>
+  <data name="ph_id_key" xml:space="preserve">
+    <value>请输入您的域名</value>
+  </data>
+  <data name="ph_id_value" xml:space="preserve">
+    <value>请输入您的域值</value>
+  </data>
 </root>

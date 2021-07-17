@@ -18,11 +18,27 @@ namespace PassXYZ.Vault.Views
         {
             InitializeComponent();
             BindingContext = _viewModel = new LoginViewModel();
+
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                passwordEntry.ReturnType = ReturnType.Next;
+            }
+            else
+            {
+                passwordEntry.ReturnType = ReturnType.Done;
+                passwordEntry.Completed += OnLoginButtonClicked;
+            }
         }
         protected override void OnAppearing()
         {
             base.OnAppearing();
             _viewModel.OnAppearing();
+        }
+
+        void OnLoginButtonClicked(object sender, EventArgs e)
+        {
+            _viewModel.OnLoginClicked();
+            Debug.WriteLine("LoginPage: OnLoginButtonClicked");
         }
 
         async void OnSwitchUsersClicked(object sender, EventArgs e)

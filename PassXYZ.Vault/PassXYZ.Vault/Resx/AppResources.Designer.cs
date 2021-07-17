@@ -1863,6 +1863,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter field name here.
+        /// </summary>
+        internal static string ph_id_key {
+            get {
+                return ResourceManager.GetString("ph_id_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please enter your password.
         /// </summary>
         internal static string ph_id_password {
@@ -1877,6 +1886,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string ph_id_title {
             get {
                 return ResourceManager.GetString("ph_id_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter field value here.
+        /// </summary>
+        internal static string ph_id_value {
+            get {
+                return ResourceManager.GetString("ph_id_value", resourceCulture);
             }
         }
         

@@ -46,7 +46,7 @@ namespace PassXYZ.Vault.ViewModels
             if (DataStore.RootGroup != null) { DataStore.Logout(); }
         }
 
-        private async void OnLoginClicked()
+        public async void OnLoginClicked()
         {
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             try

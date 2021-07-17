@@ -59,11 +59,16 @@
                 <StackLayout Orientation="Horizontal">
                     <Entry x:Name="keyField" 
                        VerticalOptions="Center" 
+                       Placeholder="{x:Static resources:AppResources.ph_id_title}" 
                        HorizontalOptions="FillAndExpand"></Entry>
                     <CheckBox x:Name="checkBox" />
                 </StackLayout>
                 <!-- Notes -->
-                <Editor x:Name="valueField" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand"></Editor>
+                <Editor x:Name="valueField" 
+                        Placeholder="{x:Static resources:AppResources.ph_id_value}"
+                        VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="FillAndExpand">
+                </Editor>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

@@ -964,4 +964,10 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="item_subtype_pxentry" xml:space="preserve">
     <value>PxEntry</value>
   </data>
+  <data name="ph_id_key" xml:space="preserve">
+    <value>Enter field name here</value>
+  </data>
+  <data name="ph_id_value" xml:space="preserve">
+    <value>Enter field value here</value>
+  </data>
 </root>
