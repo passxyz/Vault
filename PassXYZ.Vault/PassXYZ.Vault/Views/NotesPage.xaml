@@ -7,19 +7,30 @@
              xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
              Title="{Binding Title}">
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Padding="10">
-                <Label Text="{Binding Text}"                       
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Text="{Binding Text}" 
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center" 
+                   HorizontalOptions="CenterAndExpand"
+                   Grid.Row="0" />
+            <WebView x:Name="webView" Grid.Row="1" />
+        </Grid>
+        <!--StackLayout Padding="10">
+            <Label Text="{Binding Text}"                       
                        FontSize="Large"
                        FontAttributes="Bold"
                        VerticalOptions="Center" 
                        HorizontalOptions="CenterAndExpand" />
-                <Label Text="{Binding Description}" 
+            <Label x:Name ="webView"
                        FontSize="Small"
                        Style="{DynamicResource ListItemDetailTextStyle}"
                        TextType="Html"
                        Margin="10" />
-            </StackLayout>
-        </ScrollView>
+        </StackLayout-->
     </ContentPage.Content>
 </ContentPage>

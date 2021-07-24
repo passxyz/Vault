@@ -14,10 +14,22 @@ namespace PassXYZ.Vault.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NotesPage : ContentPage
     {
+        private readonly ItemDetailViewModel _viewModel;
         public NotesPage()
         {
             InitializeComponent();
-            BindingContext = new ItemDetailViewModel();
+            BindingContext = _viewModel = new ItemDetailViewModel();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            //webView.Text = _viewModel.Description;
+            var htmlSource = new HtmlWebViewSource
+            {
+                Html = _viewModel.Description
+            };
+            webView.Source = htmlSource;
         }
     }
 }
