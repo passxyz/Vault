@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
+using Markdig;
 using PassXYZ.Vault.Views;
 
 namespace PassXYZ.Vault.ViewModels
@@ -80,7 +81,9 @@ namespace PassXYZ.Vault.ViewModels
                 Title = Text;
                 dataEntry = (PwEntry)item;
 
-                Description = Markdig.Markdown.ToHtml(dataEntry.GetNotes());
+                // Configure the pipeline with all advanced extensions active
+                var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                Description = Markdig.Markdown.ToHtml(dataEntry.GetNotes(), pipeline);
                 // Description = dataEntry.GetNotes();
                 ExecuteLoadFieldsCommand();
             }
