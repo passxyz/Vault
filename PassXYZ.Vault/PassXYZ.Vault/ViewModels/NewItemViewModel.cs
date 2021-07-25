@@ -93,7 +93,7 @@ namespace PassXYZ.Vault.ViewModels
 
             if (newItem != null)
             {
-                _ = await DataStore.AddItemAsync(newItem);
+                await DataStore.AddItemAsync(newItem);
             }
 
             // This will pop the current page off the navigation stack

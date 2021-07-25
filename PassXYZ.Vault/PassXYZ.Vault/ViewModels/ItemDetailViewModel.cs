@@ -101,7 +101,7 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage((string k, string v, bool isProtected) => {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
                 string key = field.IsEncoded ? field.EncodedKey : field.Key;
                 if (dataEntry.Strings.Exists(key))
                 {
@@ -109,6 +109,7 @@ namespace PassXYZ.Vault.ViewModels
                     // We cannot set to field.Value, since it will return a masked string for protected data
                     dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
                     Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
+                    await DataStore.UpdateItemAsync(dataEntry);
                 }
                 else
                 {
@@ -154,7 +155,7 @@ namespace PassXYZ.Vault.ViewModels
 
         private async void OnAddField(object obj)
         {
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage((string k, string v, bool isProtected) => {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
                 Field field;
                 string key = k;
                 if (dataEntry.IsPxEntry())
@@ -169,6 +170,7 @@ namespace PassXYZ.Vault.ViewModels
 
                 Fields.Add(field);
                 dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+                await DataStore.UpdateItemAsync(dataEntry);
             })));
             Debug.WriteLine($"ItemDetailViewModel: Add field");
         }

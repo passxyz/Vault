@@ -195,9 +195,10 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage((string k, string v, bool isProtected) => {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
                 item.Name = k;
                 item.Notes = v;
+                await DataStore.UpdateItemAsync(item);
             }, item.Name, item.Notes, true)));
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -70,7 +71,13 @@ namespace PassXYZ.Vault.Services
             }
         }
 
-        public async Task<bool> AddItemAsync(Item item)
+        private async Task SaveAsync()
+        {
+            var logger = new KPCLibLogger();
+            await Task.Run(() => db.Save(logger));
+        }
+
+        public async Task AddItemAsync(Item item)
         {
             items.Add(item);
             if(item.IsGroup)
@@ -81,17 +88,17 @@ namespace PassXYZ.Vault.Services
             {
                 db.CurrentGroup.AddEntry(item as PwEntry, true);
             }
-
-            return await Task.FromResult(true);
+            await SaveAsync();
+            Debug.WriteLine($"DataStore: AddItemAsync({item.Name}), saved");
         }
 
-        public async Task<bool> UpdateItemAsync(Item item)
+        public async Task UpdateItemAsync(Item item)
         {
-            var oldItem = items.Where((Item arg) => arg.Uuid == item.Uuid).FirstOrDefault();
-            items.Remove(oldItem);
-            items.Add(item);
-
-            return await Task.FromResult(true);
+            //var oldItem = items.Where((Item arg) => arg.Uuid == item.Uuid).FirstOrDefault();
+            //items.Remove(oldItem);
+            //items.Add(item);
+            await SaveAsync();
+            Debug.WriteLine($"DataStore: UpdateItemAsync({item.Name}), saved");
         }
 
         public async Task<bool> DeleteItemAsync(string id)
@@ -107,9 +114,14 @@ namespace PassXYZ.Vault.Services
                 {
                     db.DeleteEntry(oldItem as PwEntry);
                 }
+                await SaveAsync();
+                Debug.WriteLine($"DataStore: DeleteItemAsync({oldItem.Name}), saved");
+                return await Task.FromResult(true);
             }
-
-            return await Task.FromResult(true);
+            else
+            {
+                return await Task.FromResult(false);
+            }
         }
 
         public async Task<Item> GetItemAsync(string id)
