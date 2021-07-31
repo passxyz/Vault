@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using KeePassLib;
+using PassXYZLib;
 
 namespace PassXYZ.Vault.Services
 {
@@ -19,5 +20,8 @@ namespace PassXYZ.Vault.Services
         Item RootGroup { get; }
         Task<bool> LoginAsync(PassXYZLib.User user);
         void Logout();
+        string GetStoreName();
+        DateTime GetStoreModifiedTime();
+        User CurrentUser { get; }
     }
 }

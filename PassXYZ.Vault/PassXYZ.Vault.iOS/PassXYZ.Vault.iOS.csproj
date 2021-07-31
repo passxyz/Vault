@@ -151,4 +151,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\passxyz_logo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\passxyz_wechat.png" />
+  </ItemGroup>
 </Project>

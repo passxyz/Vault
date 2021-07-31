@@ -106,7 +106,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copyright 2018, Roger Ye. All rights reserved..
+        ///   Looks up a localized string similar to Copyright 2021, Roger Ye. All rights reserved..
         /// </summary>
         internal static string about_passxyz_copyright {
             get {
@@ -115,7 +115,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PassXYZ is licensed under the Apache License, Version 2.0. You may not use this file except in compliance with the License. You may obtain a copy of the License at.
+        ///   Looks up a localized string similar to PassXYZ is licensed under the GNU General Public License v3.0 . You may not use this file except in compliance with the License. You may obtain a copy of the License at.
         /// </summary>
         internal static string about_passxyz_license {
             get {
@@ -135,7 +135,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You can download templates, submit problem report and get more information on how to use PassXYZ from the website below..
+        ///   Looks up a localized string similar to You can submit problem report and get more information on how to use PassXYZ from the website below..
         /// </summary>
         internal static string about_passxyz_web {
             get {

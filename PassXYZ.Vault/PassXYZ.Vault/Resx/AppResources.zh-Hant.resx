@@ -355,13 +355,13 @@
     <value>了解更多</value>
   </data>
   <data name="about_passxyz_copyright" xml:space="preserve">
-    <value>Copyright 2018, 葉樹杲 All rights reserved.</value>
+    <value>Copyright 2021, 葉樹杲 All rights reserved.</value>
   </data>
   <data name="about_passxyz_license" xml:space="preserve">
-    <value>PassXYZ使用Apache版權協議2.0版。如果您使用該軟件，表示您同意Apache版權協議中的條款。您可以在下列網站獲得Apache 2.0版權協議。</value>
+    <value>PassXYZ使用GNU通用公共許可證v3.0。如果您使用該軟件，表示您同意Apache版權協議中的條款。您可以在下列網站獲得Apache 2.0版權協議。</value>
   </data>
   <data name="about_passxyz_web" xml:space="preserve">
-    <value>您可以通過下面的PassXYZ網站下載模板，提交問題報告和了解使用說明。</value>
+    <value>您可以通過下面的PassXYZ網站提交問題報告和了解使用說明。</value>
   </data>
   <data name="about_slogan" xml:space="preserve">
     <value>您的個人信息管家</value>

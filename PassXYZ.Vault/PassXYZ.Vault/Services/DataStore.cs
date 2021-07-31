@@ -40,6 +40,7 @@ namespace PassXYZ.Vault.Services
     {
         private List<Item> items;
         private readonly PasswordDb db = null;
+        private User _user;
 
         public DataStore()
         {
@@ -61,6 +62,11 @@ namespace PassXYZ.Vault.Services
                 db.CurrentGroup = (PwGroup)value;
                 items = db.CurrentGroup.GetItems();
             }
+        }
+
+        public User CurrentUser
+        {
+            get => _user;
         }
 
         public void SetCurrentToParent()
@@ -136,6 +142,9 @@ namespace PassXYZ.Vault.Services
 
         public async Task<bool> LoginAsync(PassXYZLib.User user)
         {
+            if (user == null) { Debug.Assert(false); throw new ArgumentNullException("user"); }
+            _user = user;
+
             db.Open(user);
             if (db.IsOpen)
             {
@@ -149,5 +158,16 @@ namespace PassXYZ.Vault.Services
         {
             if (db.IsOpen) { db.Close(); }
         }
+
+        public string GetStoreName()
+        {
+            return db.Name;
+        }
+
+        public DateTime GetStoreModifiedTime()
+        {
+            return db.DescriptionChanged;
+        }
+
     }
 }
