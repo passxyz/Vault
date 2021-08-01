@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx" 
+             xmlns:viewmodels="clr-namespace:PassXYZ.Vault.ViewModels"
+             Shell.NavBarIsVisible="False"
+             x:Class="PassXYZ.Vault.Views.SignUpPage">
+    <ContentPage.Content>
+        <StackLayout Padding="10,20">
+            <Image Source="passxyz_logo.png" Aspect="AspectFit"></Image>
+            <StackLayout Padding="20,10" >
+                <Label FontSize="Small"  HorizontalOptions="Center" 
+                       Text="{x:Static resources:AppResources.SignUpPageMessage}" />
+                <Frame>
+                    <StackLayout x:DataType="viewmodels:LoginViewModel">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <!--Image Source="ic_entry_username.png" Grid.Row="0" Grid.Column="0" /-->
+                            <Entry x:Name="usernameEntry" 
+                                   Placeholder="{x:Static resources:AppResources.field_id_username}" 
+                                   ReturnType="Next"
+                                   Text="{Binding Username}"
+                                   HorizontalOptions="Fill" 
+                                   Grid.Row="0" Grid.Column="1" />
+                            <!--Image Source="ic_entry_password.png" Grid.Row="1" Grid.Column="0" /-->
+                            <Entry x:Name="passwordEntry1" 
+                                   Placeholder="{x:Static resources:AppResources.field_id_password}" 
+                                   IsPassword="true" 
+                                   Text="{Binding Password}"
+                                   HorizontalOptions="Fill" 
+                                   Grid.Row="1" Grid.Column="1" />
+                            <!--Image Source="ic_entry_password.png" Grid.Row="2" Grid.Column="0" /-->
+                            <Entry x:Name="passwordEntry2"  
+                                   Placeholder="{x:Static resources:AppResources.field_id_password}" 
+                                   IsPassword="true" 
+                                   Text="{Binding Password2}"
+                                   HorizontalOptions="Fill" 
+                                   Grid.Row="2" Grid.Column="1" />
+                        </Grid>
+
+                        <Button Text="{x:Static resources:AppResources.SignUpPageTitle}"
+                                TextColor="White"  
+                                BackgroundColor="Gray" 
+                                HorizontalOptions="Fill" 
+                                Command="{Binding SignUpCommand}" />
+
+                        <StackLayout Orientation="Horizontal">
+                            <Label x:Name="KeyFileStatus"
+                                   Text="{x:Static resources:AppResources.settings_security_UsingDeviceLock}" 
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                            <Switch x:Name="KeyFileSwitcher" HorizontalOptions="Center"
+                                    IsToggled="{Binding IsDeviceLockEnabled}"
+                                    Toggled="OnKeyFileSwitcherToggled" />
+                        </StackLayout>
+
+                    </StackLayout>
+                </Frame>
+                <Label x:Name="messageLabel" />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
