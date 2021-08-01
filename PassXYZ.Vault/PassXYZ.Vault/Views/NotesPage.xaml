@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PassXYZ.Vault.Views.NotesPage"
+             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
+             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
+             xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
+             Title="{Binding Title}">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Text="{Binding Text}" 
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center" 
+                   HorizontalOptions="CenterAndExpand"
+                   Grid.Row="0" />
+            <WebView x:Name="webView" Grid.Row="1" />
+        </Grid>
+        <!--StackLayout Padding="10">
+            <Label Text="{Binding Text}"                       
+                       FontSize="Large"
+                       FontAttributes="Bold"
+                       VerticalOptions="Center" 
+                       HorizontalOptions="CenterAndExpand" />
+            <Label x:Name ="webView"
+                       FontSize="Small"
+                       Style="{DynamicResource ListItemDetailTextStyle}"
+                       TextType="Html"
+                       Margin="10" />
+        </StackLayout-->
+    </ContentPage.Content>
+</ContentPage>

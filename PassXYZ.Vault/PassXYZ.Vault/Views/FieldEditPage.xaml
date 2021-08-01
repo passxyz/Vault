@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             x:Class="PassXYZ.Vault.Views.FieldEditPage">
+    
+    <ContentPage.Resources>
+        <!-- Define a visual state for the Selected state of the CollectionView -->
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{StaticResource Primary}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="WindowClose">
+                    <iconsS:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsS:IconSource.Color>
+                </iconsS:IconSource>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Save">
+                    <iconsS:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsS:IconSource.Color>
+                </iconsS:IconSource>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Padding="5, 5, 5, 5">
+                <!-- Name -->
+                <StackLayout Orientation="Horizontal">
+                    <Entry x:Name="keyField" 
+                       VerticalOptions="Center" 
+                       Placeholder="{x:Static resources:AppResources.ph_id_title}" 
+                       HorizontalOptions="FillAndExpand"></Entry>
+                    <CheckBox x:Name="checkBox" />
+                </StackLayout>
+                <!-- Notes -->
+                <Editor x:Name="valueField" 
+                        Placeholder="{x:Static resources:AppResources.ph_id_value}"
+                        VerticalOptions="FillAndExpand" 
+                        HorizontalOptions="FillAndExpand">
+                </Editor>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             x:Class="PassXYZ.Vault.Views.ItemDetailPage"
+             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
+             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
+             xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
+             Title="{Binding Title}">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text=" " Command="{Binding AddFieldCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsR:IconSource Icon="PlusSquare"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    
+    <RefreshView x:DataType="local:ItemDetailViewModel" Command="{Binding LoadFieldsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <ListView x:Name="FieldsListView"
+                    ItemsSource="{Binding Fields}"
+                    VerticalOptions="CenterAndExpand"
+                    HasUnevenRows="True"
+                    SelectionMode="None">
+            <ListView.Header>
+                <StackLayout Padding="10" Orientation="Horizontal">
+                    <Label Text="{Binding Text}" FontSize="Large" FontAttributes="Bold"/>
+                </StackLayout>
+            </ListView.Header>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell BindingContextChanged="OnBindingContextChanged">
+                        <ViewCell.ContextActions>
+                            <MenuItem Clicked="OnMenuCopyAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_copy}" />
+                            <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}" 
+                                      Text="{x:Static resources:AppResources.action_id_edit}" />
+                            <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
+                        </ViewCell.ContextActions>
+
+                        <StackLayout Padding="10" Orientation="Horizontal" x:DataType="passxyzlib:Field" >
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Grid>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding Key}"
+                                    LineBreakMode="NoWrap" 
+                                    Style="{DynamicResource ListItemTextStyle}" 
+                                    FontAttributes="Bold"
+                                    FontSize="Medium" />
+                                <Label Text="{Binding Value}" 
+                                    LineBreakMode="WordWrap"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small" />
+                                <StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemDetailViewModel}}, Path=FieldTapped}"
+                                    CommandParameter="{Binding .}">
+                                    </TapGestureRecognizer>
+                                </StackLayout.GestureRecognizers>
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.Footer>
+                <StackLayout Padding="10" Orientation="Horizontal">
+                    <Label Text="{Binding Description}" 
+                           FontSize="Small" 
+                           TextType ="Html"
+                           Style="{DynamicResource ListItemDetailTextStyle}" />
+                </StackLayout>
+            </ListView.Footer>
+        </ListView>
+    </RefreshView>
+
+</ContentPage>

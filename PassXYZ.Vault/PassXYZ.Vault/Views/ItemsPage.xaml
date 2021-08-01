@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             x:Class="PassXYZ.Vault.Views.ItemsPage"
+             Title="{Binding Title}"
+             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"  
+             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"  
+             x:Name="BrowseItemsPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text=" " Command="{Binding AddItemCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsR:IconSource Icon="PlusSquare"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    <!--
+      x:DataType enables compiled bindings for better performance and compile time validation of binding expressions.
+      https://docs.microsoft.com/xamarin/xamarin-forms/app-fundamentals/data-binding/compiled-bindings
+    -->
+    <RefreshView x:DataType="local:ItemsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <ListView x:Name="ItemsListView"
+                ItemsSource="{Binding Items}"
+                VerticalOptions="FillAndExpand"
+                HasUnevenRows="True"
+                ItemTapped="OnTap"
+                SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}" 
+                                      Text="{x:Static resources:AppResources.action_id_edit}" />
+                            <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
+                        </ViewCell.ContextActions>
+
+                        <StackLayout Padding="10" Orientation="Horizontal" x:DataType="kpclib:Item" >
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Grid>
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding Name}"
+                                    LineBreakMode="NoWrap"
+                                    MaxLines="1"
+                                    Style="{DynamicResource ListItemTextStyle}"
+                                    FontAttributes="Bold"
+                                    FontSize="Small" />
+                                <Label Text="{Binding Description}" 
+                                    LineBreakMode="TailTruncation"
+                                    MaxLines="1"
+                                    Style="{DynamicResource ListItemDetailTextStyle}"
+                                    FontSize="Small" />
+                                <!--StackLayout.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                    NumberOfTapsRequired="1"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type local:ItemsViewModel}}, Path=ItemTapped}"		
+                                    CommandParameter="{Binding .}">
+                                    </TapGestureRecognizer>
+                                </StackLayout.GestureRecognizers-->
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </RefreshView>
+</ContentPage>
