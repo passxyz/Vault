@@ -26,6 +26,7 @@ namespace PassXYZ.Vault.ViewModels
             get => _password;
             set => SetProperty(ref _password, value);
         }
+        public PassXYZLib.User CurrentUser { get; set; }
 
         public LoginViewModel()
         {
@@ -33,6 +34,8 @@ namespace PassXYZ.Vault.ViewModels
             SignUpCommand = new Command(OnSignUpClicked);
             this.PropertyChanged +=
                 (_, __) => LoginCommand.ChangeCanExecute();
+
+            CurrentUser = new PassXYZLib.User();
         }
 
         private bool ValidateLogin()
@@ -51,11 +54,10 @@ namespace PassXYZ.Vault.ViewModels
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             try
             {
-                bool status = await DataStore.LoginAsync(new PassXYZLib.User
-                {
-                    Username = Username,
-                    Password = Password
-                });
+                CurrentUser.Username = Username;
+                CurrentUser.Password = Password;
+
+                bool status = await DataStore.LoginAsync(CurrentUser);
 
                 if (status)
                 {

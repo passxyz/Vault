@@ -50,7 +50,7 @@
                                     Clicked="OnSwitchUsersClicked" BackgroundColor="White" BorderColor="White"
                                     HeightRequest="32"  WidthRequest="32" BorderWidth="0">
                                 <Button.ImageSource>
-                                    <iconsS:IconSource Icon="ChevronRight" />
+                                    <iconsS:IconSource Icon="ChevronRight" Color="{StaticResource Primary}"/>
                                 </Button.ImageSource>
                             </Button>
                             <!-- Row 2 (Password) -->
