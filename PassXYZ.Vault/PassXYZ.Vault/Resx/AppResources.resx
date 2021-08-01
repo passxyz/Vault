@@ -970,4 +970,7 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="ph_id_value" xml:space="preserve">
     <value>Enter field value here</value>
   </data>
+  <data name="SiguUpMessage" xml:space="preserve">
+    <value>Successfully created a new user</value>
+  </data>
 </root>

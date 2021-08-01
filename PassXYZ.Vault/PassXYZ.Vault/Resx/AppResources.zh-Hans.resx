@@ -928,4 +928,7 @@
   <data name="ph_id_value" xml:space="preserve">
     <value>请输入您的域值</value>
   </data>
+  <data name="SiguUpMessage" xml:space="preserve">
+    <value>成功的创建了新用户</value>
+  </data>
 </root>

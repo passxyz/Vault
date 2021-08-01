@@ -6,9 +6,13 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using KeePassLib;
+using KeePassLib.Collections;
+using KeePassLib.Keys;
+using KeePassLib.Security;
+using KeePassLib.Serialization;
 using PassXYZLib;
 
-using Xamarin.Forms;
+using PassXYZ.Vault.Resx;
 
 namespace PassXYZ.Vault.Services
 {
@@ -152,6 +156,37 @@ namespace PassXYZ.Vault.Services
             }
 
             return await Task.FromResult(db.IsOpen);
+        }
+
+        public async Task SignUpAsync(PassXYZLib.User user)
+        {
+            if (user == null) { Debug.Assert(false); throw new ArgumentNullException("user"); }
+            
+            var logger = new KPCLibLogger();
+            await Task.Run(() => {
+                db.New(user);
+                // Create a PassXYZ Usage note entry
+                PwEntry pe = new PwEntry(true, true);
+                pe.Strings.Set(PxDefs.TitleField, new ProtectedString(false, AppResources.entry_id_passxyz_usage));
+                pe.Strings.Set(PxDefs.NotesField, new ProtectedString(false, AppResources.about_passxyz_usage));
+                //pe.CustomData.Set(Item.TemplateType, ItemSubType.Notes.ToString());
+                //pe.CustomData.Set(Item.PxIconName, "ic_entry_passxyz.png");
+                pe.SetType(ItemSubType.Notes);
+                db.RootGroup.AddEntry(pe, true);
+
+                try
+                {
+                    logger.StartLogging("Saving database ...", true);
+                    db.DescriptionChanged = DateTime.UtcNow;
+                    db.Save(logger);
+                    logger.EndLogging();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine("Failed to save database." + e.Message);
+                }
+            });
+
         }
 
         public void Logout()

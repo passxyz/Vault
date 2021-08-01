@@ -23,5 +23,6 @@ namespace PassXYZ.Vault.Services
         string GetStoreName();
         DateTime GetStoreModifiedTime();
         User CurrentUser { get; }
+        Task SignUpAsync(PassXYZLib.User user);
     }
 }

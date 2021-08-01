@@ -23,20 +23,26 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Image Source="ic_entry_username.png" Grid.Row="0" Grid.Column="0" />
+                            <!--Image Source="ic_entry_username.png" Grid.Row="0" Grid.Column="0" /-->
                             <Entry x:Name="usernameEntry" 
                                    Placeholder="{x:Static resources:AppResources.field_id_username}" 
+                                   ReturnType="Next"
+                                   Text="{Binding Username}"
                                    HorizontalOptions="Fill" 
                                    Grid.Row="0" Grid.Column="1" />
-                            <Image Source="ic_entry_password.png" Grid.Row="1" Grid.Column="0" />
+                            <!--Image Source="ic_entry_password.png" Grid.Row="1" Grid.Column="0" /-->
                             <Entry x:Name="passwordEntry1" 
                                    Placeholder="{x:Static resources:AppResources.field_id_password}" 
-                                   IsPassword="true" HorizontalOptions="Fill" 
+                                   IsPassword="true" 
+                                   Text="{Binding Password}"
+                                   HorizontalOptions="Fill" 
                                    Grid.Row="1" Grid.Column="1" />
-                            <Image Source="ic_entry_password.png" Grid.Row="2" Grid.Column="0" />
+                            <!--Image Source="ic_entry_password.png" Grid.Row="2" Grid.Column="0" /-->
                             <Entry x:Name="passwordEntry2"  
                                    Placeholder="{x:Static resources:AppResources.field_id_password}" 
-                                   IsPassword="true" HorizontalOptions="Fill" 
+                                   IsPassword="true" 
+                                   Text="{Binding Password2}"
+                                   HorizontalOptions="Fill" 
                                    Grid.Row="2" Grid.Column="1" />
                         </Grid>
 
@@ -52,7 +58,9 @@
                                    FontAttributes="Bold"
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" />
-                            <Switch x:Name="KeyFileSwitcher" HorizontalOptions="Center" Toggled="OnKeyFileSwitcherToggled" />
+                            <Switch x:Name="KeyFileSwitcher" HorizontalOptions="Center"
+                                    IsToggled="{Binding IsDeviceLockEnabled}"
+                                    Toggled="OnKeyFileSwitcherToggled" />
                         </StackLayout>
 
                     </StackLayout>

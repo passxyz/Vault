@@ -2358,6 +2358,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Successfully created a new user.
+        /// </summary>
+        internal static string SiguUpMessage {
+            get {
+                return ResourceManager.GetString("SiguUpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File on cloud drive.
         /// </summary>
         internal static string user_id_cloud {

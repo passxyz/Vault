@@ -33,12 +33,12 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <!-- Row 1 (Username) -->
+                            <!-- Row 1 (Username)
                             <Image Grid.Row="0" Grid.Column="0" IsVisible="False">
                                 <Image.Source>
                                     <iconsS:IconSource Icon="User" />
                                 </Image.Source>
-                            </Image>
+                            </Image-->
                             <Entry x:Name="usernameEntry" 
                                    Placeholder="{x:Static resources:AppResources.field_id_username}" 
                                    ReturnType="Next"
@@ -53,12 +53,12 @@
                                     <iconsS:IconSource Icon="ChevronRight" Color="{StaticResource Primary}"/>
                                 </Button.ImageSource>
                             </Button>
-                            <!-- Row 2 (Password) -->
+                            <!-- Row 2 (Password)
                             <Image Grid.Row="1" Grid.Column="0" IsVisible="False">
                                 <Image.Source>
                                     <iconsS:IconSource Icon="Key" />
                                 </Image.Source>
-                            </Image>
+                            </Image-->
                             <Entry x:Name="passwordEntry" 
                                    Placeholder="{x:Static resources:AppResources.field_id_password}" 
                                    IsPassword="true" 
