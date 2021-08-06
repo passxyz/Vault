@@ -7,7 +7,7 @@
              x:Class="PassXYZ.Vault.Views.ItemDetailPage"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
              xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
-             xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
+             xmlns:passxyzlib="clr-namespace:PassXYZLib"
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
