@@ -931,4 +931,7 @@
   <data name="SiguUpMessage" xml:space="preserve">
     <value>成功的创建了新用户</value>
   </data>
+  <data name="settings_keyFileField_Value3" xml:space="preserve">
+    <value>设备锁</value>
+  </data>
 </root>

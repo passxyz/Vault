@@ -973,4 +973,7 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="SiguUpMessage" xml:space="preserve">
     <value>Successfully created a new user</value>
   </data>
+  <data name="settings_keyFileField_Value3" xml:space="preserve">
+    <value>Device Lock</value>
+  </data>
 </root>

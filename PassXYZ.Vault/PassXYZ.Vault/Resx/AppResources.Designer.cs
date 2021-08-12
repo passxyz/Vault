@@ -2007,6 +2007,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device Lock.
+        /// </summary>
+        internal static string settings_keyFileField_Value3 {
+            get {
+                return ResourceManager.GetString("settings_keyFileField_Value3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Change password, name etc..
         /// </summary>
         internal static string settings_manage_db_remark {

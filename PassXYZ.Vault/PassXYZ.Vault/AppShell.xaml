@@ -84,8 +84,8 @@
         <Tab Title="Login" Icon="icon_about.png">
             <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate local:LoginPage}" />
         </Tab>
-        <Tab Title="SignUp" Icon="icon_feed.png">
-            <ShellContent Route="SingUpPage" ContentTemplate="{DataTemplate local:SignUpPage}" />
+        <Tab Title="Users" Icon="icon_feed.png">
+            <ShellContent Route="UsersPage" ContentTemplate="{DataTemplate local:UsersPage}" />
         </Tab>
     </TabBar>
 
