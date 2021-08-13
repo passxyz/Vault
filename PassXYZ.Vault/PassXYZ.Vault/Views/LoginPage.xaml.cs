@@ -41,24 +41,29 @@ namespace PassXYZ.Vault.Views
         {
             base.OnAppearing();
             _viewModel.OnAppearing();
+            if (!string.IsNullOrEmpty(LoginViewModel.CurrentUser.Username))
+            {
+                usernameEntry.Text = LoginViewModel.CurrentUser.Username;
+            }
+            Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}, Username: {_viewModel.Username}");
         }
 
-        void OnLoginButtonClicked(object sender, EventArgs e)
+        private void OnLoginButtonClicked(object sender, EventArgs e)
         {
             _viewModel.OnLoginClicked();
             Debug.WriteLine("LoginPage: OnLoginButtonClicked");
         }
 
-        async void OnSwitchUsersClicked(object sender, EventArgs e)
+        private async void OnSwitchUsersClicked(object sender, EventArgs e)
         {
             var users = User.GetUsersList();
             var username = await DisplayActionSheet(AppResources.pt_id_switchusers, AppResources.action_id_cancel, null, users.ToArray());
             if (username != AppResources.action_id_cancel)
             {
                 messageLabel.Text = "";
-                _viewModel.CurrentUser.Username = usernameEntry.Text = username;
+                LoginViewModel.CurrentUser.Username = usernameEntry.Text = username;
 
-                if (!_viewModel.CurrentUser.IsKeyFileExist)
+                if (!LoginViewModel.CurrentUser.IsKeyFileExist)
                 {
                     //SetupQRCode();
                     Debug.WriteLine("LoginPage: SetupQRCode");
@@ -81,7 +86,7 @@ namespace PassXYZ.Vault.Views
                     //}
                 }
             }
-            Debug.WriteLine("LoginPage: OnSwitchUsersClicked");
+            Debug.WriteLine($"LoginPage: OnSwitchUsersClicked(Username: {LoginViewModel.CurrentUser.Username})");
         }
 
         async void OnFingerprintClicked(object sender, EventArgs e)

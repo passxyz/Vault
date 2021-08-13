@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -42,5 +39,10 @@ namespace PassXYZ.Vault.Views
             _viewModel.OnUserSelected(user);
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}");
+        }
     }
 }

@@ -15,11 +15,14 @@ namespace PassXYZ.Vault.ViewModels
         private string _password;
         private string _password2;
         private bool _isDeviceLockEnabled;
+        private Action<string> _signUpAction;
         public Command LoginCommand { get; }
         public Command SignUpCommand { get; }
+        public Command CancelCommand { get; }
         public string Username
         {
             get => _username;
+
             set
             {
                 _ = SetProperty(ref _username, value);
@@ -49,12 +52,13 @@ namespace PassXYZ.Vault.ViewModels
                 CurrentUser.IsDeviceLockEnabled = value;
             }
         }
-        public PassXYZLib.User CurrentUser { get; set; }
+        public static PassXYZLib.User CurrentUser { get; set; }
 
         public LoginViewModel()
         {
             LoginCommand = new Command(OnLoginClicked, ValidateLogin);
             SignUpCommand = new Command(OnSignUpClicked, ValidateSignUp);
+            CancelCommand = new Command(OnCancelClicked);
             this.PropertyChanged +=
                 (_, __) => LoginCommand.ChangeCanExecute();
 
@@ -62,6 +66,11 @@ namespace PassXYZ.Vault.ViewModels
                 (_, __) => SignUpCommand.ChangeCanExecute();
 
             CurrentUser = new PassXYZLib.User();
+        }
+
+        public LoginViewModel(Action<string> signUpAction) : this()
+        {
+            _signUpAction = signUpAction;
         }
 
         private bool ValidateLogin()
@@ -118,14 +127,19 @@ namespace PassXYZ.Vault.ViewModels
             try
             {
                 await DataStore.SignUpAsync(CurrentUser);
-                string message = AppResources.SiguUpMessage + ": " + CurrentUser.Username;
-                await Shell.Current.DisplayAlert(AppResources.SignUpPageTitle, message, AppResources.alert_id_ok);
+                _signUpAction?.Invoke(CurrentUser.Username);
+                _ = await Shell.Current.Navigation.PopModalAsync();
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert(AppResources.SignUpPageTitle, ex.Message, AppResources.alert_id_ok);
             }
             Debug.WriteLine($"LoginViewModel: OnSignUpClicked {Username}, DeviceLock: {IsDeviceLockEnabled}");
+        }
+
+        private async void OnCancelClicked()
+        {
+            _ = await Shell.Current.Navigation.PopModalAsync();
         }
     }
 }

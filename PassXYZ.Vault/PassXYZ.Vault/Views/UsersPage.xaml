@@ -5,7 +5,7 @@
              xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.UsersPage"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"  
-             xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib">
+             xmlns:passxyzlib="clr-namespace:PassXYZLib">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text=" " Command="{Binding AddUserCommand}">
             <ToolbarItem.IconImageSource>
@@ -30,13 +30,14 @@
                                       Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
                             </ViewCell.ContextActions>
 
-                            <Grid Margin="20,20,20,20" x:DataType="passxyzlib:User">
+                            <Grid Margin="20,20,20,20" x:DataType="passxyzlib:PxUser">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="32" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <Label Grid.Column="0"
+                                    <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    <Label Grid.Column="1"
                                         Text="{Binding Username}"
                                         LineBreakMode="NoWrap"
                                         MaxLines="1"
@@ -45,16 +46,10 @@
                                         FontAttributes="Bold"
                                         HorizontalOptions="FillAndExpand"
                                         FontSize="Small" />
-                                    <Label Grid.Column="1" 
+                                    <Label Grid.Column="2" 
                                          Style="{DynamicResource ListItemDetailTextStyle}"
                                          VerticalOptions="Center"
-                                         Text="{x:Static resources:AppResources.settings_keyFileField_Value3}"/>
-                                    <CheckBox Grid.Column="2"
-                                         HorizontalOptions="Center" VerticalOptions="Center"
-                                         x:Name="checkBox" 
-                                         IsEnabled="False" 
-                                         Color="{StaticResource Primary}"
-                                         IsChecked="{Binding IsDeviceLockEnabled}"/>
+                                         Text="{Binding LastAccessTime}"/>
                                 </Grid>
 
                         </ViewCell>

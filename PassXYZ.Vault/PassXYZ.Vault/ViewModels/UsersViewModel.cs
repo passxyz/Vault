@@ -16,27 +16,31 @@ namespace PassXYZ.Vault.ViewModels
 {
     public class UsersViewModel : INotifyPropertyChanged
     {
-        bool isBusy = false;
+        private bool isBusy = false;
         public bool IsBusy
         {
             get => isBusy;
             set => _ = SetProperty(ref isBusy, value);
         }
 
-        public ObservableCollection<User> Users { get; set; }
+        public ObservableCollection<PxUser> Users { get; set; }
         public Command LoadUsersCommand { get; }
         public Command AddUserCommand { get; }
 
         public UsersViewModel()
         {
-            Users = new ObservableCollection<User>();
+            Users = new ObservableCollection<PxUser>();
             LoadUsersCommand = new Command(() => ExecuteLoadUsersCommand());
             AddUserCommand = new Command(OnAddUser);
             ExecuteLoadUsersCommand();
         }
 
-        public async void OnUserSelected(User user)
+        public void OnUserSelected(User user)
         {
+            if (LoginViewModel.CurrentUser != null)
+            {
+                LoginViewModel.CurrentUser.Username = user.Username;
+            }
             Debug.Write($"UsersViewModel: OnUserSelected {user.Username}");
         }
 
@@ -46,6 +50,8 @@ namespace PassXYZ.Vault.ViewModels
         /// <param name="user">an instance of User</param>
         public void Delete(User user)
         {
+            user.Delete();
+            Users.Remove((PxUser)user);
             Debug.Write($"UsersViewModel: Delete {user.Username}");
         }
 
@@ -59,7 +65,7 @@ namespace PassXYZ.Vault.ViewModels
                 if (userName != string.Empty && !string.IsNullOrWhiteSpace(userName))
                 {
                     Users.Add(
-                        new User()
+                        new PxUser()
                         {
                             Username = userName
                         });
@@ -69,7 +75,14 @@ namespace PassXYZ.Vault.ViewModels
 
         private async void OnAddUser(object obj)
         {
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new SignUpPage()));
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new SignUpPage((string username) =>
+            {
+                Users.Add(
+                    new PxUser()
+                    {
+                        Username = username
+                    });
+            })));
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

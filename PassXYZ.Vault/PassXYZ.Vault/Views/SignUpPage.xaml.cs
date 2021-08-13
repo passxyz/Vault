@@ -23,9 +23,10 @@ namespace PassXYZ.Vault.Views
             BindingContext = _viewModel = new LoginViewModel();
         }
 
-        void OnKeyFileSwitcherToggled(object sender, ToggledEventArgs e)
+        public SignUpPage(Action<string> signUpAction)
         {
-            Debug.WriteLine("SignUpPage: OnKeyFileSwitcherToggled");
+            InitializeComponent();
+            BindingContext = _viewModel = new LoginViewModel(signUpAction);
         }
     }
 }

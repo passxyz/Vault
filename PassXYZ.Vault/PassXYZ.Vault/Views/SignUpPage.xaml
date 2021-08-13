@@ -46,11 +46,25 @@
                                    Grid.Row="2" Grid.Column="1" />
                         </Grid>
 
-                        <Button Text="{x:Static resources:AppResources.SignUpPageTitle}"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Button Text="{x:Static resources:AppResources.SignUpPageTitle}"
                                 TextColor="White"  
                                 BackgroundColor="Gray" 
                                 HorizontalOptions="Fill" 
+                                Grid.Column="0"
                                 Command="{Binding SignUpCommand}" />
+                            <Button Text="{x:Static resources:AppResources.action_id_cancel}"
+                                TextColor="White"  
+                                BackgroundColor="{StaticResource Primary}" 
+                                HorizontalOptions="Fill" 
+                                Grid.Column="1" 
+                                Command="{Binding CancelCommand}" />
+                        </Grid>
 
                         <StackLayout Orientation="Horizontal">
                             <Label x:Name="KeyFileStatus"
@@ -59,8 +73,7 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" />
                             <Switch x:Name="KeyFileSwitcher" HorizontalOptions="Center"
-                                    IsToggled="{Binding IsDeviceLockEnabled}"
-                                    Toggled="OnKeyFileSwitcherToggled" />
+                                    IsToggled="{Binding IsDeviceLockEnabled}" />
                         </StackLayout>
 
                     </StackLayout>
