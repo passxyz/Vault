@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+using FontAwesome.Solid;
+
 using PassXYZLib;
 using PassXYZ.Vault.Resx;
 
@@ -16,7 +18,8 @@ namespace PassXYZ.Vault.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class LoginPage : ContentPage
     {
-        LoginViewModel _viewModel;
+        private readonly LoginViewModel _viewModel;
+
         public LoginPage()
         {
             InitializeComponent();
@@ -37,6 +40,7 @@ namespace PassXYZ.Vault.Views
                 passwordEntry.Completed += OnLoginButtonClicked;
             }
         }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -46,12 +50,57 @@ namespace PassXYZ.Vault.Views
                 usernameEntry.Text = LoginViewModel.CurrentUser.Username;
             }
             Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}, Username: {_viewModel.Username}");
+
+            InitFingerPrintButton();
         }
 
         private void OnLoginButtonClicked(object sender, EventArgs e)
         {
             _viewModel.OnLoginClicked();
             Debug.WriteLine("LoginPage: OnLoginButtonClicked");
+        }
+
+        private void InitFingerPrintButton() 
+        {
+            if (LoginViewModel.CurrentUser.IsDeviceLockEnabled && !LoginViewModel.CurrentUser.IsKeyFileExist)
+            {
+                Debug.WriteLine("LoginPage: SetupQRCode");
+
+                // isFingerprintCancelled = true;
+                fpButton.Source = new IconSource
+                {
+                    Icon = FontAwesome.Solid.Icon.Qrcode,
+                    Color = (Color)Application.Current.Resources["Primary"],
+                    Size = 32
+                };
+                // fpButton.Clicked += OnScanQRCodeClicked;
+                fpButton.IsVisible = true;
+                passwordEntry.IsEnabled = false;
+                messageLabel.Text = AppResources.settings_security_DLK_message1 + LoginViewModel.CurrentUser.Username + ".";
+            }
+            else
+            {
+                fpButton.IsVisible = false;
+                passwordEntry.IsEnabled = true;
+                messageLabel.Text = "";
+                fpButton.Source = new IconSource
+                {
+                    Icon = FontAwesome.Solid.Icon.Fingerprint,
+                    Color = (Color)Application.Current.Resources["Primary"],
+                    Size = 32
+                };
+                //if (availability == FingerprintAvailability.NoFingerprint)
+                //{
+                //    GetAvailabilityAsync();
+                //}
+                //Debug.WriteLine($"Change to user: {username}, fingerprint: {availability}");
+
+                //if (availability == FingerprintAvailability.Available)
+                //{
+                //    fpButton.IsVisible = true;
+                //    await FingerprintLogin();
+                //}
+            }
         }
 
         private async void OnSwitchUsersClicked(object sender, EventArgs e)
@@ -62,37 +111,16 @@ namespace PassXYZ.Vault.Views
             {
                 messageLabel.Text = "";
                 LoginViewModel.CurrentUser.Username = usernameEntry.Text = username;
-
-                if (!LoginViewModel.CurrentUser.IsKeyFileExist)
-                {
-                    //SetupQRCode();
-                    Debug.WriteLine("LoginPage: SetupQRCode");
-                }
-                else
-                {
-                    passwordEntry.IsEnabled = true;
-                    fpButton.IsVisible = false;
-                    fpButton.Image = "ic_passxyz_fingerprint.png";
-                    //if (availability == FingerprintAvailability.NoFingerprint)
-                    //{
-                    //    GetAvailabilityAsync();
-                    //}
-                    //Debug.WriteLine($"Change to user: {username}, fingerprint: {availability}");
-
-                    //if (availability == FingerprintAvailability.Available)
-                    //{
-                    //    fpButton.IsVisible = true;
-                    //    await FingerprintLogin();
-                    //}
-                }
+                InitFingerPrintButton();
             }
             Debug.WriteLine($"LoginPage: OnSwitchUsersClicked(Username: {LoginViewModel.CurrentUser.Username})");
         }
 
-        async void OnFingerprintClicked(object sender, EventArgs e)
+        private async void OnFingerprintClicked(object sender, EventArgs e)
         {
             Debug.WriteLine("LoginPage: OnFingerprintClicked");
         }
+
 
     }
 }
