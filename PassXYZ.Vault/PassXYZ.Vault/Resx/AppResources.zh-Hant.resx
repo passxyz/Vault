@@ -934,4 +934,7 @@
   <data name="settings_keyFileField_Value3" xml:space="preserve">
     <value>設備鎖</value>
   </data>
+  <data name="action_id_export" xml:space="preserve">
+    <value>導出</value>
+  </data>
 </root>

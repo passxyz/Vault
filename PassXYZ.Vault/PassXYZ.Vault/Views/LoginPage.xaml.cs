@@ -37,7 +37,10 @@ namespace PassXYZ.Vault.Views
             else
             {
                 passwordEntry.ReturnType = ReturnType.Done;
-                passwordEntry.Completed += OnLoginButtonClicked;
+                passwordEntry.Completed += (object sender, EventArgs e) => 
+                {
+                    _viewModel.OnLoginClicked();
+                };
             }
         }
 
@@ -52,12 +55,6 @@ namespace PassXYZ.Vault.Views
             Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}, Username: {_viewModel.Username}");
 
             InitFingerPrintButton();
-        }
-
-        private void OnLoginButtonClicked(object sender, EventArgs e)
-        {
-            _viewModel.OnLoginClicked();
-            Debug.WriteLine("LoginPage: OnLoginButtonClicked");
         }
 
         private void InitFingerPrintButton() 

@@ -315,6 +315,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        internal static string action_id_export {
+            get {
+                return ResourceManager.GetString("action_id_export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Barcode.
         /// </summary>
         internal static string action_id_generatebarcode {

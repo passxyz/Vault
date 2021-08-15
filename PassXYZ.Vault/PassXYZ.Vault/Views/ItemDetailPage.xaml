@@ -11,9 +11,9 @@
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text=" " Command="{Binding AddFieldCommand}">
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_add}" Command="{Binding AddFieldCommand}">
             <ToolbarItem.IconImageSource>
-                <iconsR:IconSource Icon="PlusSquare"  Color="White" />
+                <iconsS:IconSource Icon="Plus"  Color="White" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>

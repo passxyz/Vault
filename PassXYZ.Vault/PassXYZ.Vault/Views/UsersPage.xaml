@@ -1,15 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
              xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.UsersPage"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"  
              xmlns:passxyzlib="clr-namespace:PassXYZLib">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text=" " Command="{Binding AddUserCommand}">
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_add}" Command="{Binding AddUserCommand}">
             <ToolbarItem.IconImageSource>
-                <iconsR:IconSource Icon="PlusSquare"  Color="White" />
+                <iconsS:IconSource Icon="Plus"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_import}" Command="{Binding ImportUserCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="FileImport"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_export}" Command="{Binding ExportUserCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="FileExport"  Color="White" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>

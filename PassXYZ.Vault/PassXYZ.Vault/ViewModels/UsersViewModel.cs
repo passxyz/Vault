@@ -26,12 +26,16 @@ namespace PassXYZ.Vault.ViewModels
         public ObservableCollection<PxUser> Users { get; set; }
         public Command LoadUsersCommand { get; }
         public Command AddUserCommand { get; }
+        public Command ImportUserCommand { get; }
+        public Command ExportUserCommand { get; }
 
         public UsersViewModel()
         {
             Users = new ObservableCollection<PxUser>();
             LoadUsersCommand = new Command(() => ExecuteLoadUsersCommand());
             AddUserCommand = new Command(OnAddUser);
+            ImportUserCommand = new Command(() => ImportUser());
+            ExportUserCommand = new Command(() => ExportUser());
             ExecuteLoadUsersCommand();
         }
 
@@ -53,6 +57,16 @@ namespace PassXYZ.Vault.ViewModels
             user.Delete();
             Users.Remove((PxUser)user);
             Debug.Write($"UsersViewModel: Delete {user.Username}");
+        }
+
+        private void ImportUser() 
+        {
+            Debug.WriteLine("UsersViewModel: ImportUser");
+        }
+
+        private void ExportUser() 
+        {
+            Debug.WriteLine("UsersViewModel: ExportUser");
         }
 
         private void ExecuteLoadUsersCommand()

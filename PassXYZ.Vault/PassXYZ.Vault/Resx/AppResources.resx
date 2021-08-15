@@ -976,4 +976,7 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="settings_keyFileField_Value3" xml:space="preserve">
     <value>Device Lock</value>
   </data>
+  <data name="action_id_export" xml:space="preserve">
+    <value>Export</value>
+  </data>
 </root>
