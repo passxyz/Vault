@@ -937,4 +937,10 @@
   <data name="action_id_export" xml:space="preserve">
     <value>導出</value>
   </data>
+  <data name="export_error1" xml:space="preserve">
+    <value>請選擇一個用戶</value>
+  </data>
+  <data name="import_message1" xml:space="preserve">
+    <value>請選擇一個KeePass數據文件</value>
+  </data>
 </root>

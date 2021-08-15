@@ -979,4 +979,10 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="action_id_export" xml:space="preserve">
     <value>Export</value>
   </data>
+  <data name="export_error1" xml:space="preserve">
+    <value>Please select a user first.</value>
+  </data>
+  <data name="import_message1" xml:space="preserve">
+    <value>Please select a KeePass data file</value>
+  </data>
 </root>

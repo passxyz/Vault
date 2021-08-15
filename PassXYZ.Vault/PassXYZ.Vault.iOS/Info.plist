@@ -34,5 +34,27 @@
 	<string>PassXYZ.Vault</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location is not used in PassXYZ Cloud.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location is not used in PassXYZ.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera is used to scan QR code for Device Lock Key.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photos so pictures can be added as attachment.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to the photo gallery so pictures can be added as attachment.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Calendar permission is required due to Permissions Plugin for Xamarin is used in PassXYZ.</string>
+	<key>XSAppIconAssets</key>
+	<string>Resources/Images.xcassets/AppIcons.appiconset</string>
+	<key>XSLaunchImageAssets</key>
+	<string>Resources/Images.xcassets/LaunchImages.launchimage</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

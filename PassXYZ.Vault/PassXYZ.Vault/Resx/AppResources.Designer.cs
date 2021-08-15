@@ -1233,6 +1233,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select a user first..
+        /// </summary>
+        internal static string export_error1 {
+            get {
+                return ResourceManager.GetString("export_error1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 支付宝生活号.
         /// </summary>
         internal static string field_id_alipay {
@@ -1553,6 +1562,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string import_error_user_exits {
             get {
                 return ResourceManager.GetString("import_error_user_exits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a KeePass data file.
+        /// </summary>
+        internal static string import_message1 {
+            get {
+                return ResourceManager.GetString("import_message1", resourceCulture);
             }
         }
         
