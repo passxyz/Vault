@@ -983,6 +983,21 @@ PassXYZ built-in template files can be downloaded at the below links:
     <value>Please select a user first.</value>
   </data>
   <data name="import_message1" xml:space="preserve">
-    <value>Please select a KeePass data file</value>
+    <value>Please select a KeePass or PassXYZ data file</value>
+  </data>
+  <data name="import_data_file" xml:space="preserve">
+    <value>Data file</value>
+  </data>
+  <data name="import_data_file_ex" xml:space="preserve">
+    <value>Data file (with key file)</value>
+  </data>
+  <data name="import_keyfile" xml:space="preserve">
+    <value>Import key file</value>
+  </data>
+  <data name="import_error_msg" xml:space="preserve">
+    <value>Cannot import this file!</value>
+  </data>
+  <data name="import_keyfile_scan" xml:space="preserve">
+    <value>Scan key file QR code</value>
   </data>
 </root>

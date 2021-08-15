@@ -60,11 +60,12 @@ namespace PassXYZ.Vault.ViewModels
             Debug.WriteLine($"UsersViewModel: Delete {user.Username}");
         }
 
-        private async void AddImportedUser(string userName, FileResult result)
+        private async void AddImportedUser(string userName, FileResult result, bool isDeviceLockEnabled = false)
         {
             PxUser newUser = new PxUser()
             {
-                Username = userName
+                Username = userName,
+                IsDeviceLockEnabled = isDeviceLockEnabled
             };
 
             if (System.IO.File.Exists(newUser.Path))
@@ -81,8 +82,13 @@ namespace PassXYZ.Vault.ViewModels
             Users.Add(newUser);
         }
 
-        private async void ImportUser() 
+        private async void ImportUser()
         {
+            string[] templates = {
+                AppResources.import_data_file,
+                AppResources.import_data_file_ex
+            };
+
             var customFileType = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
                     { DevicePlatform.iOS, new[] { "public.my.comic.extension" } }, // or general UTType values
@@ -97,6 +103,14 @@ namespace PassXYZ.Vault.ViewModels
                 //FileTypes = customFileType,
             };
 
+            bool isDeviceLockEnabled = false;
+
+            var template = await Shell.Current.DisplayActionSheet(AppResources.import_message1, AppResources.action_id_cancel, null, templates);
+            if (template == AppResources.import_data_file_ex)
+            {
+                isDeviceLockEnabled = true;
+            }
+
             try
             {
                 var result = await FilePicker.PickAsync(options);
@@ -105,12 +119,12 @@ namespace PassXYZ.Vault.ViewModels
                     if (result.FileName.EndsWith(".kdbx", StringComparison.OrdinalIgnoreCase))
                     {
                         string fileName = System.IO.Path.GetFileNameWithoutExtension(result.FileName);
-                        AddImportedUser(fileName, result);
+                        AddImportedUser(fileName, result, isDeviceLockEnabled);
                     }
                     else if (result.FileName.EndsWith(".xyz", StringComparison.OrdinalIgnoreCase)) 
                     {
                         string userName = PxDataFile.GetUserName(result.FileName);
-                        AddImportedUser(userName, result);
+                        AddImportedUser(userName, result, isDeviceLockEnabled);
                     }
                     else
                     {

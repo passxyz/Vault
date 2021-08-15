@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 using PassXYZ.Vault.Resx;
 
@@ -140,6 +142,42 @@ namespace PassXYZ.Vault.ViewModels
         private async void OnCancelClicked()
         {
             _ = await Shell.Current.Navigation.PopModalAsync();
+        }
+
+        public async void ImportKeyFile()
+        {
+            var options = new PickOptions
+            {
+                PickerTitle = AppResources.import_message1,
+                //FileTypes = customFileType,
+            };
+
+            try
+            {
+                var result = await FilePicker.PickAsync(options);
+                if (result != null)
+                {
+                    var stream = await result.OpenReadAsync();
+                    var fileStream = File.Create(CurrentUser.KeFilePath);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    stream.CopyTo(fileStream);
+                    fileStream.Close();
+                }
+                else 
+                {
+                    await Shell.Current.DisplayAlert(AppResources.action_id_import, AppResources.import_error_msg, AppResources.alert_id_ok);
+                }
+            }
+            catch (Exception ex)
+            {
+                // The user canceled or something went wrong
+                Debug.WriteLine($"LoginViewModel: ImportKeyFile, {ex}");
+            }
+        }
+
+        public async void ScanKeyFileQRCode()
+        {
+            Debug.WriteLine("LoginViewModel: ScanKeyFileQRCode");
         }
     }
 }

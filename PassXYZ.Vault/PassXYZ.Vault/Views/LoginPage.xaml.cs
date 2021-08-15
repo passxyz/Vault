@@ -115,7 +115,43 @@ namespace PassXYZ.Vault.Views
 
         private async void OnFingerprintClicked(object sender, EventArgs e)
         {
-            Debug.WriteLine("LoginPage: OnFingerprintClicked");
+            if (LoginViewModel.CurrentUser.IsDeviceLockEnabled && !LoginViewModel.CurrentUser.IsKeyFileExist) 
+            {
+                // Import key file or scan QR code
+                string[] templates = {
+                    AppResources.import_keyfile,
+                    AppResources.import_keyfile_scan
+                };
+                var template = await Shell.Current.DisplayActionSheet(AppResources.import_message1, AppResources.action_id_cancel, null, templates);
+                if (template == AppResources.import_keyfile)
+                {
+                    _viewModel.ImportKeyFile();
+                }
+                else if (template == AppResources.import_keyfile_scan)
+                {
+                    _viewModel.ScanKeyFileQRCode();
+                }
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    fpButton.IsVisible = false;
+                    passwordEntry.IsEnabled = true;
+                    messageLabel.Text = "";
+                    fpButton.Source = new IconSource
+                    {
+                        Icon = FontAwesome.Solid.Icon.Fingerprint,
+                        Color = (Color)Application.Current.Resources["Primary"],
+                        Size = 32
+                    };
+                });
+            }
+            else 
+            {
+                // isFingerprintCancelled = false;
+                // FingerprintLogin()
+                Debug.WriteLine("LoginPage: OnFingerprintClicked");
+            }
+
         }
 
 

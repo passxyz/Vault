@@ -941,6 +941,21 @@
     <value>请选择一个用户</value>
   </data>
   <data name="import_message1" xml:space="preserve">
-    <value>请选择一个KeePass数据文件</value>
+    <value>请选择一个KeePass或PassXYZ数据文件</value>
+  </data>
+  <data name="import_data_file" xml:space="preserve">
+    <value>数据文件</value>
+  </data>
+  <data name="import_data_file_ex" xml:space="preserve">
+    <value>数据文件(有密钥文件)</value>
+  </data>
+  <data name="import_keyfile" xml:space="preserve">
+    <value>导入密钥文件</value>
+  </data>
+  <data name="import_error_msg" xml:space="preserve">
+    <value>无法导入文件！</value>
+  </data>
+  <data name="import_keyfile_scan" xml:space="preserve">
+    <value>扫描密钥文件二维码</value>
   </data>
 </root>

@@ -1557,6 +1557,33 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data file.
+        /// </summary>
+        internal static string import_data_file {
+            get {
+                return ResourceManager.GetString("import_data_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data file (with key file).
+        /// </summary>
+        internal static string import_data_file_ex {
+            get {
+                return ResourceManager.GetString("import_data_file_ex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot import this file!.
+        /// </summary>
+        internal static string import_error_msg {
+            get {
+                return ResourceManager.GetString("import_error_msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot import this file! This user alreay exists..
         /// </summary>
         internal static string import_error_user_exits {
@@ -1566,7 +1593,25 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please select a KeePass data file.
+        ///   Looks up a localized string similar to Import key file.
+        /// </summary>
+        internal static string import_keyfile {
+            get {
+                return ResourceManager.GetString("import_keyfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan key file QR code.
+        /// </summary>
+        internal static string import_keyfile_scan {
+            get {
+                return ResourceManager.GetString("import_keyfile_scan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a KeePass or PassXYZ data file.
         /// </summary>
         internal static string import_message1 {
             get {
