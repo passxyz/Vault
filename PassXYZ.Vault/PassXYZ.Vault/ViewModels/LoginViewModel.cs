@@ -11,6 +11,40 @@ using PassXYZ.Vault.Resx;
 
 namespace PassXYZ.Vault.ViewModels
 {
+    /// <summary>
+    /// Extend class PassXYZLib.User to support preference.
+    /// </summary>
+    public class LoginUser : PassXYZLib.User
+    {
+        const string CURRENT_USERNAME = "current_username";
+        override public string Username 
+        { 
+            get
+            {
+                if(string.IsNullOrEmpty(base.Username))
+                {
+                    string usrname = Preferences.Get(CURRENT_USERNAME, base.Username);
+                    base.Username = usrname;
+                    if(!base.IsUserExist)
+                    {
+                        base.Username = string.Empty;
+                    }
+                    return base.Username;
+                }
+                else
+                {
+                    return base.Username;
+                }
+            }
+
+            set
+            {
+                base.Username = value;
+                Preferences.Set(CURRENT_USERNAME, base.Username);
+            }
+        }
+    }
+
     public class LoginViewModel : BaseViewModel
     {
         private string _username;
@@ -54,7 +88,7 @@ namespace PassXYZ.Vault.ViewModels
                 CurrentUser.IsDeviceLockEnabled = value;
             }
         }
-        public static PassXYZLib.User CurrentUser { get; set; }
+        public static LoginUser CurrentUser { get; set; }
 
         public LoginViewModel()
         {
@@ -67,7 +101,7 @@ namespace PassXYZ.Vault.ViewModels
             this.PropertyChanged +=
                 (_, __) => SignUpCommand.ChangeCanExecute();
 
-            CurrentUser = new PassXYZLib.User();
+            CurrentUser = new LoginUser();
         }
 
         public LoginViewModel(Action<string> signUpAction) : this()
