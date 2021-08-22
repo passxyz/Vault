@@ -1000,4 +1000,7 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="import_keyfile_scan" xml:space="preserve">
     <value>Scan key file QR code</value>
   </data>
+  <data name="menu_id_users" xml:space="preserve">
+    <value>Users</value>
+  </data>
 </root>

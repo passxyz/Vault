@@ -1773,6 +1773,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        internal static string menu_id_users {
+            get {
+                return ResourceManager.GetString("menu_id_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot logout now, .
         /// </summary>
         internal static string message_id_alert_logout_disable {

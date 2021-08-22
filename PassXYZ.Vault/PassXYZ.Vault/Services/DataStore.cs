@@ -139,9 +139,19 @@ namespace PassXYZ.Vault.Services
             return await Task.FromResult(items.FirstOrDefault(s => s.Id == id));
         }
 
+        public async Task<PwEntry> FindEntryById(string id)
+        {            
+            return await Task.Run(() => { return db.FindEntryById(id); });
+        }
+
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
         {
             return await Task.FromResult(items);
+        }
+
+        public async Task<IEnumerable<PwEntry>> GetOtpEntryListAsync()
+        {
+            return await Task.Run(() => { return db.GetOtpEntryList(); });
         }
 
         public async Task<bool> LoginAsync(PassXYZLib.User user)

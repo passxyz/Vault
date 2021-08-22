@@ -958,4 +958,7 @@
   <data name="import_keyfile_scan" xml:space="preserve">
     <value>扫描密钥文件二维码</value>
   </data>
+  <data name="menu_id_users" xml:space="preserve">
+    <value>用户</value>
+  </data>
 </root>

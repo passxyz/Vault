@@ -52,7 +52,7 @@ namespace PassXYZ.Vault.Views
             {
                 usernameEntry.Text = LoginViewModel.CurrentUser.Username;
             }
-            Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}, Username: {_viewModel.Username}");
+            //Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}, Username: {_viewModel.Username}");
 
             InitFingerPrintButton();
         }
@@ -108,6 +108,7 @@ namespace PassXYZ.Vault.Views
             {
                 messageLabel.Text = "";
                 LoginViewModel.CurrentUser.Username = usernameEntry.Text = username;
+                LoginViewModel.CurrentUser.Password = passwordEntry.Text = "";
                 InitFingerPrintButton();
             }
             Debug.WriteLine($"LoginPage: OnSwitchUsersClicked(Username: {LoginViewModel.CurrentUser.Username})");

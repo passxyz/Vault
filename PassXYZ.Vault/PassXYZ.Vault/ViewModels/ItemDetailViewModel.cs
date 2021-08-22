@@ -75,7 +75,15 @@ namespace PassXYZ.Vault.ViewModels
         {
             try
             {
-                var item = await DataStore.GetItemAsync(itemId);
+                Item item = await DataStore.GetItemAsync(itemId);
+                if (item == null)
+                {
+                    // This may be the case that we navigate to ItemDetailPage from OtpListPage
+                    item = await DataStore.FindEntryById(itemId);
+                }
+
+                if (item == null) { throw new ArgumentNullException("itemId"); }
+
                 Id = item.Id;
                 Text = item.Name;
                 Title = Text;
