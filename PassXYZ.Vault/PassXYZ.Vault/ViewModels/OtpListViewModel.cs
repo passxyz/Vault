@@ -63,6 +63,11 @@ namespace PassXYZ.Vault.ViewModels
 
                 foreach (PwEntry entry in items)
                 {
+                    ImageSource imgSource = (ImageSource)entry.ImgSource;
+                    if (entry.ImgSource == null)
+                    {
+                        entry.SetIcon();
+                    }
                     Entries.Add(entry);
                 }
 

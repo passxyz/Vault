@@ -149,6 +149,17 @@ namespace PassXYZ.Vault.Services
             return await Task.FromResult(items);
         }
 
+        /// <summary>
+        /// Search entries with a keyword
+        /// </summary>
+        /// <param name="strSearch">keyword to be searched</param>
+        /// <param name="itemGroup">If it is not null, this group is searched</param>
+        /// <returns>a list of entries</returns>
+        public async Task<IEnumerable<Item>> SearchEntriesAsync(string strSearch, Item itemGroup = null)
+        {
+            return await Task.Run(() => { return db.SearchEntries(strSearch, itemGroup); });
+        }
+
         public async Task<IEnumerable<PwEntry>> GetOtpEntryListAsync()
         {
             return await Task.Run(() => { return db.GetOtpEntryList(); });

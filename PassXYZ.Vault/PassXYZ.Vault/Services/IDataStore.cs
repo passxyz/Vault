@@ -15,6 +15,7 @@ namespace PassXYZ.Vault.Services
         Task<T> GetItemAsync(string id);
         Task<PwEntry> FindEntryById(string id);
         Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = false);
+        Task<IEnumerable<Item>> SearchEntriesAsync(string strSearch, Item itemGroup = null);
         Task<IEnumerable<PwEntry>> GetOtpEntryListAsync();
         Item CurrentGroup { get; set; }
         string CurrentPath { get; }
