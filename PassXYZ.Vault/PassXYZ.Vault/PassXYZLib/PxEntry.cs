@@ -291,10 +291,9 @@ namespace PassXYZLib
                 }
             }
 
-            int i = 0;
             foreach (var field in entry.Binaries)
             {
-                fields.Add(new Field(field.Key, $"{AppResources.label_id_attachment} {i}", false)
+                fields.Add(new Field(field.Key, $"{AppResources.label_id_attachment} {entry.Binaries.UCount}", false)
                 {
                     IsBinaries = true,
                     Binary = entry.Binaries.Get(field.Key),
@@ -303,7 +302,6 @@ namespace PassXYZLib
                         Icon = FontAwesome.Solid.Icon.Paperclip
                     }
                 });
-                i++;
             }
 
             return fields;

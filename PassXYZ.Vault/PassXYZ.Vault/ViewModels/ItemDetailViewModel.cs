@@ -1,12 +1,17 @@
 ﻿using KeePassLib;
 using PassXYZLib;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 using Markdig;
+using KeePassLib.Security;
 using PassXYZ.Vault.Resx;
 using PassXYZ.Vault.Views;
 
@@ -23,6 +28,7 @@ namespace PassXYZ.Vault.ViewModels
         public ObservableCollection<Field> Fields { get; set; }
         public Command LoadFieldsCommand { get; }
         public Command AddFieldCommand { get; }
+        public Command AddBinaryCommand { get; }
         public Command<Field> FieldTapped { get; }
 
         public string Id { get; set; }
@@ -58,6 +64,7 @@ namespace PassXYZ.Vault.ViewModels
             LoadFieldsCommand = new Command(() => ExecuteLoadFieldsCommand());
             FieldTapped = new Command<Field>(OnFieldSelected);
             AddFieldCommand = new Command(OnAddField);
+            AddBinaryCommand = new Command(OnAddBinary);
         }
 
         private void ExecuteLoadFieldsCommand()
@@ -209,7 +216,129 @@ namespace PassXYZ.Vault.ViewModels
                 dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
                 await DataStore.UpdateItemAsync(dataEntry);
             })));
-            Debug.WriteLine($"ItemDetailViewModel: Add field");
+        }
+
+        private async Task LoadPhotoAsync(FileResult photo)
+        {
+            // canceled
+            if (photo == null)
+            {
+                return;
+            }
+            // save the file into local storage
+            var newFile = Path.Combine(FileSystem.CacheDirectory, photo.FileName);
+            using (var stream = await photo.OpenReadAsync())
+            using (var newStream = File.OpenWrite(newFile))
+                await stream.CopyToAsync(newStream);
+            AddBinary(newFile, photo.FileName);
+        }
+
+        private async void AddBinary(string tempFilePath, string fileName)
+        {
+            var vBytes = File.ReadAllBytes(tempFilePath);
+            if (vBytes != null)
+            {
+                ProtectedBinary pb = new ProtectedBinary(false, vBytes);
+                dataEntry.Binaries.Set(fileName, pb);
+            }
+
+            Fields.Add(new Field(fileName, $"{AppResources.label_id_attachment} {dataEntry.Binaries.UCount}", false)
+            {
+                IsBinaries = true,
+                Binary = dataEntry.Binaries.Get(fileName),
+                ImgSource = new FontAwesome.Solid.IconSource
+                {
+                    Icon = FontAwesome.Solid.Icon.Paperclip
+                }
+            });
+            await DataStore.UpdateItemAsync(dataEntry);
+        }
+
+        private async void OnAddBinary(object obj)
+        {
+            List<string> inputTypeList = new List<string>()
+            {
+                AppResources.field_id_file,
+                AppResources.field_id_camera,
+                AppResources.field_id_gallery
+            };
+
+
+            var typeValue = await Shell.Current.DisplayActionSheet(AppResources.message_id_attachment_options, AppResources.action_id_cancel, null, inputTypeList.ToArray());
+            if (typeValue == AppResources.field_id_gallery)
+            {
+                try
+                {
+                    var photo = await MediaPicker.PickPhotoAsync();
+                    await LoadPhotoAsync(photo);
+                }
+                catch (FeatureNotSupportedException fnsEx)
+                {
+                    // Feature is not supported on the device
+                    Debug.WriteLine($"ItemDetailViewModel: PickPhotoAsync => {fnsEx.Message}");
+                }
+                catch (PermissionException pEx)
+                {
+                    // Permissions not granted
+                    Debug.WriteLine($"ItemDetailViewModel: PickPhotoAsync => {pEx.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"ItemDetailViewModel: PickPhotoAsync => {ex.Message}");
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Add an attachment from Gallery");
+            }
+            else if (typeValue == AppResources.field_id_file) 
+            {
+                try
+                {
+                    var result = await FilePicker.PickAsync();
+                    if (result != null)
+                    {
+                        var tempFilePath = Path.GetTempFileName();
+                        var stream = await result.OpenReadAsync();
+                        var fileStream = File.Create(tempFilePath);
+                        stream.Seek(0, SeekOrigin.Begin);
+                        stream.CopyTo(fileStream);
+                        fileStream.Close();
+                        AddBinary(tempFilePath, result.FileName);
+                        File.Delete(tempFilePath);
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert(AppResources.message_id_attachment_options, AppResources.import_error_msg, AppResources.alert_id_ok);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // The user canceled or something went wrong
+                    Debug.WriteLine($"LoginViewModel: Import attachment, {ex}");
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Add an attachment from local storage");
+            }
+            else if (typeValue == AppResources.field_id_camera)
+            {
+                try
+                {
+                    var photo = await MediaPicker.CapturePhotoAsync();
+                    await LoadPhotoAsync(photo);
+                }
+                catch (FeatureNotSupportedException fnsEx)
+                {
+                    // Feature is not supported on the device
+                    Debug.WriteLine($"ItemDetailViewModel: CapturePhotoAsync => {fnsEx.Message}");
+                }
+                catch (PermissionException pEx)
+                {
+                    // Permissions not granted
+                    Debug.WriteLine($"ItemDetailViewModel: CapturePhotoAsync => {pEx.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"ItemDetailViewModel: CapturePhotoAsync => {ex.Message}");
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Add an attachment using Camera");
+            }
         }
 
         private async void OnFieldSelected(Field field)
