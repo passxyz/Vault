@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 
 using Markdig;
+using PassXYZ.Vault.Resx;
 using PassXYZ.Vault.Views;
 
 namespace PassXYZ.Vault.ViewModels
@@ -112,21 +113,28 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
-                string key = field.IsEncoded ? field.EncodedKey : field.Key;
-                if (dataEntry.Strings.Exists(key))
-                {
-                    field.Value = v;
-                    // We cannot set to field.Value, since it will return a masked string for protected data
-                    dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
-                    Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
-                    await DataStore.UpdateItemAsync(dataEntry);
-                }
-                else
-                {
-                    Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
-                }
-            }, field.Key, field.Value)));
+            if (!field.IsBinaries)
+            {
+                await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
+                    string key = field.IsEncoded ? field.EncodedKey : field.Key;
+                    if (dataEntry.Strings.Exists(key))
+                    {
+                        field.Value = v;
+                        // We cannot set to field.Value, since it will return a masked string for protected data
+                        dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+                        Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
+                        await DataStore.UpdateItemAsync(dataEntry);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
+                    }
+                }, field.Key, field.Value)));
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert(AppResources.label_id_attachment, AppResources.message_id_edit_binary, AppResources.alert_id_ok);
+            }
         }
 
         /// <summary>
@@ -150,16 +158,34 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            if (dataEntry.Strings.Exists(key))
+            if (field.IsBinaries)
             {
-                if (dataEntry.Strings.Remove(key))
+                if (dataEntry.Binaries.Exists(key))
                 {
+                    if (dataEntry.Binaries.Remove(key))
+                    {
 
-                    Debug.WriteLine($"ItemDetailViewModel: Field {field.Key} deleted.");
+                        Debug.WriteLine($"ItemDetailViewModel: Attachment {field.Key} deleted.");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"ItemDetailViewModel: Cannot delete Attachment {field.Key}.");
+                    }
                 }
-                else
+            }
+            else
+            {
+                if (dataEntry.Strings.Exists(key))
                 {
-                    Debug.WriteLine($"ItemDetailViewModel: Cannot delete field {field.Key}.");
+                    if (dataEntry.Strings.Remove(key))
+                    {
+
+                        Debug.WriteLine($"ItemDetailViewModel: Field {field.Key} deleted.");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"ItemDetailViewModel: Cannot delete field {field.Key}.");
+                    }
                 }
             }
         }
@@ -186,13 +212,22 @@ namespace PassXYZ.Vault.ViewModels
             Debug.WriteLine($"ItemDetailViewModel: Add field");
         }
 
-        private void OnFieldSelected(Field field)
+        private async void OnFieldSelected(Field field)
         {
             if (field == null)
             {
                 return;
             }
-            Debug.WriteLine($"Field {field.Key} selected");
+
+            if (field.IsBinaries)
+            {
+                var bdc = BinaryDataClassifier.ClassifyUrl(field.Key);
+                if ((bdc == BinaryDataClass.Image) && (field.Binary != null))
+                {
+                    await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new ImagePreviewPage(field.Binary)));
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Attachment {field.Key} selected");
+            }
         }
     }
 }

@@ -961,4 +961,7 @@
   <data name="menu_id_users" xml:space="preserve">
     <value>用户</value>
   </data>
+  <data name="message_id_edit_binary" xml:space="preserve">
+    <value>附件只能添加或删除，不可以更改</value>
+  </data>
 </root>

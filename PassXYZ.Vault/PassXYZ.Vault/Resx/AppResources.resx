@@ -1003,4 +1003,8 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="menu_id_users" xml:space="preserve">
     <value>Users</value>
   </data>
+  <data name="message_id_edit_binary" xml:space="preserve">
+    <value>Cannot edit binary</value>
+    <comment>Warning message</comment>
+  </data>
 </root>

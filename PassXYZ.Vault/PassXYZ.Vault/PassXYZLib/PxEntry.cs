@@ -12,6 +12,10 @@ using PureOtp;
 using KeePassLib;
 using KeePassLib.Interfaces;
 using KeePassLib.Security;
+using KeePassLib.Utility;
+using Image = SkiaSharp.SKBitmap;
+
+using PassXYZ.Vault.Resx;
 
 namespace PassXYZLib
 {
@@ -70,6 +74,34 @@ namespace PassXYZLib
             {
                 _isProtected = value;
                 OnPropertyChanged("IsProtected");
+            }
+        }
+
+        private bool _isBinaries = false;
+        /// <summary>
+        /// Whether this field is an attachment
+        /// </summary>
+        public bool IsBinaries 
+        {
+            get => _isBinaries;
+            set
+            {
+                _isBinaries = value;
+                OnPropertyChanged("IsProtected");
+            }
+        }
+
+        private ProtectedBinary _binary = null;
+        /// <summary>
+        /// Binary data in the attachment
+        /// </summary>
+        public ProtectedBinary Binary
+        {
+            get => _binary;
+            set
+            {
+                _binary = value;
+                OnPropertyChanged("Binary");
             }
         }
 
@@ -259,6 +291,21 @@ namespace PassXYZLib
                 }
             }
 
+            int i = 0;
+            foreach (var field in entry.Binaries)
+            {
+                fields.Add(new Field(field.Key, $"{AppResources.label_id_attachment} {i}", false)
+                {
+                    IsBinaries = true,
+                    Binary = entry.Binaries.Get(field.Key),
+                    ImgSource = new FontAwesome.Solid.IconSource
+                    {
+                        Icon = FontAwesome.Solid.Icon.Paperclip
+                    }
+                });
+                i++;
+            }
+
             return fields;
         }
     }
@@ -273,15 +320,33 @@ namespace PassXYZLib
         public static Dictionary<string, FontAwesome.Solid.Icon> SolidIcons = new Dictionary<string, FontAwesome.Solid.Icon>()
         {
             { "address", FontAwesome.Solid.Icon.MapMarkerAlt },
+            { "地址", FontAwesome.Solid.Icon.MapMarkerAlt },
+            { "地点", FontAwesome.Solid.Icon.MapMarkerAlt },
             { "card", FontAwesome.Solid.Icon.IdCard },
+            { "账号", FontAwesome.Solid.Icon.IdCard },
+            { "身份证号", FontAwesome.Solid.Icon.IdCard },
             { "date", FontAwesome.Solid.Icon.CalendarAlt },
+            { "日期", FontAwesome.Solid.Icon.CalendarAlt },
+            { "签发日期", FontAwesome.Solid.Icon.CalendarAlt },
+            { "有效期至", FontAwesome.Solid.Icon.CalendarAlt },
             { "email", FontAwesome.Solid.Icon.Envelope },
+            { "邮件地址", FontAwesome.Solid.Icon.Envelope },
+            { "邮件", FontAwesome.Solid.Icon.Envelope },
             { "mobile", FontAwesome.Solid.Icon.Phone },
+            { "手机号码", FontAwesome.Solid.Icon.Phone },
             { "name", FontAwesome.Solid.Icon.User },
+            { "姓名", FontAwesome.Solid.Icon.User },
             { "password", FontAwesome.Solid.Icon.Key },
+            { "密码", FontAwesome.Solid.Icon.Key },
+            { "支付密码", FontAwesome.Solid.Icon.Key },
+            { "交易密码", FontAwesome.Solid.Icon.Key },
+            { "网银密码", FontAwesome.Solid.Icon.Key },
+            { "取款密码", FontAwesome.Solid.Icon.Key },
+            { "U盾密码", FontAwesome.Solid.Icon.Key },
             { "phone", FontAwesome.Solid.Icon.Phone },
             { "pin", FontAwesome.Solid.Icon.Key },
             { "url", FontAwesome.Solid.Icon.Link },
+            { "链接地址", FontAwesome.Solid.Icon.Link },
             { "username", FontAwesome.Solid.Icon.User }
         };
 
@@ -326,4 +391,193 @@ namespace PassXYZLib
             }
         }
     }
+
+    public enum BinaryDataClass
+    {
+        Unknown = 0,
+        Text,
+        RichText,
+        Excel,
+        Image,
+        PDF,
+        WebDocument
+    }
+
+    public static class BinaryDataClassifier
+    {
+        private static readonly string[] m_vTextExtensions = new string[] {
+            "txt", "csv", "c", "cpp", "h", "hpp", "css", "js", "bat"
+        };
+
+        private static readonly string[] m_vRichTextExtensions = new string[] {
+            "rtf", "doc", "docx"
+        };
+
+        private static readonly string[] m_vExcelExtensions = new string[] {
+            "xls", "xlsx"
+        };
+
+        private static readonly string[] m_vPdfExtensions = new string[] {
+            "pdf"
+        };
+
+        private static readonly string[] m_vImageExtensions = new string[] {
+            "bmp", "emf", "exif", "gif", "ico", "jpeg", "jpe", "jpg",
+            "png", "tiff", "tif", "wmf"
+        };
+
+        private static readonly string[] m_vWebExtensions = new string[] {
+            "htm", "html"
+        };
+
+        public static BinaryDataClass ClassifyUrl(string strUrl)
+        {
+            Debug.Assert(strUrl != null);
+            if (strUrl == null) throw new ArgumentNullException("strUrl");
+
+            string str = strUrl.Trim().ToLower();
+
+            foreach (string strPdfExt in m_vPdfExtensions)
+            {
+                if (str.EndsWith("." + strPdfExt))
+                    return BinaryDataClass.PDF;
+            }
+
+            foreach (string strTextExt in m_vTextExtensions)
+            {
+                if (str.EndsWith("." + strTextExt))
+                    return BinaryDataClass.Text;
+            }
+
+            foreach (string strRichTextExt in m_vRichTextExtensions)
+            {
+                if (str.EndsWith("." + strRichTextExt))
+                    return BinaryDataClass.RichText;
+            }
+
+            foreach (string strImageExt in m_vImageExtensions)
+            {
+                if (str.EndsWith("." + strImageExt))
+                    return BinaryDataClass.Image;
+            }
+
+            foreach (string strWebExt in m_vWebExtensions)
+            {
+                if (str.EndsWith("." + strWebExt))
+                    return BinaryDataClass.WebDocument;
+            }
+
+            foreach (string strExcelExt in m_vExcelExtensions)
+            {
+                if (str.EndsWith("." + strExcelExt))
+                    return BinaryDataClass.Excel;
+            }
+
+            return BinaryDataClass.Unknown;
+        }
+
+        public static BinaryDataClass ClassifyData(byte[] pbData)
+        {
+            Debug.Assert(pbData != null);
+            if (pbData == null) throw new ArgumentNullException("pbData");
+
+            try
+            {
+                Image img = GfxUtil.LoadImage(pbData);
+                if (img != null)
+                {
+                    img.Dispose();
+                    return BinaryDataClass.Image;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine($"BinaryDataClass: Exception={e.ToString()}");
+            }
+
+            return BinaryDataClass.Unknown;
+        }
+
+        public static BinaryDataClass Classify(string strUrl, byte[] pbData)
+        {
+            BinaryDataClass bdc = ClassifyUrl(strUrl);
+            if (bdc != BinaryDataClass.Unknown) return bdc;
+
+            // We don't have classify data by content.
+            // return ClassifyData(pbData);
+            return BinaryDataClass.Unknown;
+        }
+
+        public static StrEncodingInfo GetStringEncoding(byte[] pbData,
+            out uint uStartOffset)
+        {
+            Debug.Assert(pbData != null);
+            if (pbData == null) throw new ArgumentNullException("pbData");
+
+            uStartOffset = 0;
+
+            List<StrEncodingInfo> lEncs = new List<StrEncodingInfo>(StrUtil.Encodings);
+            lEncs.Sort(BinaryDataClassifier.CompareBySigLengthRev);
+
+            foreach (StrEncodingInfo sei in lEncs)
+            {
+                byte[] pbSig = sei.StartSignature;
+                if ((pbSig == null) || (pbSig.Length == 0)) continue;
+                if (pbSig.Length > pbData.Length) continue;
+
+                byte[] pbStart = MemUtil.Mid<byte>(pbData, 0, pbSig.Length);
+                if (MemUtil.ArraysEqual(pbStart, pbSig))
+                {
+                    uStartOffset = (uint)pbSig.Length;
+                    return sei;
+                }
+            }
+
+            if ((pbData.Length % 4) == 0)
+            {
+                byte[] z3 = new byte[] { 0, 0, 0 };
+                int i = MemUtil.IndexOf<byte>(pbData, z3);
+                if ((i >= 0) && (i < (pbData.Length - 4))) // Ignore last zero char
+                {
+                    if ((i % 4) == 0) return StrUtil.GetEncoding(StrEncodingType.Utf32BE);
+                    if ((i % 4) == 1) return StrUtil.GetEncoding(StrEncodingType.Utf32LE);
+                    // Don't assume UTF-32 for other offsets
+                }
+            }
+
+            if ((pbData.Length % 2) == 0)
+            {
+                int i = Array.IndexOf<byte>(pbData, 0);
+                if ((i >= 0) && (i < (pbData.Length - 2))) // Ignore last zero char
+                {
+                    if ((i % 2) == 0) return StrUtil.GetEncoding(StrEncodingType.Utf16BE);
+                    return StrUtil.GetEncoding(StrEncodingType.Utf16LE);
+                }
+            }
+
+            try
+            {
+                UTF8Encoding utf8Throw = new UTF8Encoding(false, true);
+                utf8Throw.GetString(pbData);
+                return StrUtil.GetEncoding(StrEncodingType.Utf8);
+            }
+            catch (Exception) { }
+
+            return StrUtil.GetEncoding(StrEncodingType.Default);
+        }
+
+        private static int CompareBySigLengthRev(StrEncodingInfo a, StrEncodingInfo b)
+        {
+            Debug.Assert((a != null) && (b != null));
+
+            int na = 0, nb = 0;
+            if ((a != null) && (a.StartSignature != null))
+                na = a.StartSignature.Length;
+            if ((b != null) && (b.StartSignature != null))
+                nb = b.StartSignature.Length;
+
+            return -(na.CompareTo(nb));
+        }
+    }
+
 }

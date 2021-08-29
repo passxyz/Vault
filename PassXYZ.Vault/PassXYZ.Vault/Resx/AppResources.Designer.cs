@@ -1827,6 +1827,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot edit binary.
+        /// </summary>
+        internal static string message_id_edit_binary {
+            get {
+                return ResourceManager.GetString("message_id_edit_binary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot save this icon. Icon size should be larger than 96 pixels..
         /// </summary>
         internal static string message_id_icon_size {
