@@ -5,6 +5,9 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
 
+using Serilog;
+using PassXYZLib;
+
 namespace PassXYZ.Vault.Droid
 {
     [Activity(Label = "PassXYZ.Vault", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize )]
@@ -17,6 +20,11 @@ namespace PassXYZ.Vault.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             LoadApplication(new App());
+
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Warning()
+                .WriteTo.File(PxDataFile.LogFilePath, rollingInterval: RollingInterval.Day)
+                .CreateLogger();
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

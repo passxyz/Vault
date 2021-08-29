@@ -15,6 +15,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Serilog;
+using PassXYZLib;
+
 namespace PassXYZ.Vault.UWP
 {
     /// <summary>
@@ -67,6 +70,10 @@ namespace PassXYZ.Vault.UWP
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(PxDataFile.LogFilePath, rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
             if (rootFrame.Content == null)
             {
