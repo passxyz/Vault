@@ -79,7 +79,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PassXYZ is built on top of KPCLib which is a library changed based on KeePassLib. KPCLib enhanced KeePassLib so that it can be built as a PCL or .netstandard Library to run on Xamarin. KeePassLib is part of KeePass project developed by Dominik Reichl. The official website of KeePass is:.
+        ///   Looks up a localized string similar to PassXYZ.Vault is built on top of KPCLib which is a library changed based on KeePassLib. KPCLib enhanced KeePassLib so that it can be built as a PCL or .netstandard Library to run on Xamarin. KeePassLib is part of KeePass project developed by Dominik Reichl. The official website of KeePass is:.
         /// </summary>
         internal static string about_keepass {
             get {
@@ -115,7 +115,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PassXYZ is licensed under the GNU General Public License v3.0 . You may not use this file except in compliance with the License. You may obtain a copy of the License at.
+        ///   Looks up a localized string similar to PassXYZ.Vault is licensed under the GNU General Public License v3.0 . You may not use this file except in compliance with the License. You may obtain a copy of the License at.
         /// </summary>
         internal static string about_passxyz_license {
             get {
@@ -513,7 +513,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PassXYZ.
+        ///   Looks up a localized string similar to PassXYZ.Vault.
         /// </summary>
         internal static string Appname {
             get {

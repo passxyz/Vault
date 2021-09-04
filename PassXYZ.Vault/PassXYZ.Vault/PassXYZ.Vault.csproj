@@ -3,13 +3,24 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
+    <Company>PassXYZ</Company>
+    <Authors>Roger Ye</Authors>
+    <Copyright>Roger Ye</Copyright>
+    <PackageIcon>passxyz_logo.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/passxyz/PassXYZ.Vault</RepositoryUrl>
+    <PackageProjectUrl>https://passxyz.github.io/</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="data\pass_d_E8f4pEk.xyz" />
     <None Remove="data\pass_e_JyHzpRxcopt.xyz" />
     <None Remove="data\pass_k_JyHzpRxcopt.k4xyz" />
+    <None Include="..\PassXYZ.Vault.UWP\passxyz_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
