@@ -51,6 +51,8 @@ namespace PassXYZ.Vault.Services
             db = PasswordDb.Instance;
         }
 
+        public bool IsOpen => db != null && db.IsOpen;
+
         public Item RootGroup
         {
             get => db.RootGroup;
@@ -225,5 +227,35 @@ namespace PassXYZ.Vault.Services
             return db.DescriptionChanged;
         }
 
+        public async Task<bool> ChangeMasterPassword(string newPassword)
+        {
+            bool result = db.ChangeMasterPassword(newPassword, _user);
+
+            // Save the database to take effect
+            await SaveAsync();
+            return result;
+        }
+
+        public string GetMasterPassword()
+        {
+            var userKey = db.MasterKey.GetUserKey(typeof(KcpPassword)) as KcpPassword;
+            return userKey.Password.ReadString();
+        }
+
+        public string GetDeviceLockData()
+        {
+            return db.GetDeviceLockData(_user);
+        }
+
+        /// <summary>
+        /// Recreate a key file from a PxKeyData
+        /// </summary>
+        /// <param name="data">PxKeyData source</param>
+        /// <param name="username">username inside PxKeyData source</param>
+        /// <returns>true - created key file, false - failed to create key file.</returns>
+        public bool CreateKeyFile(string data, string username)
+        {
+            return db.CreateKeyFile(data, username);
+        }
     }
 }

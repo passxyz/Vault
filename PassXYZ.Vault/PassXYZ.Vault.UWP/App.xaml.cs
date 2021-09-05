@@ -66,6 +66,10 @@ namespace PassXYZ.Vault.UWP
                 assemblies.Add(typeof(FontAwesome.Solid.Fonts).GetTypeInfo().Assembly);
                 assemblies.Add(typeof(FontAwesome.Regular.Fonts).GetTypeInfo().Assembly);
                 assemblies.Add(typeof(FontAwesome.Brand.Fonts).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(ZXing.Net.Mobile.Forms.WindowsUniversal.ZXingScannerViewRenderer).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(ZXing.Mobile.ZXingScannerControl).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(ZXing.Net.Mobile.Forms.WindowsUniversal.ZXingBarcodeImageViewRenderer).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(Windows.UI.Xaml.Controls.Image).GetTypeInfo().Assembly);
                 Xamarin.Forms.Forms.Init(e, assemblies);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)

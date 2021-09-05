@@ -36,6 +36,8 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>UISupportsDocumentBrowser</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Need your face to unlock secrets!</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Location is not used in PassXYZ Cloud.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

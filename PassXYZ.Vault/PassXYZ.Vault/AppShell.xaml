@@ -104,6 +104,9 @@
     <FlyoutItem Title="OTP" Icon="icon_feed.png">
         <ShellContent Route="OtpListPage" ContentTemplate="{DataTemplate local:OtpListPage}" />
     </FlyoutItem>
+    <FlyoutItem Title="{x:Static resources:AppResources.menu_id_settings}" Icon="icon_feed.png">
+        <ShellContent Route="SettingsPage" ContentTemplate="{DataTemplate local:SettingsPage}" />
+    </FlyoutItem>
 
     <!-- When the Flyout is visible this will be a menu item you can tie a click behavior to  -->
     <MenuItem Text="{x:Static resources:AppResources.action_id_logout}" StyleClass="MenuItemLayoutStyle" Clicked="OnMenuItemClicked">

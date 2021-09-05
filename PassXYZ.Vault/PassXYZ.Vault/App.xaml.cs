@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+using PassXYZLib;
 using PassXYZ.Vault.Services;
 using PassXYZ.Vault.Views;
 
@@ -11,7 +15,7 @@ namespace PassXYZ.Vault
 {
     public partial class App : Application
     {
-
+        public static bool InBackgroup = false;
         public App()
         {
             InitializeComponent();
@@ -22,15 +26,37 @@ namespace PassXYZ.Vault
 
         protected override void OnStart()
         {
+            InBackgroup = false;
             InitTestDb();
         }
 
         protected override void OnSleep()
         {
+            // Handle when your app sleeps
+            InBackgroup = true;
+
+            // Lock screen after timeout
+            Device.StartTimer(TimeSpan.FromSeconds(PxUser.AppTimeout), () =>
+            {
+                if (InBackgroup)
+                {
+                    _ = Task.Factory.StartNew(async () =>
+                      {
+                          await Shell.Current.GoToAsync("//LoginPage");
+                      });
+                    return false;
+                }
+                else
+                {
+                    Debug.WriteLine("PassXYZ.App: OnSleep, running in foreground.");
+                    return true;
+                }
+            });
         }
 
         protected override void OnResume()
         {
+            InBackgroup = false;
         }
 
         [System.Diagnostics.Conditional("DEBUG")]

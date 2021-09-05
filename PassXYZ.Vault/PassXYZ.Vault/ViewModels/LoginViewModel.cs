@@ -14,18 +14,17 @@ namespace PassXYZ.Vault.ViewModels
     /// <summary>
     /// Extend class PassXYZLib.User to support preference.
     /// </summary>
-    public class LoginUser : PassXYZLib.User
+    public class LoginUser : PassXYZLib.PxUser
     {
-        const string CURRENT_USERNAME = "current_username";
-        override public string Username 
-        { 
+        public override string Username
+        {
             get
             {
-                if(string.IsNullOrEmpty(base.Username))
+                if (string.IsNullOrEmpty(base.Username))
                 {
-                    string usrname = Preferences.Get(CURRENT_USERNAME, base.Username);
+                    string usrname = Preferences.Get(nameof(LoginUser), base.Username);
                     base.Username = usrname;
-                    if(!base.IsUserExist)
+                    if(!IsUserExist)
                     {
                         base.Username = string.Empty;
                     }
@@ -40,7 +39,7 @@ namespace PassXYZ.Vault.ViewModels
             set
             {
                 base.Username = value;
-                Preferences.Set(CURRENT_USERNAME, base.Username);
+                Preferences.Set(nameof(LoginUser), base.Username);
             }
         }
     }
@@ -57,7 +56,10 @@ namespace PassXYZ.Vault.ViewModels
         public Command CancelCommand { get; }
         public string Username
         {
-            get => _username;
+            get {
+                if (IsLogined) { IsDeviceLockEnabled = CurrentUser.IsDeviceLockEnabled; }
+                return IsLogined? CurrentUser.Username: _username;
+            }
 
             set
             {
@@ -75,20 +77,26 @@ namespace PassXYZ.Vault.ViewModels
                 CurrentUser.Password = value;
             }
         }
+
         public string Password2
         {
             get => _password2;
             set => SetProperty(ref _password2, value);
         }
+
         public bool IsDeviceLockEnabled
         {
-            get => _isDeviceLockEnabled;
-            set {
+            get => IsLogined ? CurrentUser.IsDeviceLockEnabled : _isDeviceLockEnabled;
+            set
+            {
                 _ = SetProperty(ref _isDeviceLockEnabled, value);
                 CurrentUser.IsDeviceLockEnabled = value;
             }
         }
+
         public static LoginUser CurrentUser { get; set; }
+
+        public bool IsLogined => DataStore.IsOpen;
 
         public LoginViewModel()
         {
@@ -102,6 +110,14 @@ namespace PassXYZ.Vault.ViewModels
                 (_, __) => SignUpCommand.ChangeCanExecute();
 
             CurrentUser = new LoginUser();
+        }
+
+        public LoginViewModel(bool isInitialized) : this()
+        {
+            if (isInitialized && IsLogined)
+            {
+                Username = DataStore.CurrentUser.Username;
+            }
         }
 
         public LoginViewModel(Action<string> signUpAction) : this()
@@ -209,9 +225,19 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
-        public async void ScanKeyFileQRCode()
+        public string GetMasterPassword()
         {
-            Debug.WriteLine("LoginViewModel: ScanKeyFileQRCode");
+            return DataStore.GetMasterPassword();
+        }
+
+        public string GetDeviceLockData()
+        {
+            return DataStore.GetDeviceLockData();
+        }
+
+        public bool CreateKeyFile(string data)
+        {
+            return DataStore.CreateKeyFile(data, Username);
         }
     }
 }

@@ -6,6 +6,8 @@ using Android.Runtime;
 using Android.OS;
 
 using Serilog;
+using Plugin.CurrentActivity;
+using Plugin.Fingerprint;
 using PassXYZLib;
 
 namespace PassXYZ.Vault.Droid
@@ -15,10 +17,13 @@ namespace PassXYZ.Vault.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            CrossFingerprint.SetCurrentActivityResolver(() => this);
             base.OnCreate(savedInstanceState);
 
+            CrossCurrentActivity.Current.Init(this, savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            ZXing.Net.Mobile.Forms.Android.Platform.Init();
             LoadApplication(new App());
 
             Log.Logger = new LoggerConfiguration()

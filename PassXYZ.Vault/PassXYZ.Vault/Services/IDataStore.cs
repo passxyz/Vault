@@ -21,11 +21,16 @@ namespace PassXYZ.Vault.Services
         string CurrentPath { get; }
         void SetCurrentToParent();
         Item RootGroup { get; }
+        bool IsOpen { get; }
         Task<bool> LoginAsync(PassXYZLib.User user);
         void Logout();
         string GetStoreName();
         DateTime GetStoreModifiedTime();
         User CurrentUser { get; }
         Task SignUpAsync(PassXYZLib.User user);
+        Task<bool> ChangeMasterPassword(string newPassword);
+        string GetMasterPassword();
+        string GetDeviceLockData();
+        bool CreateKeyFile(string data, string username);
     }
 }
