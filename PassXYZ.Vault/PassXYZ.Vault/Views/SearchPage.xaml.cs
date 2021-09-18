@@ -24,13 +24,12 @@ namespace PassXYZ.Vault.Views
         {
             InitializeComponent();
             BindingContext = viewModel = new ItemsViewModel();
+            _ = viewModel.ExecuteSearchCommand(null, null);
         }
 
-        public SearchPage(Item itemGroup)
+        public SearchPage(Item itemGroup) : this()
         {
             currentGroup = itemGroup;
-            InitializeComponent();
-            BindingContext = viewModel = new ItemsViewModel();
         }
 
         /// <summary>

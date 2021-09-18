@@ -109,6 +109,7 @@ namespace PassXYZ.Vault.Services
             //var oldItem = items.Where((Item arg) => arg.Uuid == item.Uuid).FirstOrDefault();
             //items.Remove(oldItem);
             //items.Add(item);
+            item.LastModificationTime = DateTime.UtcNow;
             await SaveAsync();
             Debug.WriteLine($"DataStore: UpdateItemAsync({item.Name}), saved");
         }
@@ -230,9 +231,12 @@ namespace PassXYZ.Vault.Services
         public async Task<bool> ChangeMasterPassword(string newPassword)
         {
             bool result = db.ChangeMasterPassword(newPassword, _user);
-
-            // Save the database to take effect
-            await SaveAsync();
+            if (result)
+            {
+                db.MasterKeyChanged = DateTime.UtcNow;
+                // Save the database to take effect
+                await SaveAsync();
+            }
             return result;
         }
 
