@@ -19,10 +19,6 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <ViewCell.ContextActions>
-                                    <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}"
-                                      Text="{x:Static resources:AppResources.action_id_edit}" />
-                                </ViewCell.ContextActions>
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" x:DataType="kpclib:Item">
                                     <Image Source="{Binding ImgSource}" />
                                     <StackLayout Padding="10">

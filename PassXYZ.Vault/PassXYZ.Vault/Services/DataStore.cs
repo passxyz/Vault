@@ -86,6 +86,7 @@ namespace PassXYZ.Vault.Services
         private async Task SaveAsync()
         {
             var logger = new KPCLibLogger();
+            db.DescriptionChanged = DateTime.UtcNow;
             await Task.Run(() => db.Save(logger));
         }
 
@@ -142,9 +143,14 @@ namespace PassXYZ.Vault.Services
             return await Task.FromResult(items.FirstOrDefault(s => s.Id == id));
         }
 
-        public async Task<PwEntry> FindEntryById(string id)
-        {            
+        public async Task<PwEntry> FindEntryByIdAsync(string id)
+        {
             return await Task.Run(() => { return db.FindEntryById(id); });
+        }
+
+        public PwEntry FindEntryById(string id)
+        {
+            return db.FindEntryById(id);
         }
 
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
