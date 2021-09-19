@@ -122,7 +122,7 @@
     <comment>About information of PassXYZ application</comment>
   </data>
   <data name="Appname" xml:space="preserve">
-    <value>PassXYZ</value>
+    <value>PassXYZ.Vault</value>
     <comment>Application name</comment>
   </data>
   <data name="LoginErrorMessage" xml:space="preserve">
@@ -387,7 +387,7 @@
     <value>Copyright 2021, Roger Ye. All rights reserved.</value>
   </data>
   <data name="about_passxyz_license" xml:space="preserve">
-    <value>PassXYZ is licensed under the GNU General Public License v3.0 . You may not use this file except in compliance with the License. You may obtain a copy of the License at</value>
+    <value>PassXYZ.Vault is licensed under the GNU General Public License v3.0 . You may not use this file except in compliance with the License. You may obtain a copy of the License at</value>
   </data>
   <data name="about_passxyz_web" xml:space="preserve">
     <value>You can submit problem report and get more information on how to use PassXYZ from the website below.</value>
@@ -566,7 +566,7 @@ PassXYZ built-in template files can be downloaded at the below links:
     <value>Acknowledgement</value>
   </data>
   <data name="about_keepass" xml:space="preserve">
-    <value>PassXYZ is built on top of KPCLib which is a library changed based on KeePassLib. KPCLib enhanced KeePassLib so that it can be built as a PCL or .netstandard Library to run on Xamarin. KeePassLib is part of KeePass project developed by Dominik Reichl. The official website of KeePass is:</value>
+    <value>PassXYZ.Vault is built on top of KPCLib which is a library changed based on KeePassLib. KPCLib enhanced KeePassLib so that it can be built as a PCL or .netstandard Library to run on Xamarin. KeePassLib is part of KeePass project developed by Dominik Reichl. The official website of KeePass is:</value>
   </data>
   <data name="about_kpclib" xml:space="preserve">
     <value>The information and source code of KPCLib can be found at:</value>
@@ -972,5 +972,39 @@ PassXYZ built-in template files can be downloaded at the below links:
   </data>
   <data name="SiguUpMessage" xml:space="preserve">
     <value>Successfully created a new user</value>
+  </data>
+  <data name="settings_keyFileField_Value3" xml:space="preserve">
+    <value>Device Lock</value>
+  </data>
+  <data name="action_id_export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="export_error1" xml:space="preserve">
+    <value>Please select a user first.</value>
+  </data>
+  <data name="import_message1" xml:space="preserve">
+    <value>Please select a KeePass or PassXYZ data file</value>
+  </data>
+  <data name="import_data_file" xml:space="preserve">
+    <value>Data file</value>
+  </data>
+  <data name="import_data_file_ex" xml:space="preserve">
+    <value>Data file (with key file)</value>
+  </data>
+  <data name="import_keyfile" xml:space="preserve">
+    <value>Import key file</value>
+  </data>
+  <data name="import_error_msg" xml:space="preserve">
+    <value>Cannot import this file!</value>
+  </data>
+  <data name="import_keyfile_scan" xml:space="preserve">
+    <value>Scan key file QR code</value>
+  </data>
+  <data name="menu_id_users" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="message_id_edit_binary" xml:space="preserve">
+    <value>Cannot edit binary</value>
+    <comment>Warning message</comment>
   </data>
 </root>

@@ -68,6 +68,13 @@
                         Placeholder="{x:Static resources:AppResources.ph_id_value}"
                         VerticalOptions="FillAndExpand" 
                         HorizontalOptions="FillAndExpand">
+                    <Editor.FontFamily>
+                        <OnPlatform x:TypeArguments="x:String">
+                            <On Platform="iOS" Value="Courier New" />
+                            <On Platform="Android" Value="monospace" />
+                            <On Platform="UWP" Value="Courier New" />
+                        </OnPlatform>
+                    </Editor.FontFamily>
                 </Editor>
             </StackLayout>
         </ScrollView>

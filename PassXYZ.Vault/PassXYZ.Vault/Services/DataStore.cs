@@ -51,6 +51,8 @@ namespace PassXYZ.Vault.Services
             db = PasswordDb.Instance;
         }
 
+        public bool IsOpen => db != null && db.IsOpen;
+
         public Item RootGroup
         {
             get => db.RootGroup;
@@ -107,6 +109,7 @@ namespace PassXYZ.Vault.Services
             //var oldItem = items.Where((Item arg) => arg.Uuid == item.Uuid).FirstOrDefault();
             //items.Remove(oldItem);
             //items.Add(item);
+            item.LastModificationTime = DateTime.UtcNow;
             await SaveAsync();
             Debug.WriteLine($"DataStore: UpdateItemAsync({item.Name}), saved");
         }
@@ -139,9 +142,30 @@ namespace PassXYZ.Vault.Services
             return await Task.FromResult(items.FirstOrDefault(s => s.Id == id));
         }
 
+        public async Task<PwEntry> FindEntryById(string id)
+        {            
+            return await Task.Run(() => { return db.FindEntryById(id); });
+        }
+
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
         {
             return await Task.FromResult(items);
+        }
+
+        /// <summary>
+        /// Search entries with a keyword
+        /// </summary>
+        /// <param name="strSearch">keyword to be searched</param>
+        /// <param name="itemGroup">If it is not null, this group is searched</param>
+        /// <returns>a list of entries</returns>
+        public async Task<IEnumerable<Item>> SearchEntriesAsync(string strSearch, Item itemGroup = null)
+        {
+            return await Task.Run(() => { return db.SearchEntries(strSearch, itemGroup); });
+        }
+
+        public async Task<IEnumerable<PwEntry>> GetOtpEntryListAsync()
+        {
+            return await Task.Run(() => { return db.GetOtpEntryList(); });
         }
 
         public async Task<bool> LoginAsync(PassXYZLib.User user)
@@ -204,5 +228,38 @@ namespace PassXYZ.Vault.Services
             return db.DescriptionChanged;
         }
 
+        public async Task<bool> ChangeMasterPassword(string newPassword)
+        {
+            bool result = db.ChangeMasterPassword(newPassword, _user);
+            if (result)
+            {
+                db.MasterKeyChanged = DateTime.UtcNow;
+                // Save the database to take effect
+                await SaveAsync();
+            }
+            return result;
+        }
+
+        public string GetMasterPassword()
+        {
+            var userKey = db.MasterKey.GetUserKey(typeof(KcpPassword)) as KcpPassword;
+            return userKey.Password.ReadString();
+        }
+
+        public string GetDeviceLockData()
+        {
+            return db.GetDeviceLockData(_user);
+        }
+
+        /// <summary>
+        /// Recreate a key file from a PxKeyData
+        /// </summary>
+        /// <param name="data">PxKeyData source</param>
+        /// <param name="username">username inside PxKeyData source</param>
+        /// <returns>true - created key file, false - failed to create key file.</returns>
+        public bool CreateKeyFile(string data, string username)
+        {
+            return db.CreateKeyFile(data, username);
+        }
     }
 }

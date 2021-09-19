@@ -18,6 +18,8 @@ namespace PassXYZ.Vault.ViewModels
         public ObservableCollection<Item> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
+        public Command LoadSearchItemsCommand { get; set; }
+        public Command SearchCommand { get; set; }
         public Command<Item> ItemTapped { get; }
         public bool IsRootGroup => DataStore.CurrentGroup.Uuid.Equals(DataStore.RootGroup.Uuid);
         public bool IsItemGroupSelected { get; set; }
@@ -28,13 +30,48 @@ namespace PassXYZ.Vault.ViewModels
         {
             Items = new ObservableCollection<Item>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            LoadSearchItemsCommand = new Command<string>(async (string strSearch) => await ExecuteSearchCommand(strSearch, null));
+            SearchCommand = new Command(OnSearchItem);
 
             ItemTapped = new Command<Item>(OnItemSelected);
 
             AddItemCommand = new Command(OnAddItem);
         }
 
-        async Task ExecuteLoadItemsCommand()
+        public async Task ExecuteSearchCommand(string strSearch, Item item)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            IsBusy = true;
+
+            try
+            {
+                Items.Clear();
+                var items = await DataStore.SearchEntriesAsync(strSearch, item);
+                foreach (Item entry in items)
+                {
+                    ImageSource imgSource = (ImageSource)entry.ImgSource;
+                    if (entry.ImgSource == null)
+                    {
+                        entry.SetIcon();
+                    }
+                    Items.Add(entry);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"ItemsViewModel: SearchEntriesAsync, {ex}");
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+        }
+
+        private async Task ExecuteLoadItemsCommand()
         {
             IsBusy = true;
 
@@ -222,6 +259,12 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
+        }
+
+        private async void OnSearchItem(object obj)
+        {
+            await Shell.Current.GoToAsync($"{nameof(SearchPage)}");
+            Debug.WriteLine("ItemsViewModel: SearchCommand clicked");
         }
 
     }

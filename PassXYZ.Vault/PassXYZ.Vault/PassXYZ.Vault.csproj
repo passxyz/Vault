@@ -1,14 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <Version>0.1.1</Version>
+    <Company>PassXYZ</Company>
+    <Authors>Roger Ye</Authors>
+    <Copyright>Roger Ye</Copyright>
+    <PackageIcon>passxyz_logo.png</PackageIcon>
+    <PackageIconUrl />
+    <RepositoryUrl>https://github.com/passxyz/PassXYZ.Vault</RepositoryUrl>
+    <PackageProjectUrl>https://passxyz.github.io/</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="data\pass_d_E8f4pEk.xyz" />
     <None Remove="data\pass_e_JyHzpRxcopt.xyz" />
     <None Remove="data\pass_k_JyHzpRxcopt.k4xyz" />
+    <None Include="..\PassXYZ.Vault.UWP\passxyz_logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -18,15 +30,26 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="KPCLib" Version="1.3.1.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
     <PackageReference Include="Markdig" Version="0.25.0" />
     <PackageReference Include="PassXYZ" Version="2.1.4.9" />
     <PackageReference Include="PassXYZLib" Version="1.3.1.2" />
     <PackageReference Include="Plugin.Fingerprint" Version="2.1.4" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />  
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />  
     <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />  
     <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\KPCLib\KPCLib\KPCLib.csproj" />
+    <ProjectReference Include="..\..\..\KPCLib\PassXYZLib\PassXYZLib.csproj" />
+    <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Brand\FontAwesome.Brand.csproj" />
+    <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Regular\FontAwesome.Regular.csproj" />
+    <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Solid\FontAwesome.Solid.csproj" />
+    <ProjectReference Include="..\..\..\Xamarin.Forms.IconFontHelper\src\IconFontHelper\IconFontHelper.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +68,13 @@
     <EmbeddedResource Update="Views\FieldEditPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\SettingsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\SignUpPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\UsersPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

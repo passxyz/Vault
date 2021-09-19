@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             x:Class="PassXYZ.Vault.Views.ImagePreviewPage">
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_close}" Clicked="OnCloseClickedAsync">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="WindowClose">
+                    <iconsS:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsS:IconSource.Color>
+                </iconsS:IconSource>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <StackLayout>
+            <Image x:Name="imageView" Aspect="AspectFill"
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="CenterAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

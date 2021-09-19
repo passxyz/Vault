@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:iconsR="clr-namespace:FontAwesome.Regular;assembly=FontAwesome.Regular"
              xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -45,14 +44,14 @@
                                    Text="{Binding Username}"
                                    HorizontalOptions="Fill" 
                                    Grid.Row="0" Grid.Column="1" />
-                            <Button x:Name="switchUsersButton" Grid.Row="0" Grid.Column="2" 
+                            <ImageButton x:Name="switchUsersButton" Grid.Row="0" Grid.Column="2" 
                                     VerticalOptions="End" IsVisible="False"
                                     Clicked="OnSwitchUsersClicked" BackgroundColor="White" BorderColor="White"
                                     HeightRequest="32"  WidthRequest="32" BorderWidth="0">
-                                <Button.ImageSource>
+                                <ImageButton.Source>
                                     <iconsS:IconSource Icon="ChevronRight" Color="{StaticResource Primary}"/>
-                                </Button.ImageSource>
-                            </Button>
+                                </ImageButton.Source>
+                            </ImageButton>
                             <!-- Row 2 (Password)
                             <Image Grid.Row="1" Grid.Column="0" IsVisible="False">
                                 <Image.Source>
@@ -65,14 +64,14 @@
                                    Text="{Binding Password}"
                                    HorizontalOptions="Fill" 
                                    Grid.Row="1" Grid.Column="1" />
-                            <Button x:Name="fpButton" Grid.Row="1" Grid.Column="2" 
+                            <ImageButton x:Name="fpButton" Grid.Row="1" Grid.Column="2" 
                                     VerticalOptions="End" IsVisible="False"
                                     Clicked="OnFingerprintClicked" BackgroundColor="White" BorderColor="White"
-                                    HeightRequest="34"  WidthRequest="36" BorderWidth="0">
-                                <Button.ImageSource>
-                                    <iconsS:IconSource Icon="Fingerprint" />
-                                </Button.ImageSource>
-                            </Button>
+                                    HeightRequest="32"  WidthRequest="32" BorderWidth="0">
+                                <ImageButton.Source>
+                                    <iconsS:IconSource Icon="Fingerprint" Color="{StaticResource Primary}" />
+                                </ImageButton.Source>
+                            </ImageButton>
                             <!-- Row 4 (Login Button) -->
                             <Button Text="{x:Static resources:AppResources.LoginPageTitle}" 
                                 TextColor="White"  

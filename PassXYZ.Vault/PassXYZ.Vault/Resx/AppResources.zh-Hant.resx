@@ -121,7 +121,7 @@
     <value>關於</value>
   </data>
   <data name="Appname" xml:space="preserve">
-    <value>PassXYZ</value>
+    <value>PassXYZ.Vault</value>
   </data>
   <data name="LoginErrorMessage" xml:space="preserve">
     <value>登錄失敗，請檢查用戶名和密碼。</value>
@@ -358,7 +358,7 @@
     <value>Copyright 2021, 葉樹杲 All rights reserved.</value>
   </data>
   <data name="about_passxyz_license" xml:space="preserve">
-    <value>PassXYZ使用GNU通用公共許可證v3.0。如果您使用該軟件，表示您同意Apache版權協議中的條款。您可以在下列網站獲得Apache 2.0版權協議。</value>
+    <value>PassXYZ.Vault使用GNU通用公共許可證v3.0。如果您使用該軟件，表示您同意Apache版權協議中的條款。您可以在下列網站獲得Apache 2.0版權協議。</value>
   </data>
   <data name="about_passxyz_web" xml:space="preserve">
     <value>您可以通過下面的PassXYZ網站提交問題報告和了解使用說明。</value>
@@ -524,7 +524,7 @@
     <value>鳴謝</value>
   </data>
   <data name="about_keepass" xml:space="preserve">
-    <value>PassXYZ是基於KPCLib開發的。KPCLib是對KeePassLib在Xamarin上的擴展，使之可以運行在Xamarin環境中。KeePassLib是開源項目KeePass的壹部分。KeePass由Dominik Reichl開發。KeePass的官方網站是：</value>
+    <value>PassXYZ.Vault是基於KPCLib開發的。KPCLib是對KeePassLib在Xamarin上的擴展，使之可以運行在Xamarin環境中。KeePassLib是開源項目KeePass的壹部分。KeePass由Dominik Reichl開發。KeePass的官方網站是：</value>
   </data>
   <data name="about_kpclib" xml:space="preserve">
     <value>關於KPCLib的信息和源代碼可以在下面網站獲得：</value>
@@ -930,5 +930,38 @@
   </data>
   <data name="SiguUpMessage" xml:space="preserve">
     <value>成功的創建了新用戶</value>
+  </data>
+  <data name="settings_keyFileField_Value3" xml:space="preserve">
+    <value>設備鎖</value>
+  </data>
+  <data name="action_id_export" xml:space="preserve">
+    <value>導出</value>
+  </data>
+  <data name="export_error1" xml:space="preserve">
+    <value>請選擇一個用戶</value>
+  </data>
+  <data name="import_message1" xml:space="preserve">
+    <value>請選擇一個KeePass或PassXYZ數據文件</value>
+  </data>
+  <data name="import_data_file" xml:space="preserve">
+    <value>數據文件</value>
+  </data>
+  <data name="import_data_file_ex" xml:space="preserve">
+    <value>數據文件(有密鑰文件)</value>
+  </data>
+  <data name="import_keyfile" xml:space="preserve">
+    <value>導入密鑰文件</value>
+  </data>
+  <data name="import_error_msg" xml:space="preserve">
+    <value>無法導入文件！</value>
+  </data>
+  <data name="import_keyfile_scan" xml:space="preserve">
+    <value>掃描密鑰文件二維碼</value>
+  </data>
+  <data name="menu_id_users" xml:space="preserve">
+    <value>用戶</value>
+  </data>
+  <data name="message_id_edit_binary" xml:space="preserve">
+    <value>附件只能添加或刪除，不可以更改</value>
   </data>
 </root>

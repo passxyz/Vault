@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -14,6 +15,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
+using Serilog;
+using PassXYZLib;
 
 namespace PassXYZ.Vault.UWP
 {
@@ -57,7 +61,16 @@ namespace PassXYZ.Vault.UWP
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 global::Xamarin.Forms.Forms.SetFlags("Shell_UWP_Experimental");
-                Xamarin.Forms.Forms.Init(e);
+                // Workaround for this issue: https://github.com/xamarin/Xamarin.Forms/issues/12404
+                var assemblies = new List<Assembly>();
+                assemblies.Add(typeof(FontAwesome.Solid.Fonts).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(FontAwesome.Regular.Fonts).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(FontAwesome.Brand.Fonts).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(ZXing.Net.Mobile.Forms.WindowsUniversal.ZXingScannerViewRenderer).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(ZXing.Mobile.ZXingScannerControl).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(ZXing.Net.Mobile.Forms.WindowsUniversal.ZXingBarcodeImageViewRenderer).GetTypeInfo().Assembly);
+                assemblies.Add(typeof(Windows.UI.Xaml.Controls.Image).GetTypeInfo().Assembly);
+                Xamarin.Forms.Forms.Init(e, assemblies);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -67,6 +80,10 @@ namespace PassXYZ.Vault.UWP
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File(PxDataFile.LogFilePath, rollingInterval: RollingInterval.Day)
+                .CreateLogger();
 
             if (rootFrame.Content == null)
             {

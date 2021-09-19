@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             xmlns:viewmodels="clr-namespace:PassXYZ.Vault.ViewModels"
+             x:DataType="viewmodels:LoginViewModel"
+             x:Class="PassXYZ.Vault.Views.SettingsPage">
+    <ContentPage.Content>
+        <TableView Intent="Data" HasUnevenRows="True" Margin="10,0,10,0">
+            <TableRoot x:Name="tableRoot">
+                <TableSection x:Name="standardSection">
+
+                    <!-- Timer -->
+                    <ViewCell Tapped="OnTimerTappedAsync">
+                        <StackLayout Orientation="Horizontal" Padding="10">
+                            <Image Margin="10">
+                                <Image.Source>
+                                    <iconsS:IconSource Icon="Clock" />
+                                </Image.Source>
+                            </Image>
+                            <StackLayout Margin="0, 10, 0, 10">
+                                <Label x:Name="timerField" Text="{x:Static resources:AppResources.settings_timer_title}" 
+                                       FontAttributes="Bold"  WidthRequest="290" />
+                                <Label Text="{x:Static resources:AppResources.settings_timer_remark}" />
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+
+                    <!-- Fingerprint setup -->
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="10">
+                            <Image Margin="10">
+                                <Image.Source>
+                                    <iconsS:IconSource Icon="Fingerprint" />
+                                </Image.Source>
+                            </Image>
+                            <StackLayout Margin="0, 10, 0, 10">
+                                <Label Text="{x:Static resources:AppResources.settings_fingerprint_title}" 
+                                       FontAttributes="Bold"  WidthRequest="290" />
+                                <StackLayout Orientation="Horizontal">
+                                    <Label x:Name="FingerprintStatus" 
+                                           Text="{x:Static resources:AppResources.settings_fingerprint_remark}" 
+                                           VerticalOptions="Center" />
+                                    <Switch x:Name="FingerPrintSwitcher" HorizontalOptions="EndAndExpand" Toggled="OnSwitcherToggledAsync" />
+                                </StackLayout>
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+
+                    <!-- Security Settings -->
+                    <ViewCell Tapped="OnSecuritySettingsTappedAsync" IsEnabled="{Binding IsDeviceLockEnabled}">
+                        <StackLayout Orientation="Horizontal" Padding="10" IsVisible="{Binding IsDeviceLockEnabled}">
+                            <Image Margin="10">
+                                <Image.Source>
+                                    <iconsS:IconSource Icon="ShieldAlt" />
+                                </Image.Source>
+                            </Image>
+                            <StackLayout Margin="0, 10, 0, 10">
+                                <Label Text="{x:Static resources:AppResources.settings_keyFileField_Key}" 
+                                       FontAttributes="Bold"  WidthRequest="290" />
+                                <Label x:Name="keyFileField" Text="{x:Static resources:AppResources.settings_keyFileField_Value1}" />
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+
+                </TableSection>
+            </TableRoot>
+        </TableView>
+    </ContentPage.Content>
+</ContentPage>
