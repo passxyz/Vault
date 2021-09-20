@@ -165,24 +165,10 @@ namespace PassXYZLib
 
     public static class PwEntryEx
     {
-        public static bool IsNotes(this PwEntry entry) 
+        public static bool IsNotes(this PwEntry entry)
         {
             string subType = entry.CustomData.Get(PxDefs.PxCustomDataItemSubType);
-            if(string.IsNullOrEmpty(subType)) 
-            {
-                return false;
-            }
-            else 
-            {
-                if (subType.Equals(ItemSubType.Notes.ToString()))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            return !string.IsNullOrEmpty(subType) && subType.Equals(ItemSubType.Notes.ToString());
         }
 
         /// <summary>
@@ -200,8 +186,8 @@ namespace PassXYZLib
             }
         }
 
-        public static bool IsPxEntry(this PwEntry entry) 
-        { 
+        public static bool IsPxEntry(this PwEntry entry)
+        {
             return PxDefs.IsPxEntry(entry);
         }
 
@@ -218,23 +204,23 @@ namespace PassXYZLib
                     }
                 }
 
-                if(string.IsNullOrEmpty(lastKey)) 
-                { 
-                    return "000" + key; 
+                if(string.IsNullOrEmpty(lastKey))
+                {
+                    return "000" + key;
                 }
-                else 
+                else
                 {
                     uint index = uint.Parse(lastKey.Substring(0, PxDefs.PxEntryKeyDigits));
                     return PxDefs.EncodeKey(key, index + 1);
                 }
             }
-            else 
+            else
             {
                 return key;
             }
         }
 
-        public static string GetNotes(this PwEntry entry) 
+        public static string GetNotes(this PwEntry entry)
         {
             return entry.Strings.ReadSafe(PwDefs.NotesField);
         }
@@ -282,8 +268,8 @@ namespace PassXYZLib
                     fields.Add(new Field(PwDefs.UrlField, entry.Strings.ReadSafe(PwDefs.UrlField), entry.Strings.GetSafe(PwDefs.UrlField).IsProtected));
                 }
 
-                foreach (var field in entry.Strings) 
-                { 
+                foreach (var field in entry.Strings)
+                {
                     if (!PwDefs.IsStandardField(field.Key))
                     {
                         fields.Add(new Field(field.Key, entry.Strings.ReadSafe(field.Key), entry.Strings.GetSafe(field.Key).IsProtected));
@@ -305,6 +291,18 @@ namespace PassXYZLib
             }
 
             return fields;
+        }
+    
+        public static string GetUrlField(this PwEntry entry)
+        {
+            foreach (KeyValuePair<string, ProtectedString> pstr in entry.Strings)
+            {
+                if (pstr.Key.EndsWith(PwDefs.UrlField))
+                {
+                    return entry.Strings.ReadSafe(pstr.Key);
+                }
+            }
+            return string.Empty;
         }
     }
 

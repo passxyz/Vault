@@ -5,6 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using SkiaSharp;
+using Xamarin.Forms;
+
 using KeePassLib;
 using KeePassLib.Collections;
 using KeePassLib.Keys;
@@ -42,7 +45,7 @@ namespace PassXYZ.Vault.Services
 
     public class DataStore : IDataStore<Item>
     {
-        private List<Item> items;
+        // private List<Item> items;
         private readonly PasswordDb db = null;
         private User _user;
 
@@ -60,13 +63,15 @@ namespace PassXYZ.Vault.Services
 
         public string CurrentPath => db.CurrentPath;
 
+        public List<Item> Items => db.CurrentGroup.GetItems();
+
         public Item CurrentGroup
         {
             get => db.CurrentGroup;
             set
             {
                 db.CurrentGroup = (PwGroup)value;
-                items = db.CurrentGroup.GetItems();
+                // items = db.CurrentGroup.GetItems();
             }
         }
 
@@ -83,7 +88,7 @@ namespace PassXYZ.Vault.Services
             }
         }
 
-        private async Task SaveAsync()
+        public async Task SaveAsync()
         {
             var logger = new KPCLibLogger();
             db.DescriptionChanged = DateTime.UtcNow;
@@ -92,7 +97,7 @@ namespace PassXYZ.Vault.Services
 
         public async Task AddItemAsync(Item item)
         {
-            items.Add(item);
+            Items.Add(item);
             if(item.IsGroup)
             {
                 db.CurrentGroup.AddGroup(item as PwGroup, true);
@@ -117,8 +122,8 @@ namespace PassXYZ.Vault.Services
 
         public async Task<bool> DeleteItemAsync(string id)
         {
-            Item oldItem = items.FirstOrDefault((Item arg) => arg.Id == id);
-            if (items.Remove(oldItem))
+            Item oldItem = Items.FirstOrDefault((Item arg) => arg.Id == id);
+            if (Items.Remove(oldItem))
             {
                 if (oldItem.IsGroup)
                 {
@@ -138,9 +143,19 @@ namespace PassXYZ.Vault.Services
             }
         }
 
-        public async Task<Item> GetItemAsync(string id)
+        public async Task<Item> GetItemFromCurrentGroupAsync(string id)
         {
-            return await Task.FromResult(items.FirstOrDefault(s => s.Id == id));
+            return await Task.FromResult(Items.FirstOrDefault(s => s.Id == id));
+        }
+
+        public Item GetItemFromCurrentGroup(string id)
+        {
+            return Items.FirstOrDefault(s => s.Id == id);
+        }
+
+        public PwGroup FindGroup(string id)
+        {
+            return db.RootGroup.FindGroup(id, true);
         }
 
         public async Task<PwEntry> FindEntryByIdAsync(string id)
@@ -155,7 +170,7 @@ namespace PassXYZ.Vault.Services
 
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
         {
-            return await Task.FromResult(items);
+            return await Task.FromResult(Items);
         }
 
         /// <summary>
@@ -182,7 +197,8 @@ namespace PassXYZ.Vault.Services
             db.Open(user);
             if (db.IsOpen)
             {
-                items = db.RootGroup.GetItems();
+                //items = db.RootGroup.GetItems();
+                db.CurrentGroup = db.RootGroup;
             }
 
             return await Task.FromResult(db.IsOpen);
@@ -255,6 +271,52 @@ namespace PassXYZ.Vault.Services
         public string GetDeviceLockData()
         {
             return db.GetDeviceLockData(_user);
+        }
+
+        /// <summary>
+        /// Get the list of custom icons.
+        /// </summary>
+        /// <returns>list of custom icons</returns>
+        public List<PwCustomIcon> GetCustomIcons()
+        {
+            return db.CustomIcons;
+        }
+
+        /// <summary>
+        /// Delete a custom icon by uuid.
+        /// </summary>
+        /// <param name="uuid">uuid of the custom icon</param>
+        /// <returns>success or failure</returns>
+        public async Task<bool> DeleteCustomIconAsync(PwUuid uuidIcon)
+        {
+            List<PwUuid> vUuidsToDelete = new List<PwUuid>();
+
+            if (uuidIcon == null) { return false; }
+            vUuidsToDelete.Add(uuidIcon);
+            bool result = db.DeleteCustomIcons(vUuidsToDelete);
+            if (result)
+            {
+                // Save the database to take effect
+                await SaveAsync();
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Get the image source from the custom icon in the database
+        /// </summary>
+        /// <param name="uuid">UUID of custom icon</param>
+        /// <returns>ImageSource or null</returns>
+        public ImageSource GetBuiltInImage(PwUuid uuid)
+        {
+            PwCustomIcon customIcon = db.GetPwCustomIcon(uuid);
+            if (customIcon != null)
+            {
+                byte[] pb = customIcon.ImageDataPng;
+                SKBitmap bitmap = PxItem.LoadImage(pb);
+                return PxItem.GetImageSource(bitmap);
+            }
+            return null;
         }
 
         /// <summary>

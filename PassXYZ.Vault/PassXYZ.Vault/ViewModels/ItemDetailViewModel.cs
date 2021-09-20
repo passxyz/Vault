@@ -83,7 +83,7 @@ namespace PassXYZ.Vault.ViewModels
         {
             try
             {
-                Item item = await DataStore.GetItemAsync(itemId);
+                Item item = await DataStore.GetItemFromCurrentGroupAsync(itemId);
                 if (item == null)
                 {
                     // This may be the case that we navigate to ItemDetailPage from OtpListPage

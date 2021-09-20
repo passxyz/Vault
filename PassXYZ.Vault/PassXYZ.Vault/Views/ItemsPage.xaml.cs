@@ -55,6 +55,14 @@ namespace PassXYZ.Vault.Views
             }
         }
 
+        private async void OnMenuChangeIconAsync(object sender, EventArgs e)
+        {
+            var mi = (MenuItem)sender;
+            Item item = mi.CommandParameter as Item;
+            ContentPage page = new IconSearchPage(item);
+            await Navigation.PushModalAsync(new NavigationPage(page));
+        }
+
         private async void OnMenuDeleteAsync(object sender, EventArgs e)
         {
             var mi = (MenuItem)sender;

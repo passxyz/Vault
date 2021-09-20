@@ -11,9 +11,11 @@ using PassXYZ.Vault.Resx;
 
 namespace PassXYZ.Vault.ViewModels
 {
+    [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class ItemsViewModel : BaseViewModel
     {
         private Item _selectedItem;
+        private bool _reloadCurrentGroup = false;
 
         public ObservableCollection<Item> Items { get; }
         public Command LoadItemsCommand { get; }
@@ -25,6 +27,32 @@ namespace PassXYZ.Vault.ViewModels
         public bool IsItemGroupSelected { get; set; }
         private bool _isBackButtonClicked = false;
         public bool IsBackButtonClicked { get => _isBackButtonClicked; set { _isBackButtonClicked = value; } }
+
+        public Item SelectedItem
+        {
+            get => _selectedItem;
+            set
+            {
+                SetProperty(ref _selectedItem, value);
+                OnItemSelected(value);
+            }
+        }
+        /// <summary>
+        /// The item Id of the selected group
+        /// </summary>
+        public string ItemId
+        {
+            get
+            {
+                if (_selectedItem == null) { return string.Empty; }
+                return _selectedItem.Id;
+            }
+            set
+            {
+                _selectedItem = DataStore.FindGroup(value);
+                IsItemGroupSelected = true;
+            }
+        }
 
         public ItemsViewModel()
         {
@@ -71,9 +99,15 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        /// <summary>
+        /// Load items from database. There are three cases we need to handle:
+        /// 1. Forward - When a item is selected
+        /// 2. Backward - Click backward key
+        /// 3. Reload the current group - After editing, deleting or adding an entry or a group
+        /// </summary>
         private async Task ExecuteLoadItemsCommand()
         {
-            IsBusy = true;
+            // IsBusy = true;
 
             try
             {
@@ -81,24 +115,40 @@ namespace PassXYZ.Vault.ViewModels
                 {
                     //if (AppShell.CurrentAppShell != null)
                     //{
-                    //    Debug.WriteLine($"ItemsViewModel: {Shell.Current.CurrentState.Location}");
-                    //    Debug.WriteLine($"ItemsViewModel: C:{AppShell.CurrentAppShell.CurrentRoute}, T:{AppShell.CurrentAppShell.TargetRoute}");
-                    //    Debug.WriteLine($"ItemsViewModel: {DataStore.CurrentPath}");
+                    //    Debug.WriteLine($"ItemsViewModel: ELTC=>{Shell.Current.CurrentState.Location}");
+                    //    Debug.WriteLine($"ItemsViewModel: ELTC=>C:{AppShell.CurrentAppShell.CurrentRoute}, T:{AppShell.CurrentAppShell.TargetRoute}");
+                    //    Debug.WriteLine($"ItemsViewModel: ELTC=>{DataStore.CurrentPath}");
                     //}
 
                     if (AppShell.CurrentAppShell.TargetRoute.Equals("..") || IsBackButtonClicked)
                     {
-                        if(!IsItemGroupSelected) 
+                        if (_reloadCurrentGroup)
                         {
-                            if(!IsRootGroup && AppShell.CurrentAppShell.CurrentRoute.EndsWith("group")) 
-                            {
-                                DataStore.SetCurrentToParent();
-                                Debug.WriteLine($"ItemsViewModel: back to group {DataStore.CurrentGroup.Name}");
-                            }
-                            else
-                            {
-                                Debug.WriteLine($"ItemsViewModel: back from route {AppShell.CurrentAppShell.CurrentRoute}");
-                            }
+                            // We come back from a ItemDetailPage
+                            _reloadCurrentGroup = false;
+                        }
+                        else
+                        {
+                            DataStore.SetCurrentToParent();
+                        }
+                        if (!IsRootGroup && AppShell.CurrentAppShell.CurrentRoute.EndsWith("group"))
+                        {
+                            Debug.WriteLine($"ItemsViewModel: ELTC <= back to group {DataStore.CurrentGroup.Name}");
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"ItemsViewModel: ELTC <= back from route {AppShell.CurrentAppShell.CurrentRoute} and current group {DataStore.CurrentGroup.Name}");
+                        }
+                    }
+                    else
+                    {
+                        if (IsItemGroupSelected)
+                        {
+                            Debug.WriteLine($"ItemsViewModel: ELTC => Loading items from {DataStore.CurrentGroup.Name}");
+                        }
+                        else 
+                        {
+                            Debug.WriteLine($"ItemsViewModel: ELTC = Reloading the current group {DataStore.CurrentGroup.Name}");
                         }
                     }
 
@@ -132,17 +182,7 @@ namespace PassXYZ.Vault.ViewModels
         public void OnAppearing()
         {
             IsBusy = true;
-            SelectedItem = null;
-        }
-
-        public Item SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
+            // SelectedItem = null;
         }
 
         private async void OnAddItem(object obj)
@@ -197,18 +237,20 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
+            Debug.WriteLine($"ItemsViewModel: OnItemSelected, item={item.Name}, IsBusy={IsBusy}");
+
             if (item.IsGroup)
             {
                 DataStore.CurrentGroup = item;
                 if (!IsRootGroup)
                 {
-                    await Shell.Current.GoToAsync($"group");
-                    IsItemGroupSelected = true;
+                    await Shell.Current.GoToAsync($"group?{nameof(ItemsViewModel.ItemId)}={item.Id}");
                 }
-                await ExecuteLoadItemsCommand();
+                // await ExecuteLoadItemsCommand();
             }
             else
             {
+                _reloadCurrentGroup = true;
                 var pwEntry = (PwEntry)item;
                 if (pwEntry.IsNotes())
                 {

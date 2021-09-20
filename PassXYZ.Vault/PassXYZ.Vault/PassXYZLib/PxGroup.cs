@@ -32,5 +32,36 @@ namespace PassXYZLib
             }
             return itemList;
         }
-    }
+
+		/// <summary>
+		/// Find a group by Id.
+		/// </summary>
+		/// <param name="id">ID identifying the group the caller is looking for.</param>
+		/// <param name="bSearchRecursive">If <c>true</c>, the search is recursive.</param>
+		/// <returns>Returns reference to found group, otherwise <c>null</c>.</returns>
+		public static PwGroup FindGroup(this PwGroup group, string id, bool bSearchRecursive)
+		{
+			if (group.Id == id) return group;
+
+			if (bSearchRecursive)
+			{
+				PwGroup pgRec;
+				foreach (PwGroup pg in group.Groups)
+				{
+					pgRec = pg.FindGroup(id, true);
+					if (pgRec != null) return pgRec;
+				}
+			}
+			else // Not recursive
+			{
+				foreach (PwGroup pg in group.Groups)
+				{
+					if (pg.Id == id)
+						return pg;
+				}
+			}
+
+			return null;
+		}
+	}
 }

@@ -133,7 +133,7 @@ namespace PassXYZLib
         /// </summary>
 		/// <param name="pb">byte arraty</param>
 		/// <param name="url">This is the url using to retrieve icon.</param>
-        private static SKBitmap LoadImage(byte[] pb, string faviconUrl = null)
+        public static SKBitmap LoadImage(byte[] pb, string faviconUrl = null)
         {
             int w = 96, h = 96;
             if (DeviceInfo.Platform.Equals(DevicePlatform.Android))
@@ -168,7 +168,7 @@ namespace PassXYZLib
 
         }
 
-        private static ImageSource GetImageSource(SKBitmap bitmap) 
+        public static ImageSource GetImageSource(SKBitmap bitmap)
         {
             if (bitmap != null)
             {
@@ -184,17 +184,16 @@ namespace PassXYZLib
 
         public static SKBitmap GetBitmapByUrl(string url) 
         {
-            var faviconUrl = RetrieveFavicon(url);
-
             try
             {
-                var uri = new Uri(faviconUrl);
+                string faviconUrl = RetrieveFavicon(url);
+                Uri uri = new Uri(faviconUrl);
                 WebClient myWebClient = new WebClient();
                 byte[] pb = myWebClient.DownloadData(faviconUrl);
 
                 return LoadImage(pb, faviconUrl);
             }
-            catch (WebException ex)
+            catch (Exception ex)
             {
                 Debug.WriteLine($"{ex}");
             }
@@ -290,40 +289,64 @@ namespace PassXYZLib
 
         /// <summary>
         /// Add a new custom icon to the database and set the new icon as the icon for this item.
+        /// If the url is null, try to get the url from the URL field in the item.
         /// </summary>
         /// <param name="item">an instance of Item. Must not be <c>null</c>.</param>	
         /// <param name="url">Url used to retrieve the new icon.</param>	
-        public static void AddNewIcon(this Item item, string url) 
+		/// <returns>an instance of PxIcon</returns>
+        public static PxIcon AddNewIcon(this Item item, string url = null)
         {
             PasswordDb db = PasswordDb.Instance;
-            if (db != null)
+            if (url == null && !item.IsGroup)
+            {
+                // If the url is null, we try to get the url from the URL field in the item.
+                PwEntry entry = item as PwEntry;
+                url = entry.GetUrlField();
+            }
+
+            if (db != null && !string.IsNullOrEmpty(url))
             {
                 if (db.IsOpen)
                 {
-                    Uri uri = new Uri(url);
-                    var old = db.GetCustomIcon(uri.Host);
-                    if (old == null) 
+                    try
                     {
-                        var bitmap = GetBitmapByUrl(url);
-                        var uuid = db.SaveCustomIcon(bitmap, uri.Host);
-                        item.CustomIconUuid = uuid;
-                        Debug.WriteLine($"AddNewIcon: hostname={uri.Host}");
+                        Uri uri = new Uri(url);
+                        PwCustomIcon old = db.GetCustomIcon(uri.Host);
+                        if (old == null)
+                        {
+                            SKBitmap bitmap = GetBitmapByUrl(url);
+                            if (bitmap != null)
+                            {
+                                PwUuid uuid = db.SaveCustomIcon(bitmap, uri.Host);
+                                if (!uuid.Equals(PwUuid.Zero))
+                                {
+                                    item.CustomIconUuid = uuid;
+
+                                    PxIcon icon = new PxIcon
+                                    {
+                                        IconType = PxIconType.PxEmbeddedIcon,
+                                        Uuid = uuid,
+                                        Name = uri.Host
+                                    };
+
+                                    Debug.WriteLine($"AddNewIcon: hostname={uri.Host}");
+                                    return icon;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"AddNewIcon: Found an existing icon as {uri.Host}");
+                        }
                     }
-                    else 
+                    catch (Exception ex)
                     {
-                        item.CustomIconUuid = old.Uuid;
-                        Debug.WriteLine($"AddNewIcon: Found an existing icon as {uri.Host}");
+                        Debug.WriteLine($"{ex}");
                     }
                 }
-                else
-                {
-                    Debug.WriteLine("AddNewIcon: PasswordDb is closed");
-                }
             }
-            else 
-            {
-                Debug.WriteLine("AddNewIcon: No PasswordDb instance");
-            }
+            Debug.WriteLine("AddNewIcon: cannot add the new icon.");
+            return null;
         }
     }
 }
