@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 
 using System.Text;
 
@@ -255,14 +256,40 @@ namespace PassXYZLib
             item.ImgSource = icon;
         }
 
-        public static void SetIcon(this Item item) 
+        public static async Task SetCustomIconByUrl(this Item item, string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) { return; }
+
+            PasswordDb db = PasswordDb.Instance;
+            try 
+            {
+                Uri uri = new Uri(url);
+                PwCustomIcon old = db.GetCustomIcon(uri.Host);
+                if (old == null)
+                {
+                    // If this is a new one, try to load it.
+                    await Task.Run(() => AddNewIcon(item, url));
+                }
+                else
+                {
+                    // If an icon can be found, then use it.
+                    item.CustomIconUuid = old.Uuid;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
+        }
+
+        public static void SetIcon(this Item item)
         {
             if (item.CustomIconUuid != PwUuid.Zero)
             {
                 PasswordDb db = PasswordDb.Instance;
                 if(db != null)
-                { 
-                    if(db.IsOpen) 
+                {
+                    if(db.IsOpen)
                     {
                         PwCustomIcon customIcon = db.GetPwCustomIcon(item.CustomIconUuid);
                         if(customIcon != null) 

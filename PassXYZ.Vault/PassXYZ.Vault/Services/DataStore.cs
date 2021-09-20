@@ -93,6 +93,7 @@ namespace PassXYZ.Vault.Services
             var logger = new KPCLibLogger();
             db.DescriptionChanged = DateTime.UtcNow;
             await Task.Run(() => db.Save(logger));
+            await GetItemsAsync();
         }
 
         public async Task AddItemAsync(Item item)

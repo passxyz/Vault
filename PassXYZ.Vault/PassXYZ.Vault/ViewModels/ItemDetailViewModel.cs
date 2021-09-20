@@ -214,6 +214,11 @@ namespace PassXYZ.Vault.ViewModels
 
                 Fields.Add(field);
                 dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+                if (key.EndsWith(PwDefs.UrlField))
+                {
+                    // If this is a URL field, we can try to find a custom icon.
+                    await dataEntry.SetCustomIconByUrl(v);
+                }
                 await DataStore.UpdateItemAsync(dataEntry);
             })));
         }

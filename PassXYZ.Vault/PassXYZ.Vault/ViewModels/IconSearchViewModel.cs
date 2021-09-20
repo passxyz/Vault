@@ -115,7 +115,6 @@ namespace PassXYZ.Vault.ViewModels
             {
                 selectedItem.CustomIconUuid = SelectedIcon.Uuid;
                 await DataStore.SaveAsync();
-                _ = await DataStore.GetItemsAsync();
             }
             _ = await Shell.Current.Navigation.PopModalAsync();
         }
