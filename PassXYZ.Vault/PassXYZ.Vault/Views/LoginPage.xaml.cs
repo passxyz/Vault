@@ -280,21 +280,34 @@ namespace PassXYZ.Vault.Views
 
         private async Task FingerprintLogin()
         {
-            string data = await SecureStorage.GetAsync(_viewModel.Username);
-            if ((availability == FingerprintAvailability.Available) && (data != null))
+            try 
             {
-                if (!_initialized)
+                string data = string.Empty;
+
+                if (!string.IsNullOrEmpty(_viewModel.Username)) 
                 {
-                    _initialized = true;
-                    authenticationType = "Auth Type: " + await CrossFingerprint.Current.GetAuthenticationTypeAsync();
+                    data = await SecureStorage.GetAsync(_viewModel.Username);
                 }
-                fpButton.IsVisible = true;
-                Debug.WriteLine($"Fingerprint is {availability}, {authenticationType}.");
-                await AuthenticateAsync(_viewModel.Username + ": " + AppResources.fingerprint_login_message);
+
+                if ((availability == FingerprintAvailability.Available) && (!string.IsNullOrWhiteSpace(data)))
+                {
+                    if (!_initialized)
+                    {
+                        _initialized = true;
+                        authenticationType = "Auth Type: " + await CrossFingerprint.Current.GetAuthenticationTypeAsync();
+                    }
+                    fpButton.IsVisible = true;
+                    Debug.WriteLine($"Fingerprint is {availability}, {authenticationType}.");
+                    await AuthenticateAsync(_viewModel.Username + ": " + AppResources.fingerprint_login_message);
+                }
+                else
+                {
+                    fpButton.IsVisible = false;
+                }
             }
-            else
+            catch (Exception ex) 
             {
-                fpButton.IsVisible = false;
+                Debug.Write($"{ex}");
             }
         }
 
