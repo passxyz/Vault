@@ -130,6 +130,11 @@ namespace PassXYZ.Vault.ViewModels
                         // We cannot set to field.Value, since it will return a masked string for protected data
                         dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
                         Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
+                        if (key.EndsWith(PwDefs.UrlField) && dataEntry.CustomIconUuid.Equals(PwUuid.Zero))
+                        {
+                            // If this is a URL field and there is no custom icon, we can try to add a custom icon by URL.
+                            await dataEntry.SetCustomIconByUrl(v);
+                        }
                         await DataStore.UpdateItemAsync(dataEntry);
                     }
                     else
@@ -214,9 +219,9 @@ namespace PassXYZ.Vault.ViewModels
 
                 Fields.Add(field);
                 dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
-                if (key.EndsWith(PwDefs.UrlField))
+                if (key.EndsWith(PwDefs.UrlField) && dataEntry.CustomIconUuid.Equals(PwUuid.Zero))
                 {
-                    // If this is a URL field, we can try to find a custom icon.
+                    // If this is a URL field and there is no custom icon, we can try to add a custom icon by URL.
                     await dataEntry.SetCustomIconByUrl(v);
                 }
                 await DataStore.UpdateItemAsync(dataEntry);
