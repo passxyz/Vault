@@ -25,7 +25,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>PassXYZ.Vault</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.PassXYZ.Vault</string>
+	<string>com.passxyz.vault</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
 	<key>UILaunchStoryboardName</key>
@@ -33,7 +33,7 @@
 	<key>CFBundleName</key>
 	<string>PassXYZ.Vault</string>
 	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<string>Resources/Images.xcassets/AppIcons.appiconset</string>
 	<key>UISupportsDocumentBrowser</key>
 	<true/>
 	<key>NSFaceIDUsageDescription</key>
@@ -50,8 +50,6 @@
 	<string>This app needs access to the photo gallery so pictures can be added as attachment.</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Calendar permission is required due to Permissions Plugin for Xamarin is used in PassXYZ.</string>
-	<key>XSAppIconAssets</key>
-	<string>Resources/Images.xcassets/AppIcons.appiconset</string>
 	<key>XSLaunchImageAssets</key>
 	<string>Resources/Images.xcassets/LaunchImages.launchimage</string>
 	<key>UIBackgroundModes</key>
