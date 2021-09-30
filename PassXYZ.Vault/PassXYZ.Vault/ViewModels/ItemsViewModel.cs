@@ -14,8 +14,8 @@ namespace PassXYZ.Vault.ViewModels
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class ItemsViewModel : BaseViewModel
     {
-        private Item _selectedItem;
-        private bool _reloadCurrentGroup = false;
+        private Item _selectedItem = null;
+        // private bool _reloadCurrentGroup = false;
 
         public ObservableCollection<Item> Items { get; }
         public Command LoadItemsCommand { get; }
@@ -24,33 +24,25 @@ namespace PassXYZ.Vault.ViewModels
         public Command SearchCommand { get; set; }
         public Command<Item> ItemTapped { get; }
         public bool IsRootGroup => DataStore.CurrentGroup.Uuid.Equals(DataStore.RootGroup.Uuid);
-        public bool IsItemGroupSelected { get; set; }
-        private bool _isBackButtonClicked = false;
-        public bool IsBackButtonClicked { get => _isBackButtonClicked; set { _isBackButtonClicked = value; } }
+        // public bool IsItemGroupSelected { get; set; }
+        // private bool _isBackButtonClicked = false;
+        // public bool IsBackButtonClicked { get => _isBackButtonClicked; set { _isBackButtonClicked = value; } }
 
         public Item SelectedItem
         {
             get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
+            set => SetProperty(ref _selectedItem, value);
         }
         /// <summary>
         /// The item Id of the selected group
         /// </summary>
         public string ItemId
         {
-            get
-            {
-                if (_selectedItem == null) { return string.Empty; }
-                return _selectedItem.Id;
-            }
+            get => _selectedItem == null ? string.Empty : _selectedItem.Id;
             set
             {
                 _selectedItem = DataStore.FindGroup(value);
-                IsItemGroupSelected = true;
+                // IsItemGroupSelected = true;
             }
         }
 
@@ -120,38 +112,47 @@ namespace PassXYZ.Vault.ViewModels
                     //    Debug.WriteLine($"ItemsViewModel: ELTC=>{DataStore.CurrentPath}");
                     //}
 
-                    if (AppShell.CurrentAppShell.TargetRoute.Equals("..") || IsBackButtonClicked)
+                    //if (AppShell.CurrentAppShell.TargetRoute.Equals("..") || IsBackButtonClicked)
+                    //{
+                    //    if (_reloadCurrentGroup)
+                    //    {
+                    //        // We come back from a ItemDetailPage
+                    //        _reloadCurrentGroup = false;
+                    //    }
+                    //    else
+                    //    {
+                    //        DataStore.SetCurrentToParent();
+                    //    }
+                    //    if (!IsRootGroup && AppShell.CurrentAppShell.CurrentRoute.EndsWith("group"))
+                    //    {
+                    //        Debug.WriteLine($"ItemsViewModel: ELTC <= back to group {DataStore.CurrentGroup.Name}");
+                    //    }
+                    //    else
+                    //    {
+                    //        Debug.WriteLine($"ItemsViewModel: ELTC <= back from route {AppShell.CurrentAppShell.CurrentRoute} and current group {DataStore.CurrentGroup.Name}");
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (IsItemGroupSelected)
+                    //    {
+                    //        Debug.WriteLine($"ItemsViewModel: ELTC => Loading items from {DataStore.CurrentGroup.Name}");
+                    //    }
+                    //    else 
+                    //    {
+                    //        Debug.WriteLine($"ItemsViewModel: ELTC = Reloading the current group {DataStore.CurrentGroup.Name}");
+                    //    }
+                    //}
+
+                    if (SelectedItem != null)
                     {
-                        if (_reloadCurrentGroup)
-                        {
-                            // We come back from a ItemDetailPage
-                            _reloadCurrentGroup = false;
-                        }
-                        else
-                        {
-                            DataStore.SetCurrentToParent();
-                        }
-                        if (!IsRootGroup && AppShell.CurrentAppShell.CurrentRoute.EndsWith("group"))
-                        {
-                            Debug.WriteLine($"ItemsViewModel: ELTC <= back to group {DataStore.CurrentGroup.Name}");
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"ItemsViewModel: ELTC <= back from route {AppShell.CurrentAppShell.CurrentRoute} and current group {DataStore.CurrentGroup.Name}");
-                        }
-                    }
-                    else
-                    {
-                        if (IsItemGroupSelected)
-                        {
-                            Debug.WriteLine($"ItemsViewModel: ELTC => Loading items from {DataStore.CurrentGroup.Name}");
-                        }
-                        else 
-                        {
-                            Debug.WriteLine($"ItemsViewModel: ELTC = Reloading the current group {DataStore.CurrentGroup.Name}");
-                        }
+                        // The SelectedItem is the current group in this ItemsPage
+                        DataStore.CurrentGroup = SelectedItem;
                     }
 
+                    Debug.WriteLine($"ItemsViewModel: ELTC = Loading the current group {DataStore.CurrentGroup.Name}");
+
+                    // To do the real work here
                     Title = DataStore.CurrentGroup.Name;
                     Items.Clear();
                     var items = await DataStore.GetItemsAsync(true);
@@ -162,11 +163,16 @@ namespace PassXYZ.Vault.ViewModels
                         {
                             item.SetIcon();
                         }
-                        // Debug.WriteLine($"{item.Name}-{imgSource}");
                         Items.Add(item);
                     }
-                    IsItemGroupSelected = false;
-                    IsBackButtonClicked = false;
+                    // IsItemGroupSelected = false;
+                    // IsBackButtonClicked = false;
+
+                    if (SelectedItem == null)
+                    {
+                        // This is the case for root group.
+                        SelectedItem = DataStore.CurrentGroup;
+                    }
                 }
             }
             catch (Exception ex)
@@ -244,13 +250,12 @@ namespace PassXYZ.Vault.ViewModels
                 DataStore.CurrentGroup = item;
                 if (!IsRootGroup)
                 {
-                    await Shell.Current.GoToAsync($"group?{nameof(ItemsViewModel.ItemId)}={item.Id}");
+                    await Shell.Current.GoToAsync($"group?{nameof(ItemId)}={item.Id}");
                 }
-                // await ExecuteLoadItemsCommand();
             }
             else
             {
-                _reloadCurrentGroup = true;
+                // _reloadCurrentGroup = true;
                 var pwEntry = (PwEntry)item;
                 if (pwEntry.IsNotes())
                 {

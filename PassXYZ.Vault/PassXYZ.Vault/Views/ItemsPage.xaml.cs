@@ -31,7 +31,7 @@ namespace PassXYZ.Vault.Views
                 Shell.SetBackButtonBehavior(this, new BackButtonBehavior()
                 {
                     Command = new Command(async () => {
-                        _viewModel.IsBackButtonClicked = true;
+                        //_viewModel.IsBackButtonClicked = true;
                         await Navigation.PopAsync();
 
                     })
