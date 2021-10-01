@@ -30,7 +30,7 @@
                     HasUnevenRows="True"
                     SelectionMode="None">
             <ListView.Header>
-                <StackLayout Padding="10" Orientation="Horizontal">
+                <StackLayout Padding="5" Orientation="Horizontal">
                     <Label Text="{Binding Text}" FontSize="Large" FontAttributes="Bold"/>
                 </StackLayout>
             </ListView.Header>
@@ -46,7 +46,7 @@
                                       Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
                         </ViewCell.ContextActions>
 
-                        <StackLayout Padding="10" Orientation="Horizontal" x:DataType="passxyzlib:Field" >
+                        <StackLayout Padding="5" Orientation="Horizontal" x:DataType="passxyzlib:Field" >
                             <Grid >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="32" />
@@ -76,7 +76,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <StackLayout Padding="10" Orientation="Horizontal">
+                <StackLayout Padding="5" Orientation="Horizontal">
                     <Label Text="{Binding Description}" 
                            FontSize="Small" 
                            TextType ="Html"

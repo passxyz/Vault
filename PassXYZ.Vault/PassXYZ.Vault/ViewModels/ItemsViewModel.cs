@@ -147,7 +147,19 @@ namespace PassXYZ.Vault.ViewModels
                     if (SelectedItem != null)
                     {
                         // The SelectedItem is the current group in this ItemsPage
-                        DataStore.CurrentGroup = SelectedItem;
+                        if(IsRootGroup)
+                        {
+                            SelectedItem = DataStore.CurrentGroup;
+                        }
+                        else
+                        {
+                            DataStore.CurrentGroup = SelectedItem;
+                        }
+                    }
+                    else
+                    {
+                        // This is the case for root group.
+                        SelectedItem = DataStore.CurrentGroup;
                     }
 
                     Debug.WriteLine($"ItemsViewModel: ELTC = Loading the current group {DataStore.CurrentGroup.Name}");
@@ -156,7 +168,7 @@ namespace PassXYZ.Vault.ViewModels
                     Title = DataStore.CurrentGroup.Name;
                     Items.Clear();
                     var items = await DataStore.GetItemsAsync(true);
-                    foreach (var item in items)
+                    foreach (Item item in items)
                     {
                         ImageSource imgSource = (ImageSource)item.ImgSource;
                         if (item.ImgSource == null)
@@ -164,14 +176,6 @@ namespace PassXYZ.Vault.ViewModels
                             item.SetIcon();
                         }
                         Items.Add(item);
-                    }
-                    // IsItemGroupSelected = false;
-                    // IsBackButtonClicked = false;
-
-                    if (SelectedItem == null)
-                    {
-                        // This is the case for root group.
-                        SelectedItem = DataStore.CurrentGroup;
                     }
                 }
             }

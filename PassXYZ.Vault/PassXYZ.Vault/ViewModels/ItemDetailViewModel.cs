@@ -69,13 +69,26 @@ namespace PassXYZ.Vault.ViewModels
 
         private void ExecuteLoadFieldsCommand()
         {
-            if (dataEntry != null)
+            try
             {
-                var fields = dataEntry.GetFields();
-                foreach (var field in fields)
+                if (dataEntry != null)
                 {
-                    Fields.Add(field);
+                    Fields.Clear();
+                    List<Field> fields = dataEntry.GetFields();
+                    foreach (Field field in fields)
+                    {
+                        Fields.Add(field);
+                    }
+                    Debug.WriteLine($"ItemDetailViewModel: (LFC) Name={dataEntry.Name}, IsBusy={IsBusy}.");
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
@@ -101,11 +114,11 @@ namespace PassXYZ.Vault.ViewModels
                 var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
                 Description = Markdig.Markdown.ToHtml(dataEntry.GetNotes(), pipeline);
                 // Description = dataEntry.GetNotes();
-                ExecuteLoadFieldsCommand();
+                //ExecuteLoadFieldsCommand();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Failed to Load Item");
+                Debug.WriteLine($"{ex}");
             }
         }
 
@@ -367,6 +380,10 @@ namespace PassXYZ.Vault.ViewModels
                 }
                 Debug.WriteLine($"ItemDetailViewModel: Attachment {field.Key} selected");
             }
+        }
+        public void OnAppearing()
+        {
+            IsBusy = true;
         }
     }
 }
