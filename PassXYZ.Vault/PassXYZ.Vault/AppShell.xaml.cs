@@ -10,8 +10,8 @@ namespace PassXYZ.Vault
     public partial class AppShell : Xamarin.Forms.Shell
     {
         public static AppShell CurrentAppShell = null;
-        public string CurrentRoute = string.Empty;
-        public string TargetRoute = string.Empty;
+        //public string CurrentRoute = string.Empty;
+        //public string TargetRoute = string.Empty;
         public AppShell()
         {
             InitializeComponent();
@@ -36,9 +36,9 @@ namespace PassXYZ.Vault
 
             if(args.Current != null) 
             {
-                //Debug.WriteLine($"AppShell: source={args.Current.Location}, target={args.Target.Location}");
-                CurrentRoute = args.Current.Location.ToString();
-                TargetRoute = args.Target.Location.ToString();
+                Debug.WriteLine($"AppShell: source={args.Current.Location}, target={args.Target.Location}");
+                //CurrentRoute = args.Current.Location.ToString();
+                //TargetRoute = args.Target.Location.ToString();
             }
         }
 

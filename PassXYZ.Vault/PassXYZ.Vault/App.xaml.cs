@@ -16,6 +16,7 @@ namespace PassXYZ.Vault
     public partial class App : Application
     {
         public static bool InBackgroup = false;
+        private static bool _isLogout = false;
         public App()
         {
             InitializeComponent();
@@ -42,16 +43,18 @@ namespace PassXYZ.Vault
             {
                 if (InBackgroup)
                 {
-                    _ = Task.Factory.StartNew(async () =>
-                      {
-                          await Shell.Current.GoToAsync("//LoginPage");
-                      });
+                    //_ = Task.Factory.StartNew(async () =>
+                    //  {
+                    //      await Shell.Current.GoToAsync("//LoginPage");
+                    //  });
+                    _isLogout = true;
+                    Debug.WriteLine("PassXYZ: Timer, force logout.");
                     return false;
                 }
                 else
                 {
-                    Debug.WriteLine("PassXYZ.App: OnSleep, running in foreground.");
-                    return true;
+                    Debug.WriteLine("PassXYZ: Timer, running in foreground.");
+                    return false;
                 }
             });
         }
@@ -59,6 +62,16 @@ namespace PassXYZ.Vault
         protected override void OnResume()
         {
             InBackgroup = false;
+            if (_isLogout)
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await Shell.Current.GoToAsync("//LoginPage");
+                });
+                _isLogout = false;
+                Debug.WriteLine("PassXYZ: OnResume, force logout");
+            }
+
             Debug.WriteLine($"PassXYZ: OnResume, InBackgroup={InBackgroup}");
         }
 
