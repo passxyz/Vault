@@ -48,6 +48,7 @@ namespace PassXYZ.Vault.Services
         // private List<Item> items;
         private readonly PasswordDb db = null;
         private User _user;
+        private bool _isBusy = false;
 
         public DataStore()
         {
@@ -90,10 +91,17 @@ namespace PassXYZ.Vault.Services
 
         public async Task SaveAsync()
         {
-            var logger = new KPCLibLogger();
+            if (_isBusy)
+            {
+                Debug.WriteLine($"DataStore: _isBusy={_isBusy}");
+                return;
+            }
+
+            _isBusy = true;
+            KPCLibLogger logger = new KPCLibLogger();
             db.DescriptionChanged = DateTime.UtcNow;
-            await Task.Run(() => db.Save(logger));
-            await GetItemsAsync();
+            await Task.Run(() => { db.Save(logger); _isBusy = false; });
+            _ = await GetItemsAsync();
         }
 
         public async Task AddItemAsync(Item item)
