@@ -62,7 +62,6 @@ namespace PassXYZ.Vault.Views
             {
                 usernameEntry.Text = LoginViewModel.CurrentUser.Username;
             }
-            //Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}, Username: {_viewModel.Username}");
 
             InitFingerPrintButton();
         }

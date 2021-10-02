@@ -26,30 +26,12 @@
     </ContentPage.Resources>
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked">
-            <ToolbarItem.IconImageSource>
-                <iconsS:IconSource Icon="WindowClose">
-                    <iconsS:IconSource.Color>
-                        <OnPlatform x:TypeArguments="Color">
-                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
-                            <On Platform="Android" Value="White" />
-                        </OnPlatform>
-                    </iconsS:IconSource.Color>
-                </iconsS:IconSource>
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked">
-            <ToolbarItem.IconImageSource>
-                <iconsS:IconSource Icon="Save">
-                    <iconsS:IconSource.Color>
-                        <OnPlatform x:TypeArguments="Color">
-                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
-                            <On Platform="Android" Value="White" />
-                        </OnPlatform>
-                    </iconsS:IconSource.Color>
-                </iconsS:IconSource>
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_scan}" Clicked="OnScanClicked" Icon="barcode_scan.png"/>
+
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked" Icon="icon_cancel.png"/>
+
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked" Icon="icon_save.png"/>
+
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>

@@ -1007,4 +1007,7 @@ PassXYZ built-in template files can be downloaded at the below links:
     <value>Cannot edit binary</value>
     <comment>Warning message</comment>
   </data>
+  <data name="action_id_scan" xml:space="preserve">
+    <value>Scan</value>
+  </data>
 </root>

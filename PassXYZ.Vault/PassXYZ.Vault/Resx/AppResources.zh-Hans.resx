@@ -964,4 +964,7 @@
   <data name="message_id_edit_binary" xml:space="preserve">
     <value>附件只能添加或删除，不可以更改</value>
   </data>
+  <data name="action_id_scan" xml:space="preserve">
+    <value>扫描</value>
+  </data>
 </root>

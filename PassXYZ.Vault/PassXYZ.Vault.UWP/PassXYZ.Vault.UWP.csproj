@@ -137,6 +137,9 @@
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="barcode_scan.png" />
+    <Content Include="icon_cancel.png" />
+    <Content Include="icon_save.png" />
     <Content Include="passxyz_logo.png" />
     <Content Include="passxyz_wechat.png" />
     <Content Include="Properties\Default.rd.xml" />

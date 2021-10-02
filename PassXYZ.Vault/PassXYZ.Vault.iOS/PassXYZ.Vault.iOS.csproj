@@ -204,4 +204,31 @@
   <ItemGroup>
     <BundleResource Include="Resources\Icon-60%402x.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\barcode_scan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\barcode_scan%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\barcode_scan%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icon_cancel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icon_cancel%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icon_cancel%403x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icon_save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icon_save%402x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\icon_save%403x.png" />
+  </ItemGroup>
 </Project>

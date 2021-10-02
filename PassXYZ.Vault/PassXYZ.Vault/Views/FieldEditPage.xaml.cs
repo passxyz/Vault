@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,7 +8,10 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+using ZXing.Net.Mobile.Forms;
+
 using PassXYZ.Vault.ViewModels;
+using PassXYZ.Vault.Resx;
 
 namespace PassXYZ.Vault.Views
 {
@@ -60,6 +64,27 @@ namespace PassXYZ.Vault.Views
         private async void OnCancelClicked(object sender, EventArgs e)
         {
             _ = await Navigation.PopModalAsync();
+        }
+
+        private async void OnScanClicked(object sender, EventArgs e)
+        {
+            var scanPage = new ZXingScannerPage();
+            await Navigation.PushAsync(scanPage);
+
+            scanPage.OnScanResult += (result) =>
+            {
+                // Stop scanning
+                scanPage.IsScanning = false;
+
+                Debug.WriteLine($"FieldEditPage: {result.Text}");
+
+                // Pop the page and show the result
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    _ = await Navigation.PopAsync();
+                    valueField.Text += result.Text;
+                });
+            };
         }
     }
 }

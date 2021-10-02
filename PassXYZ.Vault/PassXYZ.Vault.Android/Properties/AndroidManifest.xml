@@ -6,6 +6,6 @@
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.FLASHLIGHT" />
 	<uses-permission android:name="android.permission.CAMERA" />
-	<application android:label="PassXYZ.Vault.Android" android:theme="@style/MainTheme"></application>
+	<application android:label="PassXYZ.Vault" android:theme="@style/MainTheme"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

@@ -414,6 +414,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Scan.
+        /// </summary>
+        internal static string action_id_scan {
+            get {
+                return ResourceManager.GetString("action_id_scan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search.
         /// </summary>
         internal static string action_id_search {
