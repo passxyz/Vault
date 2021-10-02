@@ -141,7 +141,11 @@ namespace PassXYZ.Vault.ViewModels
 
         public void OnAppearing()
         {
-            if (DataStore.RootGroup != null) { DataStore.Logout(); }
+            IsBusy = false;
+            if (DataStore.RootGroup != null) 
+            {
+                DataStore.Logout();
+            }
         }
 
         public async void OnLoginClicked()
@@ -149,6 +153,7 @@ namespace PassXYZ.Vault.ViewModels
             // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             try
             {
+                IsBusy = true;
                 bool status = await DataStore.LoginAsync(CurrentUser);
 
                 if (status)

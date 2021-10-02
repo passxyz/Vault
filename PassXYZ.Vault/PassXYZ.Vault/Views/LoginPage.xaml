@@ -72,6 +72,8 @@
                                     <iconsS:IconSource Icon="Fingerprint" Color="{StaticResource Primary}" />
                                 </ImageButton.Source>
                             </ImageButton>
+                            <!-- Row 3 (ActivityIndicator ) -->
+                            <ActivityIndicator IsRunning="{Binding IsBusy}" Grid.Row="2" Grid.Column="1"  />
                             <!-- Row 4 (Login Button) -->
                             <Button Text="{x:Static resources:AppResources.LoginPageTitle}" 
                                 TextColor="White"  

@@ -28,12 +28,14 @@ namespace PassXYZ.Vault
         {
             InBackgroup = false;
             InitTestDb();
+            Debug.WriteLine($"PassXYZ: OnStart, InBackgroup={InBackgroup}");
         }
 
         protected override void OnSleep()
         {
             // Handle when your app sleeps
             InBackgroup = true;
+            Debug.WriteLine($"PassXYZ: OnSleep, InBackgroup={InBackgroup}");
 
             // Lock screen after timeout
             Device.StartTimer(TimeSpan.FromSeconds(PxUser.AppTimeout), () =>
@@ -57,6 +59,7 @@ namespace PassXYZ.Vault
         protected override void OnResume()
         {
             InBackgroup = false;
+            Debug.WriteLine($"PassXYZ: OnResume, InBackgroup={InBackgroup}");
         }
 
         [System.Diagnostics.Conditional("DEBUG")]

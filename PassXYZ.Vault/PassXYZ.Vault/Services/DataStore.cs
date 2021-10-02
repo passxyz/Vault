@@ -203,14 +203,15 @@ namespace PassXYZ.Vault.Services
             if (user == null) { Debug.Assert(false); throw new ArgumentNullException("user"); }
             _user = user;
 
-            db.Open(user);
-            if (db.IsOpen)
+            return await Task.Run(() =>
             {
-                //items = db.RootGroup.GetItems();
-                db.CurrentGroup = db.RootGroup;
-            }
-
-            return await Task.FromResult(db.IsOpen);
+                db.Open(user);
+                if (db.IsOpen)
+                {
+                    db.CurrentGroup = db.RootGroup;
+                }
+                return db.IsOpen;
+            });
         }
 
         public async Task SignUpAsync(PassXYZLib.User user)
@@ -247,6 +248,7 @@ namespace PassXYZ.Vault.Services
         public void Logout()
         {
             if (db.IsOpen) { db.Close(); }
+            Debug.WriteLine("DataStore.Logout(done)");
         }
 
         public string GetStoreName()
