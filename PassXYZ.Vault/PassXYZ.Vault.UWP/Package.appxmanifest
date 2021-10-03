@@ -9,7 +9,7 @@
   <Identity
     Name="13783RogerYe.PassXYZ.Vault"
     Publisher="CN=Roger Ye"
-    Version="1.0.2.0" />
+    Version="1.0.3.0" />
 
   <mp:PhoneIdentity PhoneProductId="6a771353-7a66-4a55-8abc-68b30a50befe" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
