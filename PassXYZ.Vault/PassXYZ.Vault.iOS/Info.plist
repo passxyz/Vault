@@ -52,6 +52,10 @@
 	<string>Calendar permission is required due to Permissions Plugin for Xamarin is used in PassXYZ.</string>
 	<key>XSLaunchImageAssets</key>
 	<string>Resources/Images.xcassets/LaunchImages.launchimage</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.passxyz.vault</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
