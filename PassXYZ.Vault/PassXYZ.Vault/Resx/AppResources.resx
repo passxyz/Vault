@@ -1010,4 +1010,25 @@ PassXYZ built-in template files can be downloaded at the below links:
   <data name="action_id_scan" xml:space="preserve">
     <value>Scan</value>
   </data>
+  <data name="privacy_notice" xml:space="preserve">
+    <value># Privacy Notice
+
+
+This privacy notice discloses the privacy practices for PassXYZ application and our websites:
+- PassXYZ, PassXYZ Cloud and PassXYZ.Vault
+- https://passxyz.github.io
+- https://github.com/passxyz
+
+## Information Collection, Use, and Sharing 
+
+This website is built using the services provided by GitHub. It is a static website and does not collect any information. Please refer to the GitHub Privacy Statement about the agreement before you use GitHub services.
+
+PassXYZ application is an application to store your personal information on your own devices and encrypted in the KeePass database format. PassXYZ application may access network to retrieve resources such as font or icon etc.
+
+## Notification of Changes
+You can always go to PassXYZ website to find the latest Privacy Notice.</value>
+  </data>
+  <data name="error_message_privacy_notice" xml:space="preserve">
+    <value>Please accept privacy notice to use this app.</value>
+  </data>
 </root>

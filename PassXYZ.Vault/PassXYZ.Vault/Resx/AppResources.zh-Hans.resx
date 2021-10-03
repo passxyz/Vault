@@ -967,4 +967,25 @@
   <data name="action_id_scan" xml:space="preserve">
     <value>扫描</value>
   </data>
+  <data name="privacy_notice" xml:space="preserve">
+    <value># 隐私声明
+
+隐私保护声明适用范围包括PassXYZ应用及相关的网站。
+- PassXYZ, PassXYZ Cloud和PassXYZ.Vault
+- https://passxyz.github.io
+- https://github.com/passxyz
+
+本隐私声明阐述了 PassXYZ 处理的个人数据的方式和目的。
+
+## 信息的收集，使用和分享
+本网站是一个静态网站使用GitHub提供的服务。静态网站没有任何信息收集的能力。关于GitHub服务的使用，请参考GitHub的隐私保护声明。
+
+PassXYZ应用帮助存储您的个人数据在本地设备并使用KeePass 加密格式。应用本身并不会通过网络收集任何个人数据。PassXYZ的部分字体和图标是从网络下载的。
+
+## 隐私声明的更新
+您可以通过本网站获取最新的隐私保护声明。</value>
+  </data>
+  <data name="error_message_privacy_notice" xml:space="preserve">
+    <value>您需要接受隐私保护声明以使用本应用。</value>
+  </data>
 </root>

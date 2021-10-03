@@ -16,6 +16,7 @@ namespace PassXYZ.Vault.ViewModels
     /// </summary>
     public class LoginUser : PassXYZLib.PxUser
     {
+        private const string PrivacyNotice = "Privacy Notice";
         public override string Username
         {
             get
@@ -40,6 +41,19 @@ namespace PassXYZ.Vault.ViewModels
             {
                 base.Username = value;
                 Preferences.Set(nameof(LoginUser), base.Username);
+            }
+        }
+
+        public static bool IsPrivacyNoticeAccepted
+        {
+            get
+            {
+                return Preferences.Get(PrivacyNotice, false);
+            }
+
+            set
+            {
+                Preferences.Set(PrivacyNotice, value);
             }
         }
     }
@@ -128,7 +142,8 @@ namespace PassXYZ.Vault.ViewModels
         private bool ValidateLogin()
         {
             return !string.IsNullOrWhiteSpace(_username)
-                && !string.IsNullOrWhiteSpace(_password);
+                && !string.IsNullOrWhiteSpace(_password)
+                && LoginUser.IsPrivacyNoticeAccepted;
         }
 
         private bool ValidateSignUp()
@@ -136,7 +151,8 @@ namespace PassXYZ.Vault.ViewModels
             return !string.IsNullOrWhiteSpace(_username)
                 && !string.IsNullOrWhiteSpace(_password)
                 && !string.IsNullOrWhiteSpace(_password2)
-                && _password.Equals(_password2);
+                && _password.Equals(_password2)
+                && LoginUser.IsPrivacyNoticeAccepted;
         }
 
         public void OnAppearing()

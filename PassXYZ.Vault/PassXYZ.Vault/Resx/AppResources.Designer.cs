@@ -1242,6 +1242,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please accept privacy notice to use this app..
+        /// </summary>
+        internal static string error_message_privacy_notice {
+            get {
+                return ResourceManager.GetString("error_message_privacy_notice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select a user first..
         /// </summary>
         internal static string export_error1 {
@@ -1994,6 +2003,27 @@ namespace PassXYZ.Vault.Resx {
         internal static string ph_id_value {
             get {
                 return ResourceManager.GetString("ph_id_value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to # Privacy Notice
+        ///
+        ///
+        ///This privacy notice discloses the privacy practices for PassXYZ application and our websites:
+        ///- PassXYZ, PassXYZ Cloud and PassXYZ.Vault
+        ///- https://passxyz.github.io
+        ///- https://github.com/passxyz
+        ///
+        ///## Information Collection, Use, and Sharing 
+        ///
+        ///This website is built using the services provided by GitHub. It is a static website and does not collect any information. Please refer to the GitHub Privacy Statement about the agreement before you use GitHub services.
+        ///
+        ///PassXYZ application  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string privacy_notice {
+            get {
+                return ResourceManager.GetString("privacy_notice", resourceCulture);
             }
         }
         

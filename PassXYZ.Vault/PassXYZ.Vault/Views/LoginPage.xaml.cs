@@ -54,16 +54,35 @@ namespace PassXYZ.Vault.Views
             }
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
             base.OnAppearing();
             _viewModel.OnAppearing();
-            if (!string.IsNullOrEmpty(LoginViewModel.CurrentUser.Username))
+
+            if (LoginUser.IsPrivacyNoticeAccepted)
             {
-                usernameEntry.Text = LoginViewModel.CurrentUser.Username;
+                if (!string.IsNullOrEmpty(LoginViewModel.CurrentUser.Username))
+                {
+                    usernameEntry.Text = LoginViewModel.CurrentUser.Username;
+                }
+
+                InitFingerPrintButton();
+            }
+            else
+            {
+                bool result = await DisplayAlert("", AppResources.privacy_notice, AppResources.alert_id_yes, AppResources.alert_id_no);
+                if (result)
+                {
+                    LoginUser.IsPrivacyNoticeAccepted = true;
+                }
+                else
+                {
+                    messageLabel.Text = AppResources.error_message_privacy_notice;
+                    Debug.WriteLine($"LoginPage: {messageLabel.Text}");
+                    // PassXYZ.Vault.App.Current.Quit();
+                }
             }
 
-            InitFingerPrintButton();
         }
 
         private async void InitFingerPrintButton() 
