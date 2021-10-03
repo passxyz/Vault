@@ -156,6 +156,7 @@ namespace PassXYZ.Vault.ViewModels
 
         private void ExecuteLoadUsersCommand()
         {
+            Users.Clear();
             var dataFiles = Directory.EnumerateFiles(PxDataFile.DataFilePath, PxDefs.all_xyz);
             foreach (string currentFile in dataFiles)
             {
@@ -170,6 +171,8 @@ namespace PassXYZ.Vault.ViewModels
                         });
                 }
             }
+
+            IsBusy = false;
         }
 
         private async void OnAddUser(object obj)

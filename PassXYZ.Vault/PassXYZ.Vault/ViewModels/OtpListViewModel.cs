@@ -49,13 +49,6 @@ namespace PassXYZ.Vault.ViewModels
 
         public async Task ExecuteGetOtpListCommand()
         {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
             try
             {
                 Entries.Clear();

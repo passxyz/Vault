@@ -60,13 +60,6 @@ namespace PassXYZ.Vault.ViewModels
 
         public async Task ExecuteSearchCommand(string strSearch, Item item)
         {
-            if (IsBusy)
-            {
-                return;
-            }
-
-            IsBusy = true;
-
             try
             {
                 Items.Clear();
@@ -99,8 +92,6 @@ namespace PassXYZ.Vault.ViewModels
         /// </summary>
         private async Task ExecuteLoadItemsCommand()
         {
-            // IsBusy = true;
-
             try
             {
                 if (DataStore.RootGroup != null)

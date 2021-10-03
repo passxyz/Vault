@@ -42,17 +42,29 @@ namespace PassXYZ.Vault.ViewModels
 
         private void ExecuteLoadIconsCommand()
         {
-            List<PwCustomIcon> customIconList = DataStore.GetCustomIcons();
-            foreach (PwCustomIcon pwci in customIconList)
+            try
             {
-                PxIcon icon = new PxIcon
+                PxIcons.Clear();
+                List<PwCustomIcon> customIconList = DataStore.GetCustomIcons();
+                foreach (PwCustomIcon pwci in customIconList)
                 {
-                    IconType = PxIconType.PxEmbeddedIcon,
-                    Uuid = pwci.Uuid,
-                    Name = pwci.Name,
-                    ImgSource = DataStore.GetBuiltInImage(pwci.Uuid),
-                };
-                PxIcons.Add(icon);
+                    PxIcon icon = new PxIcon
+                    {
+                        IconType = PxIconType.PxEmbeddedIcon,
+                        Uuid = pwci.Uuid,
+                        Name = pwci.Name,
+                        ImgSource = DataStore.GetBuiltInImage(pwci.Uuid),
+                    };
+                    PxIcons.Add(icon);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
