@@ -30,7 +30,7 @@ namespace PassXYZLib
         /// This is the key used by Field. This Key should be decoded for PxEntry.
         /// </summary>
         public string Key
-        { 
+        {
             get => _key;
             set
             {
@@ -44,7 +44,7 @@ namespace PassXYZLib
         /// </summary>
         public string EncodedKey = string.Empty;
 
-        public bool IsEncoded { get => !string.IsNullOrEmpty(EncodedKey); }
+        public bool IsEncoded => !string.IsNullOrEmpty(EncodedKey);
 
         private string _value;
         private string _shadowValue = string.Empty;
@@ -70,7 +70,7 @@ namespace PassXYZLib
         public bool IsProtected
         {
             get => _isProtected;
-            set 
+            set
             {
                 _isProtected = value;
                 OnPropertyChanged("IsProtected");
@@ -81,7 +81,7 @@ namespace PassXYZLib
         /// <summary>
         /// Whether this field is an attachment
         /// </summary>
-        public bool IsBinaries 
+        public bool IsBinaries
         {
             get => _isBinaries;
             set
@@ -105,11 +105,7 @@ namespace PassXYZLib
             }
         }
 
-        private bool _isHide = true;
-        public bool IsHide
-        {
-            get => _isHide;
-        }
+        public bool IsHide { get; private set; } = true;
 
         public ImageSource ImgSource { get; set; }
 
@@ -120,7 +116,7 @@ namespace PassXYZLib
             IsProtected = isProtected;
             Value = value;
 
-            var lastWord = key.Split(' ').Last();
+            string lastWord = key.Split(' ').Last();
             ImgSource = FieldIcons.GetImage(lastWord.ToLower());
         }
 
@@ -129,7 +125,7 @@ namespace PassXYZLib
             if (IsProtected && !string.IsNullOrEmpty(_shadowValue))
             {
                 _value = _shadowValue;
-                _isHide = false;
+                IsHide = false;
                 OnPropertyChanged("Value");
             }
         }
@@ -139,7 +135,7 @@ namespace PassXYZLib
             if (IsProtected && !string.IsNullOrEmpty(_shadowValue))
             {
                 _value = new string('*', _shadowValue.Length);
-                _isHide = true;
+                IsHide = true;
                 OnPropertyChanged("Value");
             }
         }

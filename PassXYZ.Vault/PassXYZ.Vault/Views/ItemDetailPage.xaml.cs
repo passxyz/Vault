@@ -15,7 +15,8 @@ namespace PassXYZ.Vault.Views
     public partial class ItemDetailPage : ContentPage
     {
         private ItemDetailViewModel _viewModel;
-        private MenuItem showAction;
+        private MenuItem showAction = null;
+        private const int CONTEXT_ACTIONS_NUM = 4;
         public ItemDetailPage()
         {
             InitializeComponent();
@@ -80,17 +81,20 @@ namespace PassXYZ.Vault.Views
             }
 
             ViewCell theViewCell = (ViewCell)sender;
-            var field = theViewCell.BindingContext as Field;
-            if (field != null)
+            if (theViewCell.BindingContext is Field field)
             {
-                if (field.IsProtected)
+                // We need to check CONTEXT_ACTIONS_NUM to prevent showAction will be added multiple times.
+                if (theViewCell.ContextActions.Count < CONTEXT_ACTIONS_NUM && field.IsProtected)
                 {
-                    showAction = new MenuItem
+                    if (showAction == null)
                     {
-                        Text = AppResources.action_id_show
-                    };
-                    showAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
-                    showAction.Clicked += OnMenuShow;
+                        showAction = new MenuItem
+                        {
+                            Text = AppResources.action_id_show
+                        };
+                        showAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+                        showAction.Clicked += OnMenuShow;
+                    }
                     theViewCell.ContextActions.Add(showAction);
                 }
             }

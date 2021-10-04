@@ -19,7 +19,8 @@ namespace PassXYZ.Vault.Views
     public partial class FieldEditPage : ContentPage
     {
         private Action<string, string, bool> _updateAction;
-        private bool _isNewField = true;
+        private readonly bool _isNewField = true;
+        private Color _checkboxColor;
 
         public FieldEditPage(Action<string, string, bool> updateAction, string key = "", string value = "")
         {
@@ -29,7 +30,8 @@ namespace PassXYZ.Vault.Views
             if(!string.IsNullOrEmpty(key))
             {
                 keyField.IsVisible = false;
-                checkBox.IsVisible = false;
+                // pwCheckBox.IsVisible = false;
+                optionGroup.IsVisible = false;
                 _isNewField = false;
             }
             
@@ -49,7 +51,7 @@ namespace PassXYZ.Vault.Views
 
         private async void OnSaveClicked(object sender, EventArgs e)
         {
-            bool isProtected = checkBox.IsChecked;
+            bool isProtected = pwCheckBox.IsChecked;
             if(_isNewField)
             {
                 _updateAction?.Invoke(keyField.Text, valueField.Text, isProtected);
@@ -85,6 +87,40 @@ namespace PassXYZ.Vault.Views
                     valueField.Text += result.Text;
                 });
             };
+        }
+
+        private void OnOtpCheckBoxChanged(object sender, CheckedChangedEventArgs e)
+        {
+            if (e.Value)
+            {
+                pwCheckBox.IsEnabled = false;
+                _checkboxColor = pwCheckBox.Color;
+                pwCheckBox.Color = Color.Gray;
+                Debug.WriteLine("OTP CheckBox is true.");
+            }
+            else
+            {
+                pwCheckBox.IsEnabled = true;
+                pwCheckBox.Color = _checkboxColor;
+                Debug.WriteLine("OTP CheckBox is false.");
+            }
+        }
+
+        private void OnPasswordCheckBoxChanged(object sender, CheckedChangedEventArgs e)
+        {
+            if (e.Value)
+            {
+                otpCheckBox.IsEnabled = false;
+                _checkboxColor = otpCheckBox.Color;
+                otpCheckBox.Color = Color.Gray;
+                Debug.WriteLine("Password CheckBox is true.");
+            }
+            else
+            {
+                otpCheckBox.IsEnabled = true;
+                otpCheckBox.Color = _checkboxColor;
+                Debug.WriteLine("Password CheckBox is false.");
+            }
         }
     }
 }
