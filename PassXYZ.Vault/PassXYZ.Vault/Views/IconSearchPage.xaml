@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:iconsS="clr-namespace:FontAwesome.Solid;assembly=FontAwesome.Solid"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"  
+             xmlns:passxyzlib="clr-namespace:PassXYZLib"
+             x:DataType="local:IconSearchViewModel"
+             x:Class="PassXYZ.Vault.Views.IconSearchPage">
+    <ContentPage.ToolbarItems>
+        <!--ToolbarItem Text="{x:Static resources:AppResources.action_id_add}" Command="{Binding AddIconCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Plus">
+                    <iconsS:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsS:IconSource.Color>
+                </iconsS:IconSource>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem-->
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Command="{Binding CancelChangeCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="WindowClose">
+                    <iconsS:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsS:IconSource.Color>
+                </iconsS:IconSource>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Command="{Binding SaveChangeCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Save">
+                    <iconsS:IconSource.Color>
+                        <OnPlatform x:TypeArguments="Color">
+                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
+                            <On Platform="Android" Value="White" />
+                        </OnPlatform>
+                    </iconsS:IconSource.Color>
+                </iconsS:IconSource>
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <StackLayout Padding="10,10">
+            <SearchBar Placeholder="{x:Static resources:AppResources.action_id_search}" HeightRequest="48"
+                   SearchButtonPressed="OnSearchBarButtonPressed" />
+
+            <RefreshView x:DataType="local:IconSearchViewModel" Command="{Binding LoadIconsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+                <ListView x:Name="SearchIconListView"
+                    ItemsSource="{Binding PxIcons}"
+                    VerticalOptions="FillAndExpand"
+                    HasUnevenRows="true"
+                    ItemSelected="OnPxIconSelected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.ContextActions>
+                                    <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
+                                </ViewCell.ContextActions>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" x:DataType="passxyzlib:PxIcon">
+                                    <Image Source="{Binding ImgSource}" />
+                                    <StackLayout Padding="10">
+                                        <Label Text="{Binding Name}" 
+                                           LineBreakMode="NoWrap" 
+                                           MaxLines="1"
+                                           Style="{DynamicResource ListItemTextStyle}" 
+                                           FontAttributes="Bold"
+                                           FontSize="Small" />
+                                        <Label Text="{Binding Type}" 
+                                           Style="{DynamicResource ListItemDetailTextStyle}" 
+                                           LineBreakMode="TailTruncation"
+                                           MaxLines="1"
+                                           FontSize="Small">
+                                        </Label>
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </RefreshView>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

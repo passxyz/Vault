@@ -1,12 +1,18 @@
 ﻿using KeePassLib;
 using PassXYZLib;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
+
 using Xamarin.Forms;
+using Xamarin.Essentials;
 
 using Markdig;
+using KeePassLib.Security;
+using PassXYZ.Vault.Resx;
 using PassXYZ.Vault.Views;
 
 namespace PassXYZ.Vault.ViewModels
@@ -22,6 +28,7 @@ namespace PassXYZ.Vault.ViewModels
         public ObservableCollection<Field> Fields { get; set; }
         public Command LoadFieldsCommand { get; }
         public Command AddFieldCommand { get; }
+        public Command AddBinaryCommand { get; }
         public Command<Field> FieldTapped { get; }
 
         public string Id { get; set; }
@@ -57,17 +64,31 @@ namespace PassXYZ.Vault.ViewModels
             LoadFieldsCommand = new Command(() => ExecuteLoadFieldsCommand());
             FieldTapped = new Command<Field>(OnFieldSelected);
             AddFieldCommand = new Command(OnAddField);
+            AddBinaryCommand = new Command(OnAddBinary);
         }
 
         private void ExecuteLoadFieldsCommand()
         {
-            if (dataEntry != null)
+            try
             {
-                var fields = dataEntry.GetFields();
-                foreach (var field in fields)
+                if (dataEntry != null)
                 {
-                    Fields.Add(field);
+                    Fields.Clear();
+                    List<Field> fields = dataEntry.GetFields();
+                    foreach (Field field in fields)
+                    {
+                        Fields.Add(field);
+                    }
+                    Debug.WriteLine($"ItemDetailViewModel: (LFC) Name={dataEntry.Name}, IsBusy={IsBusy}.");
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
@@ -75,7 +96,15 @@ namespace PassXYZ.Vault.ViewModels
         {
             try
             {
-                var item = await DataStore.GetItemAsync(itemId);
+                Item item = await DataStore.GetItemFromCurrentGroupAsync(itemId);
+                if (item == null)
+                {
+                    // This may be the case that we navigate to ItemDetailPage from OtpListPage
+                    item = DataStore.FindEntryById(itemId);
+                }
+
+                if (item == null) { throw new ArgumentNullException("itemId"); }
+
                 Id = item.Id;
                 Text = item.Name;
                 Title = Text;
@@ -85,11 +114,11 @@ namespace PassXYZ.Vault.ViewModels
                 var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
                 Description = Markdig.Markdown.ToHtml(dataEntry.GetNotes(), pipeline);
                 // Description = dataEntry.GetNotes();
-                ExecuteLoadFieldsCommand();
+                //ExecuteLoadFieldsCommand();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Failed to Load Item");
+                Debug.WriteLine($"{ex}");
             }
         }
 
@@ -104,21 +133,33 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
-                string key = field.IsEncoded ? field.EncodedKey : field.Key;
-                if (dataEntry.Strings.Exists(key))
-                {
-                    field.Value = v;
-                    // We cannot set to field.Value, since it will return a masked string for protected data
-                    dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
-                    Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
-                    await DataStore.UpdateItemAsync(dataEntry);
-                }
-                else
-                {
-                    Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
-                }
-            }, field.Key, field.Value)));
+            if (!field.IsBinaries)
+            {
+                await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
+                    string key = field.IsEncoded ? field.EncodedKey : field.Key;
+                    if (dataEntry.Strings.Exists(key))
+                    {
+                        field.Value = v;
+                        // We cannot set to field.Value, since it will return a masked string for protected data
+                        dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+                        Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
+                        if (key.EndsWith(PwDefs.UrlField) && dataEntry.CustomIconUuid.Equals(PwUuid.Zero))
+                        {
+                            // If this is a URL field and there is no custom icon, we can try to add a custom icon by URL.
+                            await dataEntry.SetCustomIconByUrl(v);
+                        }
+                        await DataStore.UpdateItemAsync(dataEntry);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
+                    }
+                }, field.Key, field.Value)));
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert(AppResources.label_id_attachment, AppResources.message_id_edit_binary, AppResources.alert_id_ok);
+            }
         }
 
         /// <summary>
@@ -142,16 +183,34 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            if (dataEntry.Strings.Exists(key))
+            if (field.IsBinaries)
             {
-                if (dataEntry.Strings.Remove(key))
+                if (dataEntry.Binaries.Exists(key))
                 {
+                    if (dataEntry.Binaries.Remove(key))
+                    {
 
-                    Debug.WriteLine($"ItemDetailViewModel: Field {field.Key} deleted.");
+                        Debug.WriteLine($"ItemDetailViewModel: Attachment {field.Key} deleted.");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"ItemDetailViewModel: Cannot delete Attachment {field.Key}.");
+                    }
                 }
-                else
+            }
+            else
+            {
+                if (dataEntry.Strings.Exists(key))
                 {
-                    Debug.WriteLine($"ItemDetailViewModel: Cannot delete field {field.Key}.");
+                    if (dataEntry.Strings.Remove(key))
+                    {
+
+                        Debug.WriteLine($"ItemDetailViewModel: Field {field.Key} deleted.");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"ItemDetailViewModel: Cannot delete field {field.Key}.");
+                    }
                 }
             }
         }
@@ -173,18 +232,158 @@ namespace PassXYZ.Vault.ViewModels
 
                 Fields.Add(field);
                 dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+                if (key.EndsWith(PwDefs.UrlField) && dataEntry.CustomIconUuid.Equals(PwUuid.Zero))
+                {
+                    // If this is a URL field and there is no custom icon, we can try to add a custom icon by URL.
+                    await dataEntry.SetCustomIconByUrl(v);
+                }
                 await DataStore.UpdateItemAsync(dataEntry);
             })));
-            Debug.WriteLine($"ItemDetailViewModel: Add field");
         }
 
-        private void OnFieldSelected(Field field)
+        private async Task LoadPhotoAsync(FileResult photo)
+        {
+            // canceled
+            if (photo == null)
+            {
+                return;
+            }
+            // save the file into local storage
+            var newFile = Path.Combine(FileSystem.CacheDirectory, photo.FileName);
+            using (var stream = await photo.OpenReadAsync())
+            using (var newStream = File.OpenWrite(newFile))
+                await stream.CopyToAsync(newStream);
+            AddBinary(newFile, photo.FileName);
+        }
+
+        private async void AddBinary(string tempFilePath, string fileName)
+        {
+            var vBytes = File.ReadAllBytes(tempFilePath);
+            if (vBytes != null)
+            {
+                ProtectedBinary pb = new ProtectedBinary(false, vBytes);
+                dataEntry.Binaries.Set(fileName, pb);
+            }
+
+            Fields.Add(new Field(fileName, $"{AppResources.label_id_attachment} {dataEntry.Binaries.UCount}", false)
+            {
+                IsBinaries = true,
+                Binary = dataEntry.Binaries.Get(fileName),
+                ImgSource = new FontAwesome.Solid.IconSource
+                {
+                    Icon = FontAwesome.Solid.Icon.Paperclip
+                }
+            });
+            await DataStore.UpdateItemAsync(dataEntry);
+        }
+
+        private async void OnAddBinary(object obj)
+        {
+            List<string> inputTypeList = new List<string>()
+            {
+                AppResources.field_id_file,
+                AppResources.field_id_camera,
+                AppResources.field_id_gallery
+            };
+
+
+            var typeValue = await Shell.Current.DisplayActionSheet(AppResources.message_id_attachment_options, AppResources.action_id_cancel, null, inputTypeList.ToArray());
+            if (typeValue == AppResources.field_id_gallery)
+            {
+                try
+                {
+                    var photo = await MediaPicker.PickPhotoAsync();
+                    await LoadPhotoAsync(photo);
+                }
+                catch (FeatureNotSupportedException fnsEx)
+                {
+                    // Feature is not supported on the device
+                    Debug.WriteLine($"ItemDetailViewModel: PickPhotoAsync => {fnsEx.Message}");
+                }
+                catch (PermissionException pEx)
+                {
+                    // Permissions not granted
+                    Debug.WriteLine($"ItemDetailViewModel: PickPhotoAsync => {pEx.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"ItemDetailViewModel: PickPhotoAsync => {ex.Message}");
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Add an attachment from Gallery");
+            }
+            else if (typeValue == AppResources.field_id_file) 
+            {
+                try
+                {
+                    var result = await FilePicker.PickAsync();
+                    if (result != null)
+                    {
+                        var tempFilePath = Path.GetTempFileName();
+                        var stream = await result.OpenReadAsync();
+                        var fileStream = File.Create(tempFilePath);
+                        stream.Seek(0, SeekOrigin.Begin);
+                        stream.CopyTo(fileStream);
+                        fileStream.Close();
+                        AddBinary(tempFilePath, result.FileName);
+                        File.Delete(tempFilePath);
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert(AppResources.message_id_attachment_options, AppResources.import_error_msg, AppResources.alert_id_ok);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // The user canceled or something went wrong
+                    Debug.WriteLine($"LoginViewModel: Import attachment, {ex}");
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Add an attachment from local storage");
+            }
+            else if (typeValue == AppResources.field_id_camera)
+            {
+                try
+                {
+                    var photo = await MediaPicker.CapturePhotoAsync();
+                    await LoadPhotoAsync(photo);
+                }
+                catch (FeatureNotSupportedException fnsEx)
+                {
+                    // Feature is not supported on the device
+                    Debug.WriteLine($"ItemDetailViewModel: CapturePhotoAsync => {fnsEx.Message}");
+                }
+                catch (PermissionException pEx)
+                {
+                    // Permissions not granted
+                    Debug.WriteLine($"ItemDetailViewModel: CapturePhotoAsync => {pEx.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"ItemDetailViewModel: CapturePhotoAsync => {ex.Message}");
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Add an attachment using Camera");
+            }
+        }
+
+        private async void OnFieldSelected(Field field)
         {
             if (field == null)
             {
                 return;
             }
-            Debug.WriteLine($"Field {field.Key} selected");
+
+            if (field.IsBinaries)
+            {
+                var bdc = BinaryDataClassifier.ClassifyUrl(field.Key);
+                if ((bdc == BinaryDataClass.Image) && (field.Binary != null))
+                {
+                    await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new ImagePreviewPage(field.Binary)));
+                }
+                Debug.WriteLine($"ItemDetailViewModel: Attachment {field.Key} selected");
+            }
+        }
+        public void OnAppearing()
+        {
+            IsBusy = true;
         }
     }
 }

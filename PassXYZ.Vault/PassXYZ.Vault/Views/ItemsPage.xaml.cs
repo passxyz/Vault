@@ -31,7 +31,7 @@ namespace PassXYZ.Vault.Views
                 Shell.SetBackButtonBehavior(this, new BackButtonBehavior()
                 {
                     Command = new Command(async () => {
-                        _viewModel.IsBackButtonClicked = true;
+                        //_viewModel.IsBackButtonClicked = true;
                         await Navigation.PopAsync();
 
                     })
@@ -53,6 +53,14 @@ namespace PassXYZ.Vault.Views
             {
                 _viewModel.Update(item);
             }
+        }
+
+        private async void OnMenuChangeIconAsync(object sender, EventArgs e)
+        {
+            var mi = (MenuItem)sender;
+            Item item = mi.CommandParameter as Item;
+            ContentPage page = new IconSearchPage(item);
+            await Navigation.PushModalAsync(new NavigationPage(page));
         }
 
         private async void OnMenuDeleteAsync(object sender, EventArgs e)

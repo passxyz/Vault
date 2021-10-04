@@ -25,14 +25,42 @@
 	<key>CFBundleDisplayName</key>
 	<string>PassXYZ.Vault</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.PassXYZ.Vault</string>
+	<string>com.passxyz.vault</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.0.3</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>CFBundleName</key>
 	<string>PassXYZ.Vault</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>UISupportsDocumentBrowser</key>
+	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Need your face to unlock secrets!</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location is not used in PassXYZ Cloud.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location is not used in PassXYZ.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Camera is used to scan QR code for Device Lock Key.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photos so pictures can be added as attachment.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to the photo gallery so pictures can be added as attachment.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Calendar permission is required due to Permissions Plugin for Xamarin is used in PassXYZ.</string>
+	<key>XSLaunchImageAssets</key>
+	<string>Resources/Images.xcassets/LaunchImages.launchimage</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.passxyz.vault</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+		<string>processing</string>
+	</array>
 </dict>
 </plist>

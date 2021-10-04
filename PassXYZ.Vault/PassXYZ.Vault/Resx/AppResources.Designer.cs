@@ -79,7 +79,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PassXYZ is built on top of KPCLib which is a library changed based on KeePassLib. KPCLib enhanced KeePassLib so that it can be built as a PCL or .netstandard Library to run on Xamarin. KeePassLib is part of KeePass project developed by Dominik Reichl. The official website of KeePass is:.
+        ///   Looks up a localized string similar to PassXYZ.Vault is built on top of KPCLib which is a library changed based on KeePassLib. KPCLib enhanced KeePassLib so that it can be built as a PCL or .netstandard Library to run on Xamarin. KeePassLib is part of KeePass project developed by Dominik Reichl. The official website of KeePass is:.
         /// </summary>
         internal static string about_keepass {
             get {
@@ -115,7 +115,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PassXYZ is licensed under the GNU General Public License v3.0 . You may not use this file except in compliance with the License. You may obtain a copy of the License at.
+        ///   Looks up a localized string similar to PassXYZ.Vault is licensed under the GNU General Public License v3.0 . You may not use this file except in compliance with the License. You may obtain a copy of the License at.
         /// </summary>
         internal static string about_passxyz_license {
             get {
@@ -315,6 +315,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        internal static string action_id_export {
+            get {
+                return ResourceManager.GetString("action_id_export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Barcode.
         /// </summary>
         internal static string action_id_generatebarcode {
@@ -401,6 +410,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string action_id_save {
             get {
                 return ResourceManager.GetString("action_id_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan.
+        /// </summary>
+        internal static string action_id_scan {
+            get {
+                return ResourceManager.GetString("action_id_scan", resourceCulture);
             }
         }
         
@@ -504,7 +522,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to PassXYZ.
+        ///   Looks up a localized string similar to PassXYZ.Vault.
         /// </summary>
         internal static string Appname {
             get {
@@ -1224,6 +1242,24 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please accept privacy notice to use this app..
+        /// </summary>
+        internal static string error_message_privacy_notice {
+            get {
+                return ResourceManager.GetString("error_message_privacy_notice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a user first..
+        /// </summary>
+        internal static string export_error1 {
+            get {
+                return ResourceManager.GetString("export_error1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 支付宝生活号.
         /// </summary>
         internal static string field_id_alipay {
@@ -1539,11 +1575,65 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data file.
+        /// </summary>
+        internal static string import_data_file {
+            get {
+                return ResourceManager.GetString("import_data_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data file (with key file).
+        /// </summary>
+        internal static string import_data_file_ex {
+            get {
+                return ResourceManager.GetString("import_data_file_ex", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot import this file!.
+        /// </summary>
+        internal static string import_error_msg {
+            get {
+                return ResourceManager.GetString("import_error_msg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot import this file! This user alreay exists..
         /// </summary>
         internal static string import_error_user_exits {
             get {
                 return ResourceManager.GetString("import_error_user_exits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import key file.
+        /// </summary>
+        internal static string import_keyfile {
+            get {
+                return ResourceManager.GetString("import_keyfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan key file QR code.
+        /// </summary>
+        internal static string import_keyfile_scan {
+            get {
+                return ResourceManager.GetString("import_keyfile_scan", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please select a KeePass or PassXYZ data file.
+        /// </summary>
+        internal static string import_message1 {
+            get {
+                return ResourceManager.GetString("import_message1", resourceCulture);
             }
         }
         
@@ -1701,6 +1791,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        internal static string menu_id_users {
+            get {
+                return ResourceManager.GetString("menu_id_users", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot logout now, .
         /// </summary>
         internal static string message_id_alert_logout_disable {
@@ -1742,6 +1841,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string message_id_attachment_options {
             get {
                 return ResourceManager.GetString("message_id_attachment_options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot edit binary.
+        /// </summary>
+        internal static string message_id_edit_binary {
+            get {
+                return ResourceManager.GetString("message_id_edit_binary", resourceCulture);
             }
         }
         
@@ -1899,6 +2007,27 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to # Privacy Notice
+        ///
+        ///
+        ///This privacy notice discloses the privacy practices for PassXYZ application and our websites:
+        ///- PassXYZ, PassXYZ Cloud and PassXYZ.Vault
+        ///- https://passxyz.github.io
+        ///- https://github.com/passxyz
+        ///
+        ///## Information Collection, Use, and Sharing 
+        ///
+        ///This website is built using the services provided by GitHub. It is a static website and does not collect any information. Please refer to the GitHub Privacy Statement about the agreement before you use GitHub services.
+        ///
+        ///PassXYZ application  [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string privacy_notice {
+            get {
+                return ResourceManager.GetString("privacy_notice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please choose an item to be created: .
         /// </summary>
         internal static string pt_id_choosetemplate {
@@ -2003,6 +2132,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string settings_keyFileField_Value2 {
             get {
                 return ResourceManager.GetString("settings_keyFileField_Value2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Lock.
+        /// </summary>
+        internal static string settings_keyFileField_Value3 {
+            get {
+                return ResourceManager.GetString("settings_keyFileField_Value3", resourceCulture);
             }
         }
         

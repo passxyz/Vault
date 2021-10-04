@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodels="clr-namespace:PassXYZ.Vault.ViewModels"
+             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
+             x:Class="PassXYZ.Vault.Views.OtpListPage">
+    <ContentPage.Content>
+        <RefreshView x:DataType="viewmodels:OtpListViewModel" Command="{Binding GetOtpListCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <ListView x:Name="OtpListView" 
+                ItemsSource="{Binding Entries}"
+                VerticalOptions="FillAndExpand"
+                HasUnevenRows="true"
+                IsPullToRefreshEnabled="true"
+                ItemSelected="OnItemSelected">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Fill"  x:DataType="kpclib:PwEntry" >
+                                <Image Source="{Binding ImgSource}" />
+                                <StackLayout Padding="10">
+                                    <Label Text="{Binding Name}" 
+                                           LineBreakMode="TailTruncation" 
+                                           Style="{DynamicResource ListItemTextStyle}" 
+                                           FontSize="13" />
+                                    <Label Text="{Binding Token}" 
+                                           LineBreakMode="TailTruncation" 
+                                           Style="{DynamicResource ListItemTextStyle}" 
+                                           FontSize="32" />
+                                    <ProgressBar x:Name="OtpTokenProgressBar" Progress="{Binding Progress}" HeightRequest="5" />
+                                    <Label Text="{Binding TotpDescription}" 
+                                           Style="{DynamicResource ListItemDetailTextStyle}" 
+                                           FontSize="13">
+                                        <Label.LineBreakMode>
+                                            <OnPlatform x:TypeArguments="LineBreakMode">
+                                                <On Platform="iOS" Value="TailTruncation" />
+                                                <On Platform="Android" Value="TailTruncation" />
+                                                <On Platform="UWP" Value="NoWrap" />
+                                            </OnPlatform>
+                                        </Label.LineBreakMode>
+                                    </Label>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </RefreshView>
+    </ContentPage.Content>
+</ContentPage>

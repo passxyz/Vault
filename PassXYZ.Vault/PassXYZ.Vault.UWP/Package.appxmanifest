@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="3e6bb6f5-7bef-4a46-a2a2-0427378d4fbb"
-    Publisher="CN=6ee1c330-6b0f-4d66-b5fe-9d9b29c41d0f"
-    Version="1.0.0.0" />
+    Name="13783RogerYe.PassXYZ.Vault"
+    Publisher="CN=Roger Ye"
+    Version="1.0.3.0" />
 
-  <mp:PhoneIdentity PhoneProductId="ec0cc741-fd3e-485c-81be-68815c480690" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="6a771353-7a66-4a55-8abc-68b30a50befe" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>PassXYZ.Vault.UWP</DisplayName>
-    <PublisherDisplayName>6ee1c330-6b0f-4d66-b5fe-9d9b29c41d0f</PublisherDisplayName>
+    <DisplayName>PassXYZ.Vault</DisplayName>
+    <PublisherDisplayName>Roger Ye (叶树杲)</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,7 +32,7 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="PassXYZ.Vault.UWP.App">
       <uap:VisualElements
-        DisplayName="PassXYZ.Vault.UWP"
+        DisplayName="PassXYZ.Vault"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="PassXYZ.Vault.UWP"
@@ -51,5 +51,6 @@
 
   <Capabilities>
     <Capability Name="internetClient" />
+    <DeviceCapability Name="webcam" />
   </Capabilities>
 </Package>

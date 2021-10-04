@@ -6,14 +6,20 @@
              xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.ItemsPage"
              Title="{Binding Title}"
-             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"  
+             xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
+             x:DataType="local:ItemsViewModel"
              xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"  
              x:Name="BrowseItemsPage">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text=" " Command="{Binding AddItemCommand}">
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_search}" Command="{Binding SearchCommand}">
             <ToolbarItem.IconImageSource>
-                <iconsR:IconSource Icon="PlusSquare"  Color="White" />
+                <iconsS:IconSource Icon="Search"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_add}" Command="{Binding AddItemCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Plus"  Color="White" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
@@ -34,6 +40,8 @@
                         <ViewCell.ContextActions>
                             <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}" 
                                       Text="{x:Static resources:AppResources.action_id_edit}" />
+                            <MenuItem Clicked="OnMenuChangeIconAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_change_icon}" />
                             <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
                                       Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
                         </ViewCell.ContextActions>

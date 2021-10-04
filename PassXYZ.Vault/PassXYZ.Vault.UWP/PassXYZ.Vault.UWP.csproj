@@ -18,7 +18,16 @@
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
+    <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
+    <PackageCertificateThumbprint>7ACD744DC11CF686C131672EDB56B95239877119</PackageCertificateThumbprint>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -127,6 +136,10 @@
     <Content Include="Assets\StoreLogo.scale-150.png" />
     <Content Include="Assets\Wide310x150Logo.scale-125.png" />
     <Content Include="Assets\Wide310x150Logo.scale-150.png" />
+    <None Include="Package.StoreAssociation.xml" />
+    <Content Include="barcode_scan.png" />
+    <Content Include="icon_cancel.png" />
+    <Content Include="icon_save.png" />
     <Content Include="passxyz_logo.png" />
     <Content Include="passxyz_wechat.png" />
     <Content Include="Properties\Default.rd.xml" />
@@ -160,6 +173,7 @@
     <Content Include="xamarin_logo.png" />
     <Content Include="icon_about.png" />
     <Content Include="icon_feed.png" />
+    <None Include="PassXYZ.Vault.UWP_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -178,9 +192,15 @@
     <PackageReference Include="Plugin.Fingerprint">
       <Version>2.1.4</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+    <PackageReference Include="Serilog">
+      <Version>2.10.0</Version>
+    </PackageReference>
+    <PackageReference Include="Serilog.Sinks.File">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.12" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
     <PackageReference Include="ZXing.Net.Mobile">
       <Version>2.4.1</Version>
     </PackageReference>
@@ -189,6 +209,30 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\KPCLib\KPCLib\KPCLib.csproj">
+      <Project>{23b3e37e-a262-4371-ac98-8af6976bbc27}</Project>
+      <Name>KPCLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\KPCLib\PassXYZLib\PassXYZLib.csproj">
+      <Project>{2ba8fcc0-3f26-47d6-a266-24f217411cd8}</Project>
+      <Name>PassXYZLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Brand\FontAwesome.Brand.csproj">
+      <Project>{a8082bd9-ccc9-4c31-913d-a47e33b92ee6}</Project>
+      <Name>FontAwesome.Brand</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Regular\FontAwesome.Regular.csproj">
+      <Project>{d482b377-e426-4b69-ab41-8afd04a5cf5f}</Project>
+      <Name>FontAwesome.Regular</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Solid\FontAwesome.Solid.csproj">
+      <Project>{53d8fab1-f1d1-4ce6-a5b2-97e797173854}</Project>
+      <Name>FontAwesome.Solid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Xamarin.Forms.IconFontHelper\src\IconFontHelper\IconFontHelper.csproj">
+      <Project>{20cee1e5-3c67-445e-93fb-23895e0c481a}</Project>
+      <Name>IconFontHelper</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PassXYZ.Vault\PassXYZ.Vault.csproj">
       <Project>{E87E5151-8B97-4531-B8A2-4B9F556776C3}</Project>
       <Name>PassXYZ.Vault</Name>

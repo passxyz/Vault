@@ -121,7 +121,7 @@
     <value>关于</value>
   </data>
   <data name="Appname" xml:space="preserve">
-    <value>PassXYZ</value>
+    <value>PassXYZ.Vault</value>
   </data>
   <data name="LoginErrorMessage" xml:space="preserve">
     <value>登录失败，请检查用户名和密码。</value>
@@ -358,7 +358,7 @@
     <value>Copyright 2021, 叶树杲 All rights reserved.</value>
   </data>
   <data name="about_passxyz_license" xml:space="preserve">
-    <value>PassXYZ使用GNU通用公共许可证v3.0。如果您使用该软件，表示您同意Apache版权协议中的条款。您可以在下列网站获得Apache 2.0版权协议。</value>
+    <value>PassXYZ.Vault使用GNU通用公共许可证v3.0。如果您使用该软件，表示您同意Apache版权协议中的条款。您可以在下列网站获得Apache 2.0版权协议。</value>
   </data>
   <data name="about_passxyz_web" xml:space="preserve">
     <value>您可以通过下面的PassXYZ网站提交问题报告和了解使用说明。</value>
@@ -524,7 +524,7 @@
     <value>鸣谢</value>
   </data>
   <data name="about_keepass" xml:space="preserve">
-    <value>PassXYZ是基于KPCLib开发的。KPCLib是对KeePassLib在Xamarin上的扩展，使之可以运行在Xamarin环境中。KeePassLib是开源项目KeePass的一部分。KeePass由Dominik Reichl开发。KeePass的官方网站是：</value>
+    <value>PassXYZ.Vault是基于KPCLib开发的。KPCLib是对KeePassLib在Xamarin上的扩展，使之可以运行在Xamarin环境中。KeePassLib是开源项目KeePass的一部分。KeePass由Dominik Reichl开发。KeePass的官方网站是：</value>
   </data>
   <data name="about_kpclib" xml:space="preserve">
     <value>关于KPCLib的信息和源代码可以在下面网站获得：</value>
@@ -930,5 +930,62 @@
   </data>
   <data name="SiguUpMessage" xml:space="preserve">
     <value>成功的创建了新用户</value>
+  </data>
+  <data name="settings_keyFileField_Value3" xml:space="preserve">
+    <value>设备锁</value>
+  </data>
+  <data name="action_id_export" xml:space="preserve">
+    <value>导出</value>
+  </data>
+  <data name="export_error1" xml:space="preserve">
+    <value>请选择一个用户</value>
+  </data>
+  <data name="import_message1" xml:space="preserve">
+    <value>请选择一个KeePass或PassXYZ数据文件</value>
+  </data>
+  <data name="import_data_file" xml:space="preserve">
+    <value>数据文件</value>
+  </data>
+  <data name="import_data_file_ex" xml:space="preserve">
+    <value>数据文件(有密钥文件)</value>
+  </data>
+  <data name="import_keyfile" xml:space="preserve">
+    <value>导入密钥文件</value>
+  </data>
+  <data name="import_error_msg" xml:space="preserve">
+    <value>无法导入文件！</value>
+  </data>
+  <data name="import_keyfile_scan" xml:space="preserve">
+    <value>扫描密钥文件二维码</value>
+  </data>
+  <data name="menu_id_users" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="message_id_edit_binary" xml:space="preserve">
+    <value>附件只能添加或删除，不可以更改</value>
+  </data>
+  <data name="action_id_scan" xml:space="preserve">
+    <value>扫描</value>
+  </data>
+  <data name="privacy_notice" xml:space="preserve">
+    <value># 隐私声明
+
+隐私保护声明适用范围包括PassXYZ应用及相关的网站。
+- PassXYZ, PassXYZ Cloud和PassXYZ.Vault
+- https://passxyz.github.io
+- https://github.com/passxyz
+
+本隐私声明阐述了 PassXYZ 处理的个人数据的方式和目的。
+
+## 信息的收集，使用和分享
+本网站是一个静态网站使用GitHub提供的服务。静态网站没有任何信息收集的能力。关于GitHub服务的使用，请参考GitHub的隐私保护声明。
+
+PassXYZ应用帮助存储您的个人数据在本地设备并使用KeePass 加密格式。应用本身并不会通过网络收集任何个人数据。PassXYZ的部分字体和图标是从网络下载的。
+
+## 隐私声明的更新
+您可以通过本网站获取最新的隐私保护声明。</value>
+  </data>
+  <data name="error_message_privacy_notice" xml:space="preserve">
+    <value>您需要接受隐私保护声明以使用本应用。</value>
   </data>
 </root>

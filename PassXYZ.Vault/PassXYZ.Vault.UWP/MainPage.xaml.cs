@@ -22,6 +22,7 @@ namespace PassXYZ.Vault.UWP
             this.InitializeComponent();
 
             LoadApplication(new PassXYZ.Vault.App());
+            ZXing.Net.Mobile.Forms.WindowsUniversal.ZXingScannerViewRenderer.Init();
         }
     }
 }

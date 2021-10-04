@@ -6,14 +6,19 @@
              xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              x:Class="PassXYZ.Vault.Views.ItemDetailPage"
              xmlns:local="clr-namespace:PassXYZ.Vault.ViewModels"
-             xmlns:kpclib="clr-namespace:KeePassLib;assembly=KPCLib"
-             xmlns:passxyzlib="clr-namespace:PassXYZLib;assembly=PassXYZLib"
+             x:DataType="local:ItemDetailViewModel"
+             xmlns:passxyzlib="clr-namespace:PassXYZLib"
              Title="{Binding Title}">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text=" " Command="{Binding AddFieldCommand}">
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_add}" Command="{Binding AddFieldCommand}">
             <ToolbarItem.IconImageSource>
-                <iconsR:IconSource Icon="PlusSquare"  Color="White" />
+                <iconsS:IconSource Icon="Plus"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_attach}" Command="{Binding AddBinaryCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Paperclip"  Color="White" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
@@ -25,7 +30,7 @@
                     HasUnevenRows="True"
                     SelectionMode="None">
             <ListView.Header>
-                <StackLayout Padding="10" Orientation="Horizontal">
+                <StackLayout Padding="5" Orientation="Horizontal">
                     <Label Text="{Binding Text}" FontSize="Large" FontAttributes="Bold"/>
                 </StackLayout>
             </ListView.Header>
@@ -41,7 +46,7 @@
                                       Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
                         </ViewCell.ContextActions>
 
-                        <StackLayout Padding="10" Orientation="Horizontal" x:DataType="passxyzlib:Field" >
+                        <StackLayout Padding="5" Orientation="Horizontal" x:DataType="passxyzlib:Field" >
                             <Grid >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="32" />
@@ -71,7 +76,7 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.Footer>
-                <StackLayout Padding="10" Orientation="Horizontal">
+                <StackLayout Padding="5" Orientation="Horizontal">
                     <Label Text="{Binding Description}" 
                            FontSize="Small" 
                            TextType ="Html"

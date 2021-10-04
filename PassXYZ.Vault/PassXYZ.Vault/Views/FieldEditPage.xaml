@@ -26,30 +26,12 @@
     </ContentPage.Resources>
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked">
-            <ToolbarItem.IconImageSource>
-                <iconsS:IconSource Icon="WindowClose">
-                    <iconsS:IconSource.Color>
-                        <OnPlatform x:TypeArguments="Color">
-                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
-                            <On Platform="Android" Value="White" />
-                        </OnPlatform>
-                    </iconsS:IconSource.Color>
-                </iconsS:IconSource>
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked">
-            <ToolbarItem.IconImageSource>
-                <iconsS:IconSource Icon="Save">
-                    <iconsS:IconSource.Color>
-                        <OnPlatform x:TypeArguments="Color">
-                            <On Platform="iOS, UWP" Value="{StaticResource Primary}" />
-                            <On Platform="Android" Value="White" />
-                        </OnPlatform>
-                    </iconsS:IconSource.Color>
-                </iconsS:IconSource>
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_scan}" Clicked="OnScanClicked" Icon="barcode_scan.png"/>
+
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Clicked="OnCancelClicked" Icon="icon_cancel.png"/>
+
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Clicked="OnSaveClicked" Icon="icon_save.png"/>
+
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>
@@ -68,6 +50,13 @@
                         Placeholder="{x:Static resources:AppResources.ph_id_value}"
                         VerticalOptions="FillAndExpand" 
                         HorizontalOptions="FillAndExpand">
+                    <Editor.FontFamily>
+                        <OnPlatform x:TypeArguments="x:String">
+                            <On Platform="iOS" Value="Courier New" />
+                            <On Platform="Android" Value="monospace" />
+                            <On Platform="UWP" Value="Courier New" />
+                        </OnPlatform>
+                    </Editor.FontFamily>
                 </Editor>
             </StackLayout>
         </ScrollView>
