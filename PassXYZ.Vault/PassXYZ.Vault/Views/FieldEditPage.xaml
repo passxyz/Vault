@@ -43,7 +43,7 @@
                        Placeholder="{x:Static resources:AppResources.ph_id_title}" 
                        HorizontalOptions="FillAndExpand"></Entry>
                 <StackLayout x:Name="optionGroup" Orientation="Horizontal">
-                    <Label Text="Password" />
+                    <Label Text="{x:Static resources:AppResources.field_id_password}" />
                     <CheckBox x:Name="pwCheckBox" Color="{StaticResource Primary}" CheckedChanged="OnPasswordCheckBoxChanged" />
                     <Label Text="OTP"/>
                     <CheckBox x:Name="otpCheckBox" Color="{StaticResource Primary}"  CheckedChanged="OnOtpCheckBoxChanged" />

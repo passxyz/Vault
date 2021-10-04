@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 
 using ZXing.Net.Mobile.Forms;
 
+using KeePassLib;
 using PassXYZ.Vault.ViewModels;
 using PassXYZ.Vault.Resx;
 
@@ -21,6 +22,7 @@ namespace PassXYZ.Vault.Views
         private Action<string, string, bool> _updateAction;
         private readonly bool _isNewField = true;
         private Color _checkboxColor;
+        private PwEntry _dataEntry = null;
 
         public FieldEditPage(Action<string, string, bool> updateAction, string key = "", string value = "")
         {
@@ -40,7 +42,18 @@ namespace PassXYZ.Vault.Views
             _updateAction = updateAction;
         }
 
-        public FieldEditPage(Action<string, string, bool> updateAction, string key, string value, bool isKeyVisible = false):this(updateAction, key, value)
+        /// <summary>
+        /// This one is used to add a field in ItemDetailViewModel.OnAddField().
+        /// </summary>
+        public FieldEditPage(Action<string, string, bool> updateAction, PwEntry entry, string key = "", string value = "") : this(updateAction, key, value)
+        {
+            _dataEntry = entry;
+        }
+
+        /// <summary>
+        /// This one is used to update an item. The item can be a group or an entry.
+        /// </summary>
+        public FieldEditPage(Action<string, string, bool> updateAction, string key, string value, bool isKeyVisible = false) : this(updateAction, key, value)
         {
             // This is the same as the another constructor, except this part
             if (isKeyVisible)
@@ -96,12 +109,18 @@ namespace PassXYZ.Vault.Views
                 pwCheckBox.IsEnabled = false;
                 _checkboxColor = pwCheckBox.Color;
                 pwCheckBox.Color = Color.Gray;
+                keyField.Text = PassXYZLib.PxDefs.PxCustomDataOtpUrl;
+                keyField.IsEnabled = false;
+                valueField.Text = _dataEntry != null ? _dataEntry.GetOtpUrl() : throw new ArgumentNullException("dataEntry");
                 Debug.WriteLine("OTP CheckBox is true.");
             }
             else
             {
                 pwCheckBox.IsEnabled = true;
                 pwCheckBox.Color = _checkboxColor;
+                keyField.Text = "";
+                keyField.IsEnabled = true;
+                valueField.Text = "";
                 Debug.WriteLine("OTP CheckBox is false.");
             }
         }

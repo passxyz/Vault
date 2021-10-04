@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using Xamarin.Forms;
@@ -15,12 +16,13 @@ namespace PassXYZ.Vault.Views
     public partial class ItemDetailPage : ContentPage
     {
         private ItemDetailViewModel _viewModel;
-        private MenuItem showAction = null;
+        private readonly Dictionary<string, MenuItem> showActions;
         private const int CONTEXT_ACTIONS_NUM = 4;
         public ItemDetailPage()
         {
             InitializeComponent();
             BindingContext = _viewModel = new ItemDetailViewModel();
+            showActions = new Dictionary<string, MenuItem>();
         }
 
         private void OnMenuShow(object sender, EventArgs e)
@@ -32,12 +34,12 @@ namespace PassXYZ.Vault.Views
                 if (field.IsHide)
                 {
                     field.ShowPassword();
-                    showAction.Text = AppResources.action_id_hide;
+                    showActions[field.Key].Text = AppResources.action_id_hide;
                 }
                 else
                 {
                     field.HidePassword();
-                    showAction.Text = AppResources.action_id_show;
+                    showActions[field.Key].Text = AppResources.action_id_show;
                 }
             }
         }
@@ -86,16 +88,16 @@ namespace PassXYZ.Vault.Views
                 // We need to check CONTEXT_ACTIONS_NUM to prevent showAction will be added multiple times.
                 if (theViewCell.ContextActions.Count < CONTEXT_ACTIONS_NUM && field.IsProtected)
                 {
-                    if (showAction == null)
+                    if (!showActions.ContainsKey(field.Key))
                     {
-                        showAction = new MenuItem
+                        showActions[field.Key] = new MenuItem
                         {
                             Text = AppResources.action_id_show
                         };
-                        showAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
-                        showAction.Clicked += OnMenuShow;
+                        showActions[field.Key].SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
+                        showActions[field.Key].Clicked += OnMenuShow;
                     }
-                    theViewCell.ContextActions.Add(showAction);
+                    theViewCell.ContextActions.Add(showActions[field.Key]);
                 }
             }
         }

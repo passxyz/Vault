@@ -205,6 +205,8 @@ namespace PassXYZ.Vault.Services
 
             return await Task.Run(() =>
             {
+                if (string.IsNullOrEmpty(user.Password)) { return false; }
+
                 db.Open(user);
                 if (db.IsOpen)
                 {
