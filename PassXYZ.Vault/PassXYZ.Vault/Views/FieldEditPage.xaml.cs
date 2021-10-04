@@ -95,7 +95,7 @@ namespace PassXYZ.Vault.Views
                 // If this is an OTP url, we need to valid it.
                 if (!isValidUrl(valueField.Text))
                 {
-                    await DisplayAlert("Error message", "This is an invalid OTP URL!", "OK");
+                    await DisplayAlert("", AppResources.error_message_invalid_url, AppResources.alert_id_ok);
                     return;
                 }
             }
