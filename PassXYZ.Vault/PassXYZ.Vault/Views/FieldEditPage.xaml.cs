@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 
 using ZXing.Net.Mobile.Forms;
 
+using PureOtp;
 using KeePassLib;
 using PassXYZ.Vault.ViewModels;
 using PassXYZ.Vault.Resx;
@@ -62,9 +63,43 @@ namespace PassXYZ.Vault.Views
             }
         }
 
+        private bool isValidUrl(string rawUrl)
+        {
+            try
+            {
+                var otp = KeyUrl.FromUrl(rawUrl);
+                if (otp is Totp totp)
+                {
+                    var url = new Uri(rawUrl);
+                    return true;
+                }
+                else
+                {
+                    Debug.WriteLine($"{rawUrl} is an invalid URL.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{ex}");
+                return false;
+            }
+        }
+
         private async void OnSaveClicked(object sender, EventArgs e)
         {
             bool isProtected = pwCheckBox.IsChecked;
+
+            if(otpCheckBox.IsChecked)
+            {
+                // If this is an OTP url, we need to valid it.
+                if (!isValidUrl(valueField.Text))
+                {
+                    await DisplayAlert("Error message", "This is an invalid OTP URL!", "OK");
+                    return;
+                }
+            }
+
             if(_isNewField)
             {
                 _updateAction?.Invoke(keyField.Text, valueField.Text, isProtected);
