@@ -229,7 +229,7 @@ namespace PassXYZ.Vault.ViewModels
                 if (result != null)
                 {
                     var stream = await result.OpenReadAsync();
-                    var fileStream = File.Create(CurrentUser.KeFilePath);
+                    var fileStream = File.Create(CurrentUser.KeyFilePath);
                     stream.Seek(0, SeekOrigin.Begin);
                     stream.CopyTo(fileStream);
                     fileStream.Close();
