@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -13,11 +14,8 @@ namespace PassXYZLib
 #if PASSXYZ_CLOUD_SERVICE
     class PxSFtp : ICloudServices<PxUser>
     {
-        private readonly PxCloudConfig cloudConfig = null;
-
-        public PxSFtp(PxCloudConfig config)
+        public PxSFtp()
         {
-            cloudConfig = config;
         }
 
         private bool _isConnected = false;
@@ -31,11 +29,11 @@ namespace PassXYZLib
             await Task.Run(() =>
             {
                 _isConnected = false;
-                using (var sftp = new SftpClient(cloudConfig.Hostname, cloudConfig.Username, cloudConfig.Password))
+                using (var sftp = new SftpClient(PxCloudConfig.Hostname, PxCloudConfig.Username, PxCloudConfig.Password))
                 {
                     try
                     {
-                        Debug.WriteLine($"SFTP: Trying to connect to {cloudConfig.Hostname}.");
+                        Debug.WriteLine($"SFTP: Trying to connect to {PxCloudConfig.Hostname}.");
                         sftp.Connect();
 
                         if (sftp.IsConnected)
@@ -75,107 +73,86 @@ namespace PassXYZLib
 
         public async Task LoginAsync()
         {
-            if (cloudConfig != null)
-            {
-                await ConnectAsync((SftpClient sftp) => {
-                    Debug.WriteLine($"SFTP: LoginAsync {sftp.IsConnected}");
-                });
-            }
+            await ConnectAsync((SftpClient sftp) => {
+                Debug.WriteLine($"SFTP: LoginAsync {sftp.IsConnected}");
+            });
         }
 
         public async Task<string> DownloadFileAsync(string filename, bool isMerge = true)
         {
-            if (cloudConfig != null)
+            var path = string.Empty;
+            if (isMerge)
             {
-                var path = string.Empty;
-                if (isMerge)
-                {
-                    path = Path.Combine(PxDataFile.TmpFilePath, filename);
-                }
-                else
-                {
-                    path = Path.Combine(PxDataFile.DataFilePath, filename);
-                }
-
-                var remotepath = cloudConfig.RemoteHomePath + filename;
-                await ConnectAsync((SftpClient sftp) => {
-                    using (var fileStr = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None,
-                                bufferSize: 4096, useAsync: true)) 
-                    {
-                        if (fileStr != null)
-                        {
-                            sftp.DownloadFile(remotepath, fileStr);
-                        }
-                    }
-                });
-                return path;
+                path = Path.Combine(PxDataFile.TmpFilePath, filename);
             }
-            return string.Empty;
+            else
+            {
+                path = Path.Combine(PxDataFile.DataFilePath, filename);
+            }
+
+            var remotepath = PxCloudConfig.RemoteHomePath + filename;
+            await ConnectAsync((SftpClient sftp) => {
+                using (var fileStr = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None,
+                            bufferSize: 4096, useAsync: true))
+                {
+                    if (fileStr != null)
+                    {
+                        sftp.DownloadFile(remotepath, fileStr);
+                    }
+                }
+            });
+            return path;
         }
 
         public async Task UploadFileAsync(string filename)
         {
-            if (cloudConfig != null)
-            {
-                var localPath = Path.Combine(PxDataFile.DataFilePath, filename);
-                string remotePath = cloudConfig.RemoteHomePath + filename;
-                await ConnectAsync((SftpClient sftp) => {
-                    using (var uploadedFileStream = new FileStream(localPath, FileMode.Open)) 
-                    {
-                        sftp.UploadFile(uploadedFileStream, remotePath, true, null);
-                        Debug.WriteLine($"SFTP: UploadFileAsync {sftp.IsConnected}");
-                    }
-                });
-            }
+            var localPath = Path.Combine(PxDataFile.DataFilePath, filename);
+            string remotePath = PxCloudConfig.RemoteHomePath + filename;
+            await ConnectAsync((SftpClient sftp) => {
+                using (var uploadedFileStream = new FileStream(localPath, FileMode.Open))
+                {
+                    sftp.UploadFile(uploadedFileStream, remotePath, true, null);
+                    Debug.WriteLine($"SFTP: UploadFileAsync {sftp.IsConnected}");
+                }
+            });
         }
 
         public async Task<bool> DeleteFileAsync(string filename)
         {
-            if (cloudConfig != null)
-            {
-                await ConnectAsync((SftpClient sftp) => {
-                    string remotePath = cloudConfig.RemoteHomePath + filename;
-                    var file = sftp.Get(remotePath);
-                    file.Delete();
-                    Debug.WriteLine($"SFTP: DeleteFileAsync {sftp.IsConnected}");
-                });
+            await ConnectAsync((SftpClient sftp) => {
+                string remotePath = PxCloudConfig.RemoteHomePath + filename;
+                var file = sftp.Get(remotePath);
+                file.Delete();
+                Debug.WriteLine($"SFTP: DeleteFileAsync {sftp.IsConnected}");
+            });
 
-                if (_isConnected)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return _isConnected;
         }
 
         public async Task<IEnumerable<PxUser>> GetCloudUsersListAsync()
         {
-            if (cloudConfig != null)
-            {
-                List<PxUser> Users = new List<PxUser>();
+            List<PxUser> Users = new List<PxUser>();
 
-                await ConnectAsync((SftpClient sftp) => {
-                    Users.Clear();
-                    foreach (SftpFile remoteFile in sftp.ListDirectory(cloudConfig.RemoteHomePath))
+            await ConnectAsync((SftpClient sftp) => {
+                Users.Clear();
+                foreach (SftpFile remoteFile in sftp.ListDirectory(PxCloudConfig.RemoteHomePath))
+                {
+                    if (Path.GetExtension(remoteFile.FullName) == ".xyz")
                     {
-                        if (Path.GetExtension(remoteFile.FullName) == ".xyz")
+                        // If it is a PassXYZ data file, then we add it to the list.
+                        string userName = PxDataFile.GetUserName(Path.GetFileName(remoteFile.FullName));
+                        if (!string.IsNullOrWhiteSpace(userName))
                         {
-                            // If it is a PassXYZ data file, then we add it to the list.
-                            string userName = PxDataFile.GetUserName(Path.GetFileName(remoteFile.FullName));
-                            if (!string.IsNullOrWhiteSpace(userName))
-                            {
-                                Users.Add(
-                                    new PxUser()
-                                    {
-                                        Username = userName
-                                    });
-                            }
+                            Users.Add(
+                                new PxUser()
+                                {
+                                    Username = userName
+                                });
                         }
                     }
-                });
-                return Users;
-            }
-            return null;
+                }
+            });
+            return Users;
         }
 
         public void Logout()

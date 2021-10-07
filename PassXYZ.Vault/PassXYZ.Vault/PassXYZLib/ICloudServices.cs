@@ -14,22 +14,23 @@ namespace PassXYZLib
         SMB
     }
 
-    public class PxCloudConfig
+    public static class PxCloudConfig
     {
-        public PxCloudType CurrentServiceType { get => PxCloudType.SFTP; }
+        public static PxCloudType CurrentServiceType { get => PxCloudType.SFTP; }
 
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Hostname { get; set; }
-        public string RemoteHomePath { get; set; }
+        public static string Username { get; set; }
+        public static string Password { get; set; }
+        public static string Hostname { get; set; }
+        public static string RemoteHomePath { get; set; }
 
-        public PxCloudConfig()
+        public static bool IsConfigured => !string.IsNullOrWhiteSpace(Username)
+                    && !string.IsNullOrWhiteSpace(Password)
+                    && !string.IsNullOrWhiteSpace(Hostname)
+                    && !string.IsNullOrWhiteSpace(RemoteHomePath);
+
+        public static ICloudServices<PxUser> GetCloudServices()
         {
-        }
-
-        public ICloudServices<PxUser> GetCloudServices()
-        {
-            var service = new PxSFtp(this);
+            var service = new PxSFtp();
             return service;
         }
     }

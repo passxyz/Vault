@@ -232,28 +232,13 @@ namespace PassXYZLib
         public PxFileStatus RemoteFileStatus;
         public PxFileStatus LocalFileStatus;
         public PxFileStatus CurrentFileStatus;
-        public PxCloudConfig CloudConfig;
-        public string RemoteFilePath
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(Username))
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return CloudConfig.RemoteHomePath;
-                }
-            }
-        }
+        public PxCloudSyncStatus SyncStatus = PxCloudSyncStatus.PxLocal;
 
         public PxUser()
         {
             RemoteFileStatus = new PxRemoteFileStatus(this);
             LocalFileStatus = new PxLocalFileStatus(this);
             CurrentFileStatus = new PxCurrentFileStatus(this);
-            CloudConfig = new PxCloudConfig();
         }
         #endregion
 

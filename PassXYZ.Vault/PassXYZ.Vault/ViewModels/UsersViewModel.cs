@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
@@ -24,7 +25,7 @@ namespace PassXYZ.Vault.ViewModels
             set => _ = SetProperty(ref isBusy, value);
         }
 
-        public ObservableCollection<PxUser> Users { get; set; }
+        public ObservableCollection<PxUser> Users { get; }
         public Command LoadUsersCommand { get; }
         public Command AddUserCommand { get; }
         public Command ImportUserCommand { get; }
@@ -32,7 +33,7 @@ namespace PassXYZ.Vault.ViewModels
 
         public UsersViewModel()
         {
-            Users = new ObservableCollection<PxUser>();
+            Users = App.Users;
             LoadUsersCommand = new Command(() => ExecuteLoadUsersCommand());
             AddUserCommand = new Command(OnAddUser);
             ImportUserCommand = new Command(() => ImportUser());

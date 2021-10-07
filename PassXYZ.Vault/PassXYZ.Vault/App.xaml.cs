@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -17,11 +19,13 @@ namespace PassXYZ.Vault
     {
         public static bool InBackgroup = false;
         private static bool _isLogout = false;
+        public static ObservableCollection<PxUser> Users = null;
         public App()
         {
             InitializeComponent();
 
             DependencyService.Register<DataStore>();
+            Users = new ObservableCollection<PxUser>();
             MainPage = new AppShell();
         }
 
@@ -73,6 +77,26 @@ namespace PassXYZ.Vault
             }
 
             Debug.WriteLine($"PassXYZ: OnResume, InBackgroup={InBackgroup}");
+        }
+
+        public ObservableCollection<PxUser> LoadLocalUsers()
+        {
+            Users.Clear();
+            var dataFiles = Directory.EnumerateFiles(PxDataFile.DataFilePath, PxDefs.all_xyz);
+            foreach (string currentFile in dataFiles)
+            {
+                string fileName = currentFile.Substring(PxDataFile.DataFilePath.Length + 1);
+                string userName = PxDataFile.GetUserName(fileName);
+                if (userName != string.Empty && !string.IsNullOrWhiteSpace(userName))
+                {
+                    Users.Add(
+                        new PxUser()
+                        {
+                            Username = userName
+                        });
+                }
+            }
+            return Users;
         }
 
         [System.Diagnostics.Conditional("DEBUG")]

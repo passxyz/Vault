@@ -26,10 +26,10 @@ namespace PassXYZ.xunit
                 Username = TEST_DB_USER,
                 Password = TEST_DB_KEY
             };
-            user.CloudConfig.Username = "tester";
-            user.CloudConfig.Password = "12345";
-            user.CloudConfig.Hostname = "172.28.64.233";
-            user.CloudConfig.RemoteHomePath = "/home/tester/pxvault/";
+            PxCloudConfig.Username = "tester";
+            PxCloudConfig.Password = "12345";
+            PxCloudConfig.Hostname = "172.28.64.233";
+            PxCloudConfig.RemoteHomePath = "/home/tester/pxvault/";
 
             PxDb = new PxDatabase();
             if (user.IsUserExist) 
@@ -70,12 +70,15 @@ namespace PassXYZ.xunit
         public async void Test1LoginWithPassword()
         {
             PxUser user = userFixture.user;
-            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
 
             try
             {
-                await sftp.LoginAsync();
-                Debug.WriteLine("Login ...");
+                if (PxCloudConfig.IsConfigured) 
+                {
+                    await sftp.LoginAsync();
+                    Debug.WriteLine("Login ...");
+                }
             }
             catch (Exception ex)
             {
@@ -95,7 +98,7 @@ namespace PassXYZ.xunit
         public async void Test2UploadFile()
         {
             PxUser user = userFixture.user;
-            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
             await sftp.UploadFileAsync(user.FileName);
             var user1 = new PxUser
             {
@@ -113,7 +116,7 @@ namespace PassXYZ.xunit
         public async void Test3DownloadFile()
         {
             PxUser user = userFixture.user;
-            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
             var user1 = new PxUser
             {
                 Username = "kpclibpy",
@@ -130,7 +133,7 @@ namespace PassXYZ.xunit
         public async void Test4GetUsers()
         {
             PxUser user = userFixture.user;
-            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
 
             try
             {
@@ -152,7 +155,7 @@ namespace PassXYZ.xunit
         public async void Test5DeleteFile()
         {
             PxUser user = userFixture.user;
-            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
 
             await sftp.UploadFileAsync(user.FileName);
             bool result = await sftp.DeleteFileAsync(user.FileName);
@@ -165,7 +168,7 @@ namespace PassXYZ.xunit
         {
             PxUser user = userFixture.user;
             user.Username = "B@d U$er";
-            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
 
             bool result = await sftp.DeleteFileAsync(user.FileName);
             Assert.False(result);
