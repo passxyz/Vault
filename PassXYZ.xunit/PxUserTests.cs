@@ -26,6 +26,10 @@ namespace PassXYZ.xunit
                 Username = TEST_DB_USER,
                 Password = TEST_DB_KEY
             };
+            user.CloudConfig.Username = "tester";
+            user.CloudConfig.Password = "12345";
+            user.CloudConfig.Hostname = "172.28.64.233";
+            user.CloudConfig.RemoteHomePath = "/home/tester/pxvault/";
 
             PxDb = new PxDatabase();
             if (user.IsUserExist) 
@@ -52,6 +56,7 @@ namespace PassXYZ.xunit
     }
 
     [Collection("PxUser collection")]
+    [TestCaseOrderer("PassXYZ.xunit.PxAlphabeticalOrderer", "PassXYZ.xunit")]
     public class PxUserTests
     {
         private readonly PxUserFixture userFixture;
@@ -62,18 +67,12 @@ namespace PassXYZ.xunit
         }
 
         [Fact]
-        public async void LoginWithPasswordTests()
+        public async void Test1LoginWithPassword()
         {
             PxUser user = userFixture.user;
-            Debug.WriteLine($"Current: LastWriteTime={user.CurrentFileStatus.LastWriteTime}, Length={user.CurrentFileStatus.Length}");
-            Debug.WriteLine($"Local: LastWriteTime={user.LocalFileStatus.LastWriteTime}, Length={user.LocalFileStatus.Length}");
-            user.CloudConfig.Username = "tester";
-            user.CloudConfig.Password = "12345";
-            user.CloudConfig.Hostname = "127.0.0.1";
-            user.CloudConfig.RemoteHomePath = "/home/tester/pxvault";
             ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
 
-            try 
+            try
             {
                 await sftp.LoginAsync();
                 Debug.WriteLine("Login ...");
@@ -88,7 +87,90 @@ namespace PassXYZ.xunit
                 var rfStatus = user.RemoteFileStatus;
                 Debug.WriteLine($"LastWriteTime={rfStatus.LastWriteTime}, Length={rfStatus.Length}");
             }
+            Assert.True(sftp.IsConnected());
             Debug.WriteLine("Done");
         }
+
+        [Fact]
+        public async void Test2UploadFile()
+        {
+            PxUser user = userFixture.user;
+            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            await sftp.UploadFileAsync(user.FileName);
+            var user1 = new PxUser
+            {
+                Username = "kpclibpy",
+                Password = "123123",
+                IsDeviceLockEnabled = true
+            };
+
+            await sftp.UploadFileAsync(user1.FileName);
+            Assert.True(sftp.IsConnected());
+            Debug.WriteLine($"UploadFileTests: {user.FileName}, {user1.FileName}");
+        }
+
+        [Fact]
+        public async void Test3DownloadFile()
+        {
+            PxUser user = userFixture.user;
+            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+            var user1 = new PxUser
+            {
+                Username = "kpclibpy",
+                Password = "123123",
+                IsDeviceLockEnabled = true
+            };
+
+            var path = await sftp.DownloadFileAsync(user1.FileName, false);
+            Assert.True(sftp.IsConnected());
+            Debug.WriteLine($"DownloadTests: {path}");
+        }
+
+        [Fact]
+        public async void Test4GetUsers()
+        {
+            PxUser user = userFixture.user;
+            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+
+            try
+            {
+                IEnumerable<PxUser> remoteUsers = await sftp.GetCloudUsersListAsync();
+                foreach (PxUser remoteUser in remoteUsers)
+                {
+                    Debug.WriteLine($"GetUsersTests: Username={remoteUser.Username}, FileName={remoteUser.FileName}");
+                }
+                Assert.True(sftp.IsConnected());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"GetUsersTests: {ex}");
+                Assert.False(sftp.IsConnected());
+            }
+        }
+
+        [Fact]
+        public async void Test5DeleteFile()
+        {
+            PxUser user = userFixture.user;
+            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+
+            await sftp.UploadFileAsync(user.FileName);
+            bool result = await sftp.DeleteFileAsync(user.FileName);
+            Assert.True(result);
+            Debug.WriteLine($"DeleteFileTest: {user.FileName}");
+        }
+
+        [Fact]
+        public async void Test6DeleteFileFailed() 
+        {
+            PxUser user = userFixture.user;
+            user.Username = "B@d U$er";
+            ICloudServices<PxUser> sftp = user.CloudConfig.GetCloudServices();
+
+            bool result = await sftp.DeleteFileAsync(user.FileName);
+            Assert.False(result);
+            Debug.WriteLine($"DeleteFileTest: {user.FileName}");
+        }
+
     }
 }

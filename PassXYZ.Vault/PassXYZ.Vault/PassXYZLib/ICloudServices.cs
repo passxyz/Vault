@@ -16,7 +16,6 @@ namespace PassXYZLib
 
     public class PxCloudConfig
     {
-        private readonly PxUser _user = null;
         public PxCloudType CurrentServiceType { get => PxCloudType.SFTP; }
 
         public string Username { get; set; }
@@ -24,14 +23,13 @@ namespace PassXYZLib
         public string Hostname { get; set; }
         public string RemoteHomePath { get; set; }
 
-        public PxCloudConfig(PxUser user)
+        public PxCloudConfig()
         {
-            _user = user;
         }
 
         public ICloudServices<PxUser> GetCloudServices()
         {
-            var service = new PxSFtp(_user);
+            var service = new PxSFtp(this);
             return service;
         }
     }
@@ -40,6 +38,10 @@ namespace PassXYZLib
     {
         Task LoginAsync();
         bool IsConnected();
+        Task<string> DownloadFileAsync(string filename, bool isMerge = false);
+        Task UploadFileAsync(string filename);
+        Task<bool> DeleteFileAsync(string filename);
+        Task<IEnumerable<T>> GetCloudUsersListAsync();
         void Logout();
     }
 #endif // PASSXYZ_CLOUD_SERVICE

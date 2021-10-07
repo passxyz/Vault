@@ -253,7 +253,7 @@ namespace PassXYZLib
             RemoteFileStatus = new PxRemoteFileStatus(this);
             LocalFileStatus = new PxLocalFileStatus(this);
             CurrentFileStatus = new PxCurrentFileStatus(this);
-            CloudConfig = new PxCloudConfig(this);
+            CloudConfig = new PxCloudConfig();
         }
         #endregion
 
