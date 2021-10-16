@@ -12,6 +12,7 @@ using Xamarin.Forms.Xaml;
 using PassXYZLib;
 using PassXYZ.Vault.Services;
 using PassXYZ.Vault.Views;
+using PassXYZ.Vault.ViewModels;
 
 namespace PassXYZ.Vault
 {
@@ -19,7 +20,8 @@ namespace PassXYZ.Vault
     {
         public static bool InBackgroup = false;
         private static bool _isLogout = false;
-        public static ObservableCollection<PxUser> Users = null;
+        public static ObservableCollection<PxUser> Users { get; set; }
+        public static bool IsBusyToLoadUsers = false;
         public App()
         {
             InitializeComponent();
@@ -29,10 +31,13 @@ namespace PassXYZ.Vault
             MainPage = new AppShell();
         }
 
-        protected override void OnStart()
+        protected override async void OnStart()
         {
             InBackgroup = false;
             InitTestDb();
+#if PASSXYZ_CLOUD_SERVICE
+            await LoginViewModel.SynchronizeUsersAsync();
+#endif // PASSXYZ_CLOUD_SERVICE
             Debug.WriteLine($"PassXYZ: OnStart, InBackgroup={InBackgroup}");
         }
 
@@ -79,27 +84,7 @@ namespace PassXYZ.Vault
             Debug.WriteLine($"PassXYZ: OnResume, InBackgroup={InBackgroup}");
         }
 
-        public ObservableCollection<PxUser> LoadLocalUsers()
-        {
-            Users.Clear();
-            var dataFiles = Directory.EnumerateFiles(PxDataFile.DataFilePath, PxDefs.all_xyz);
-            foreach (string currentFile in dataFiles)
-            {
-                string fileName = currentFile.Substring(PxDataFile.DataFilePath.Length + 1);
-                string userName = PxDataFile.GetUserName(fileName);
-                if (userName != string.Empty && !string.IsNullOrWhiteSpace(userName))
-                {
-                    Users.Add(
-                        new PxUser()
-                        {
-                            Username = userName
-                        });
-                }
-            }
-            return Users;
-        }
-
-        [System.Diagnostics.Conditional("DEBUG")]
+    [System.Diagnostics.Conditional("DEBUG")]
         private void InitTestDb()
         {
             foreach(EmbeddedDatabase eDb in TEST_DB.DataFiles)

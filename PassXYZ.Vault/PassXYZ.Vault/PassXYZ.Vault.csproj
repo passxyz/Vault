@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>1.0.4</Version>
+    <Version>1.1.0</Version>
     <Company>PassXYZ</Company>
     <Authors>Roger Ye</Authors>
     <Copyright>Roger Ye</Copyright>
@@ -43,7 +43,6 @@
     <PackageReference Include="Plugin.Fingerprint" Version="2.1.4" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
-    <PackageReference Include="SSH.NET" Version="2020.0.1" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />  
     <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />  
@@ -53,6 +52,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\KPCLib\KPCLib\KPCLib.csproj" />
     <ProjectReference Include="..\..\..\KPCLib\PassXYZLib\PassXYZLib.csproj" />
+    <ProjectReference Include="..\..\..\SSH.NET\src\Renci.SshNet\Renci.SshNet.csproj" />
     <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Brand\FontAwesome.Brand.csproj" />
     <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Regular\FontAwesome.Regular.csproj" />
     <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Solid\FontAwesome.Solid.csproj" />

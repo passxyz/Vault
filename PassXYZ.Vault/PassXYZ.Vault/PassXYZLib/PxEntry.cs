@@ -48,12 +48,37 @@ namespace PassXYZLib
 
         private string _value;
         private string _shadowValue = string.Empty;
+        /// <summary>
+        /// This is the value Field for display.
+        /// </summary>
         public string Value
         {
             get => _value;
             set
             {
                 if(IsProtected)
+                {
+                    _shadowValue = value;
+                    _value = new string('*', _shadowValue.Length);
+                }
+                else
+                {
+                    _value = value;
+                }
+                OnPropertyChanged("Value");
+            }
+        }
+
+        /// <summary>
+        /// This is the value Field for editing purpose.
+        /// </summary>
+        public string EditValue
+        {
+            get => IsProtected ? _shadowValue : _value;
+
+            set
+            {
+                if (IsProtected)
                 {
                     _shadowValue = value;
                     _value = new string('*', _shadowValue.Length);
@@ -119,6 +144,8 @@ namespace PassXYZLib
             string lastWord = key.Split(' ').Last();
             ImgSource = FieldIcons.GetImage(lastWord.ToLower());
         }
+
+        public object ShowContextAction { get; set; }
 
         public void ShowPassword()
         {

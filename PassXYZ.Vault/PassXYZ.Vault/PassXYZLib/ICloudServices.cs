@@ -42,7 +42,8 @@ namespace PassXYZLib
         Task<string> DownloadFileAsync(string filename, bool isMerge = false);
         Task UploadFileAsync(string filename);
         Task<bool> DeleteFileAsync(string filename);
-        Task<IEnumerable<T>> GetCloudUsersListAsync();
+        Task<IEnumerable<T>> LoadRemoteUsersAsync();
+        Task<IEnumerable<T>> SynchronizeUsersAsync();
         void Logout();
     }
 #endif // PASSXYZ_CLOUD_SERVICE

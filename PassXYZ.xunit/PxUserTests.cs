@@ -28,7 +28,7 @@ namespace PassXYZ.xunit
             };
             PxCloudConfig.Username = "tester";
             PxCloudConfig.Password = "12345";
-            PxCloudConfig.Hostname = "172.28.64.233";
+            PxCloudConfig.Hostname = "172.28.67.181";
             PxCloudConfig.RemoteHomePath = "/home/tester/pxvault/";
 
             PxDb = new PxDatabase();
@@ -130,17 +130,27 @@ namespace PassXYZ.xunit
         }
 
         [Fact]
-        public async void Test4GetUsers()
+        public async void Test4GetLocalUsers() 
+        {
+            IEnumerable<PxUser> localUsers = await PxUser.LoadLocalUsersAsync();
+            foreach (PxUser localUser in localUsers)
+            {
+                Debug.WriteLine($"Test4GetLocalUsers: Username={localUser.Username}, FileName={localUser.FileName}");
+            }
+        }
+
+        [Fact]
+        public async void Test5GetRemoteUsers()
         {
             PxUser user = userFixture.user;
             ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
 
             try
             {
-                IEnumerable<PxUser> remoteUsers = await sftp.GetCloudUsersListAsync();
+                IEnumerable<PxUser> remoteUsers = await sftp.LoadRemoteUsersAsync();
                 foreach (PxUser remoteUser in remoteUsers)
                 {
-                    Debug.WriteLine($"GetUsersTests: Username={remoteUser.Username}, FileName={remoteUser.FileName}");
+                    Debug.WriteLine($"Test5GetRemoteUsers: Username={remoteUser.Username}, FileName={remoteUser.FileName}");
                 }
                 Assert.True(sftp.IsConnected());
             }
@@ -152,7 +162,7 @@ namespace PassXYZ.xunit
         }
 
         [Fact]
-        public async void Test5DeleteFile()
+        public async void Test6DeleteFile()
         {
             PxUser user = userFixture.user;
             ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
@@ -164,7 +174,7 @@ namespace PassXYZ.xunit
         }
 
         [Fact]
-        public async void Test6DeleteFileFailed() 
+        public async void Test7DeleteFileFailed() 
         {
             PxUser user = userFixture.user;
             user.Username = "B@d U$er";
@@ -175,5 +185,83 @@ namespace PassXYZ.xunit
             Debug.WriteLine($"DeleteFileTest: {user.FileName}");
         }
 
+        [Fact]
+        /// <summary>
+        /// Get users only exist locally.
+        /// </summary>
+        public async void Test8GetLocalUsersOnly()
+        {
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+
+            try
+            {
+                IEnumerable<PxUser> localUsers = await PxUser.LoadLocalUsersAsync();
+                IEnumerable<PxUser> remoteUsers = await sftp.LoadRemoteUsersAsync();
+                IEnumerable<PxUser> localOnyUsers = localUsers.Except(remoteUsers, new PxUserComparer()).ToList();
+                foreach (PxUser localOnlyUser in localOnyUsers)
+                {
+                    Debug.WriteLine($"Test8GetLocalUsersOnly: Username={localOnlyUser.Username}, FileName={localOnlyUser.FileName}");
+                }
+                Assert.True(sftp.IsConnected());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Test8GetLocalUsersOnly: {ex}");
+                Assert.False(sftp.IsConnected());
+            }
+        }
+    
+
+        [Fact]
+        /// <summary>
+        /// Get users only exist remotely.
+        /// </summary>
+        public async void Test9GetRemoteUsersOnly()
+        {
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+
+            try
+            {
+                IEnumerable<PxUser> localUsers = await PxUser.LoadLocalUsersAsync();
+                IEnumerable<PxUser> remoteUsers = await sftp.LoadRemoteUsersAsync();
+                IEnumerable<PxUser> remoteOnyUsers = remoteUsers.Except(localUsers, new PxUserComparer()).ToList();
+                foreach (PxUser remoteOnlyUser in remoteOnyUsers)
+                {
+                    Debug.WriteLine($"Test9GetRemoteUsersOnly: Username={remoteOnlyUser.Username}, FileName={remoteOnlyUser.FileName}");
+                }
+                Assert.True(sftp.IsConnected());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Test9GetRemoteUsersOnly: {ex}");
+                Assert.False(sftp.IsConnected());
+            }
+        }
+
+        [Fact]
+        /// <summary>
+        /// Get users exist both locally and remotely.
+        /// </summary>
+        public async void Test10GetSyncedUsers()
+        {
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+
+            try
+            {
+                IEnumerable<PxUser> localUsers = await PxUser.LoadLocalUsersAsync();
+                IEnumerable<PxUser> remoteUsers = await sftp.LoadRemoteUsersAsync();
+                IEnumerable<PxUser> syncedUsers = remoteUsers.Intersect(localUsers, new PxUserComparer());
+                foreach (PxUser syncedUser in syncedUsers)
+                {
+                    Debug.WriteLine($"Test10GetSyncedUsers: Username={syncedUser.Username}, FileName={syncedUser.FileName}");
+                }
+                Assert.True(sftp.IsConnected());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Test10GetSyncedUsers: {ex}");
+                Assert.False(sftp.IsConnected());
+            }
+        }
     }
 }

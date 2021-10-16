@@ -47,7 +47,7 @@ namespace PassXYZ.Vault.Services
     {
         // private List<Item> items;
         private readonly PasswordDb db = null;
-        private User _user;
+        private PxUser _user;
         private bool _isBusy = false;
 
         public DataStore()
@@ -100,7 +100,13 @@ namespace PassXYZ.Vault.Services
             _isBusy = true;
             KPCLibLogger logger = new KPCLibLogger();
             db.DescriptionChanged = DateTime.UtcNow;
-            await Task.Run(() => { db.Save(logger); _isBusy = false; });
+            await Task.Run(() => {
+                db.Save(logger);
+                _isBusy = false;
+#if PASSXYZ_CLOUD_SERVICE
+            _user.CurrentFileStatus.IsModified = true;
+#endif // PASSXYZ_CLOUD_SERVICE
+            });
             _ = await GetItemsAsync();
         }
 
@@ -198,7 +204,7 @@ namespace PassXYZ.Vault.Services
             return await Task.Run(() => { return db.GetOtpEntryList(); });
         }
 
-        public async Task<bool> LoginAsync(PassXYZLib.User user)
+        public async Task<bool> LoginAsync(PxUser user)
         {
             if (user == null) { Debug.Assert(false); throw new ArgumentNullException("user"); }
             _user = user;
@@ -341,6 +347,19 @@ namespace PassXYZ.Vault.Services
         public bool CreateKeyFile(string data, string username)
         {
             return db.CreateKeyFile(data, username);
+        }
+
+        public async Task<bool> MergeAsync(string path, PwMergeMethod mm)
+        {
+            return await Task.Run(() =>
+            {
+                bool result = false;
+                if (db.IsOpen)
+                {
+                    result = db.Merge(path, mm);
+                }
+                return result;
+            });
         }
     }
 }

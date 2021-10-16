@@ -18,11 +18,10 @@ namespace PassXYZ.Vault.ViewModels
 {
     public class UsersViewModel : INotifyPropertyChanged
     {
-        private bool isBusy = false;
         public bool IsBusy
         {
-            get => isBusy;
-            set => _ = SetProperty(ref isBusy, value);
+            get => App.IsBusyToLoadUsers;
+            set => _ = SetProperty(ref App.IsBusyToLoadUsers, value);
         }
 
         public ObservableCollection<PxUser> Users { get; }
@@ -56,8 +55,18 @@ namespace PassXYZ.Vault.ViewModels
         /// <param name="user">an instance of User</param>
         public void Delete(User user)
         {
+            if (IsBusy)
+            {
+                Debug.WriteLine($"UsersViewModel: is busy and cannot delete {user.Username}");
+                return;
+            }
+
+            IsBusy = true;
+
             user.Delete();
             Users.Remove((PxUser)user);
+
+            IsBusy = false;
             Debug.WriteLine($"UsersViewModel: Delete {user.Username}");
         }
 
@@ -80,7 +89,16 @@ namespace PassXYZ.Vault.ViewModels
             stream.Seek(0, SeekOrigin.Begin);
             stream.CopyTo(fileStream);
             fileStream.Close();
+
+            if (IsBusy)
+            {
+                Debug.WriteLine($"UsersViewModel: is busy and cannot import {newUser.Username}");
+                return;
+            }
+
+            IsBusy = true;
             Users.Add(newUser);
+            IsBusy = false;
         }
 
         private async void ImportUser()
@@ -155,22 +173,21 @@ namespace PassXYZ.Vault.ViewModels
             });
         }
 
-        private void ExecuteLoadUsersCommand()
+        private async void ExecuteLoadUsersCommand()
         {
-            Users.Clear();
-            var dataFiles = Directory.EnumerateFiles(PxDataFile.DataFilePath, PxDefs.all_xyz);
-            foreach (string currentFile in dataFiles)
+            if (IsBusy)
             {
-                string fileName = currentFile.Substring(PxDataFile.DataFilePath.Length + 1);
-                string userName = PxDataFile.GetUserName(fileName);
-                if (userName != string.Empty && !string.IsNullOrWhiteSpace(userName))
-                {
-                    Users.Add(
-                        new PxUser()
-                        {
-                            Username = userName
-                        });
-                }
+                Debug.WriteLine("UsersViewModel: is busy and cannot load users");
+                return;
+            }
+
+            IsBusy = true;
+
+            Users.Clear();
+            var users = await PxUser.LoadLocalUsersAsync();
+            foreach (PxUser user in users)
+            {
+                Users.Add(user);
             }
 
             IsBusy = false;
@@ -180,14 +197,23 @@ namespace PassXYZ.Vault.ViewModels
         {
             await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new SignUpPage((string username) =>
             {
+                if (IsBusy)
+                {
+                    Debug.WriteLine($"UsersViewModel: is busy and cannot add {username}");
+                    return;
+                }
+
+                IsBusy = true;
                 Users.Add(
                     new PxUser()
                     {
                         Username = username
                     });
+                IsBusy = false;
             })));
         }
 
+        #region INotifyPropertyChanged
         protected bool SetProperty<T>(ref T backingStore, T value,
             [CallerMemberName] string propertyName = "",
             Action onChanged = null)
@@ -201,7 +227,6 @@ namespace PassXYZ.Vault.ViewModels
             return true;
         }
 
-        #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {

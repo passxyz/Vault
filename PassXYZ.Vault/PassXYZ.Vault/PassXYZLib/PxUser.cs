@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Essentials;
@@ -15,8 +19,7 @@ namespace PassXYZLib
     {
         private readonly PxUser _user;
         public PxUser User { get => _user; }
-        public static bool IsConnected { get; } = false;
-        virtual public bool IsModified { get; } = false;
+        virtual public bool IsModified { get; set; } = false;
         virtual public DateTime LastWriteTime { get; set; }
         virtual public long Length { get; set; }
         public PxFileStatus(PxUser user)
@@ -43,14 +46,7 @@ namespace PassXYZLib
                 if (User.IsUserExist)
                 {
                     var lastWriteTime = File.GetLastWriteTime(User.Path);
-                    if (IsConnected)
-                    {
-                        return Preferences.Get(nameof(PxLocalFileStatus) + nameof(LastWriteTime), lastWriteTime);
-                    }
-                    else
-                    {
-                        return lastWriteTime;
-                    }
+                    return Preferences.Get(User.FileName + nameof(LastWriteTime), lastWriteTime);
                 }
                 else
                 {
@@ -59,9 +55,9 @@ namespace PassXYZLib
             }
             set
             {
-                if (User.IsUserExist && IsConnected)
+                if (User.IsUserExist) 
                 {
-                    Preferences.Set(nameof(PxLocalFileStatus) + nameof(LastWriteTime), value);
+                    Preferences.Set(User.FileName + nameof(LastWriteTime), value);
                 }
             }
         }
@@ -73,14 +69,7 @@ namespace PassXYZLib
                 if (User.IsUserExist)
                 {
                     var fileInfo = new FileInfo(User.Path);
-                    if (IsConnected)
-                    {
-                        return Preferences.Get(nameof(PxLocalFileStatus) + nameof(Length), fileInfo.Length);
-                    }
-                    else
-                    {
-                        return fileInfo.Length;
-                    }
+                    return Preferences.Get(User.FileName + nameof(Length), fileInfo.Length);
                 }
                 else
                 {
@@ -90,9 +79,9 @@ namespace PassXYZLib
 
             set
             {
-                if (User.IsUserExist && IsConnected)
+                if (User.IsUserExist)
                 {
-                    Preferences.Set(nameof(PxLocalFileStatus) + nameof(Length), value);
+                    Preferences.Set(User.FileName + nameof(Length), value);
                 }
             }
         }
@@ -107,10 +96,10 @@ namespace PassXYZLib
         {
             get
             {
-                if (User.IsUserExist && IsConnected)
+                if (User.IsUserExist)
                 {
                     if (LastWriteTime == User.RemoteFileStatus.LastWriteTime &&
-                    Length == User.RemoteFileStatus.Length)
+                        Length == User.RemoteFileStatus.Length)
                     {
                         return false;
                     }
@@ -125,6 +114,7 @@ namespace PassXYZLib
                 }
             }
         }
+
         public PxLocalFileStatus(PxUser user) : base(user)
         {
         }
@@ -147,9 +137,9 @@ namespace PassXYZLib
             }
         }
 
-        public override long Length 
-        { 
-            get 
+        public override long Length
+        {
+            get
             {
                 if (User.IsUserExist)
                 {
@@ -170,23 +160,24 @@ namespace PassXYZLib
         /// </summary>
         public override bool IsModified
         {
-            get 
+            get
             {
                 if (User.IsUserExist)
                 {
-                    if (LastWriteTime == User.LocalFileStatus.LastWriteTime &&
-                    Length == User.LocalFileStatus.Length)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        return true;
-                    }
+                    return Preferences.Get(User.FileName, LastWriteTime != User.LocalFileStatus.LastWriteTime || Length != User.LocalFileStatus.Length);
+                    //return LastWriteTime != User.LocalFileStatus.LastWriteTime ||Length != User.LocalFileStatus.Length;
                 }
-                else 
-                { 
-                    return false; 
+                else
+                {
+                    return false;
+                }
+            }
+
+            set
+            {
+                if (User.IsUserExist)
+                {
+                    Preferences.Set(User.FileName, value);
                 }
             }
         }
@@ -226,13 +217,103 @@ namespace PassXYZLib
             Icon = IsDeviceLockEnabled ? Icon.UserLock : Icon.User
         };
 
+        /// <summary>
+        /// Load local users
+        /// </summary>
+        public static async Task<IEnumerable<PxUser>> LoadLocalUsersAsync()
+        {
+            List<PxUser> localUsers = new List<PxUser>();
+
+            return await Task.Run(() => {
+                var dataFiles = Directory.EnumerateFiles(PxDataFile.DataFilePath, PxDefs.all_xyz);
+                foreach (string currentFile in dataFiles)
+                {
+                    string fileName = System.IO.Path.GetFileName(currentFile);
+                    PxUser pxUser = new PxUser(fileName);
+                    if (!string.IsNullOrWhiteSpace(pxUser.Username))
+                    {
+                        localUsers.Add(pxUser);
+                    }
+                }
+                Debug.WriteLine($"PxUser: LoadLocalUsersAsync {localUsers.Count}");
+                return localUsers;
+            });
+        }
+
+        /// <summary>
+        /// Remove all temporary files
+        /// </summary>
+        public static async Task RemoveTempFilesAsync()
+        {
+            await Task.Run(() => {
+                var dataFiles = Directory.EnumerateFiles(PxDataFile.TmpFilePath, PxDefs.all_xyz);
+                foreach (string currentFile in dataFiles)
+                {
+                    File.Delete(currentFile);
+                    Debug.WriteLine($"PxUser: RemoveTempFiles {currentFile}");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Create an instance from filename
+        /// </summary>
+        /// <param name="fileName">File name used to decode username</param>
+        public PxUser(string fileName) : this()
+        {
+            string trimedName;
+
+            if (fileName.StartsWith(PxDefs.head_xyz) || fileName.StartsWith(PxDefs.head_data))
+            {
+                trimedName = fileName.Substring(PxDefs.head_xyz.Length);
+                trimedName = trimedName.Substring(0, trimedName.LastIndexOf(PxDefs.xyz));
+                try
+                {
+                    if (trimedName != null)
+                    {
+                        trimedName = Base58CheckEncoding.GetString(trimedName);
+                        Username = trimedName;
+                    }
+
+                    if(fileName.StartsWith(PxDefs.head_data))
+                    {
+                        IsDeviceLockEnabled = true;
+                    }
+                }
+                catch (FormatException e)
+                {
+                    Debug.WriteLine($"PxUser: {e.Message}");
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"PxUser: {fileName} is not PassXYZ data file.");
+            }
+        }
+
+        public virtual void Logout() { }
+
 #if PASSXYZ_CLOUD_SERVICE
 
         #region PxUserFileStatus
         public PxFileStatus RemoteFileStatus;
         public PxFileStatus LocalFileStatus;
         public PxFileStatus CurrentFileStatus;
-        public PxCloudSyncStatus SyncStatus = PxCloudSyncStatus.PxLocal;
+        private PxCloudSyncStatus _syncStatus = PxCloudSyncStatus.PxLocal;
+        public PxCloudSyncStatus SyncStatus
+        {
+            get => _syncStatus;
+            set
+            {
+                _syncStatus = value;
+                if (_syncStatus == PxCloudSyncStatus.PxSynced || _syncStatus == PxCloudSyncStatus.PxSyncing)
+                {
+                    LocalFileStatus.LastWriteTime = RemoteFileStatus.LastWriteTime;
+                    LocalFileStatus.Length = RemoteFileStatus.Length;
+                    CurrentFileStatus.IsModified = false;
+                }
+            }
+        }
 
         public PxUser()
         {
@@ -241,8 +322,27 @@ namespace PassXYZLib
             CurrentFileStatus = new PxCurrentFileStatus(this);
         }
         #endregion
-
+#else
+        public PxUser()
+        { 
+        }
 #endif // PASSXYZ_CLOUD_SERVICE
 
+    }
+
+    public class PxUserComparer : IEqualityComparer<PxUser>
+    {
+        bool IEqualityComparer<PxUser>.Equals(PxUser x, PxUser y)
+        {
+            return (x.Username.Equals(y.Username));
+        }
+
+        int IEqualityComparer<PxUser>.GetHashCode(PxUser obj)
+        {
+            if (obj is null)
+                return 0;
+
+            return obj.ToString().GetHashCode();
+        }
     }
 }

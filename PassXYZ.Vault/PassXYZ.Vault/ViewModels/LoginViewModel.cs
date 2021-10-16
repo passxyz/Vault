@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
+using KeePassLib;
+using PassXYZLib;
 using PassXYZ.Vault.Resx;
 
 namespace PassXYZ.Vault.ViewModels
@@ -16,6 +20,7 @@ namespace PassXYZ.Vault.ViewModels
     /// </summary>
     public class LoginUser : PassXYZLib.PxUser
     {
+        private BaseViewModel _baseViewModule;
         private const string PrivacyNotice = "Privacy Notice";
         public override string Username
         {
@@ -55,6 +60,26 @@ namespace PassXYZ.Vault.ViewModels
             {
                 Preferences.Set(PrivacyNotice, value);
             }
+        }
+
+        public bool IsLogined => _baseViewModule.DataStore.IsOpen;
+
+        public override void Logout()
+        {
+            if (IsLogined)
+            {
+                _baseViewModule.DataStore.Logout();
+                string path = System.IO.Path.Combine(PxDataFile.TmpFilePath, FileName);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+        }
+
+        public LoginUser(BaseViewModel viewModule)
+        {
+            _baseViewModule = viewModule;
         }
     }
 
@@ -123,7 +148,7 @@ namespace PassXYZ.Vault.ViewModels
             this.PropertyChanged +=
                 (_, __) => SignUpCommand.ChangeCanExecute();
 
-            CurrentUser = new LoginUser();
+            CurrentUser = new LoginUser(this);
         }
 
         public LoginViewModel(bool isInitialized) : this()
@@ -155,14 +180,38 @@ namespace PassXYZ.Vault.ViewModels
                 && LoginUser.IsPrivacyNoticeAccepted;
         }
 
-        public void OnAppearing()
+        public async void OnAppearing()
         {
             IsBusy = false;
-            if (DataStore.RootGroup != null) 
+
+#if PASSXYZ_CLOUD_SERVICE
+            await SynchronizeUsersAsync();
+#endif // PASSXYZ_CLOUD_SERVICE
+            //if (DataStore.RootGroup != null)
+            //{
+            //    DataStore.Logout();
+            //}
+        }
+
+#if PASSXYZ_CLOUD_SERVICE
+        public async static Task SynchronizeUsersAsync()
+        {
+            if (App.IsBusyToLoadUsers) { return; }
+
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+            IEnumerable<PxUser> pxUsers = await sftp.SynchronizeUsersAsync();
+            if (pxUsers != null)
             {
-                DataStore.Logout();
+                App.IsBusyToLoadUsers = true;
+                App.Users.Clear();
+                foreach (PxUser pxUser in pxUsers)
+                {
+                    App.Users.Add(pxUser);
+                }
+                App.IsBusyToLoadUsers = false;
             }
         }
+#endif // PASSXYZ_CLOUD_SERVICE
 
         public async void OnLoginClicked()
         {
@@ -177,6 +226,34 @@ namespace PassXYZ.Vault.ViewModels
                     if (AppShell.CurrentAppShell != null)
                     {
                         AppShell.CurrentAppShell.SetRootPageTitle(DataStore.RootGroup.Name);
+
+                        string path = Path.Combine(PxDataFile.TmpFilePath, CurrentUser.FileName);
+                        if (File.Exists(path))
+                        {
+                            // If there is file to merge, we merge it first.
+                            bool result = await DataStore.MergeAsync(path, PwMergeMethod.KeepExisting);
+                            //PwMergeMethod mm = PwMergeMethod.KeepExisting;
+                            //List<string> mergeMethodList = new List<string>
+                            //{
+                            //    nameof(PwMergeMethod.OverwriteExisting),
+                            //    nameof(PwMergeMethod.KeepExisting),
+                            //    nameof(PwMergeMethod.OverwriteIfNewer),
+                            //    nameof(PwMergeMethod.CreateNewUuids),
+                            //    nameof(PwMergeMethod.Synchronize)
+                            //};
+
+                            //var mmValue = await Shell.Current.DisplayActionSheet(AppResources.settings_merge_method_title, AppResources.action_id_cancel, null, mergeMethodList.ToArray());
+                            //if (mmValue == nameof(PwMergeMethod.OverwriteExisting)) { mm = PwMergeMethod.OverwriteExisting; }
+                            //else if (mmValue == nameof(PwMergeMethod.KeepExisting)) { mm = PwMergeMethod.KeepExisting; }
+                            //else if (mmValue == nameof(PwMergeMethod.OverwriteIfNewer)) { mm = PwMergeMethod.OverwriteIfNewer; }
+                            //else if (mmValue == nameof(PwMergeMethod.CreateNewUuids)) { mm = PwMergeMethod.CreateNewUuids; }
+                            //else if (mmValue == nameof(PwMergeMethod.Synchronize)) { mm = PwMergeMethod.Synchronize; }
+                            //bool result = await DataStore.MergeAsync(path, mm);
+                            //string message = "Merge failure";
+                            //if (result) { message = "Merged successfully"; }
+                            //await Shell.Current.DisplayAlert("", message, AppResources.alert_id_ok);
+                        }
+
                         await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
                     }
                     else

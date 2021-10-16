@@ -34,6 +34,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FontAwesome.Solid", "..\Xam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IconFontHelper", "..\Xamarin.Forms.IconFontHelper\src\IconFontHelper\IconFontHelper.csproj", "{20CEE1E5-3C67-445E-93FB-23895E0C481A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Renci.SshNet", "..\SSH.NET\src\Renci.SshNet\Renci.SshNet.csproj", "{53F7648D-16F5-42CC-90A6-24C52F2B53A9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -386,6 +388,30 @@ Global
 		{20CEE1E5-3C67-445E-93FB-23895E0C481A}.Release|x64.Build.0 = Release|Any CPU
 		{20CEE1E5-3C67-445E-93FB-23895E0C481A}.Release|x86.ActiveCfg = Release|Any CPU
 		{20CEE1E5-3C67-445E-93FB-23895E0C481A}.Release|x86.Build.0 = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|ARM.Build.0 = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|x64.Build.0 = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Debug|x86.Build.0 = Debug|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|ARM.ActiveCfg = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|ARM.Build.0 = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|iPhone.Build.0 = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|x64.ActiveCfg = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|x64.Build.0 = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|x86.ActiveCfg = Release|Any CPU
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -398,6 +424,7 @@ Global
 		{D482B377-E426-4B69-AB41-8AFD04A5CF5F} = {2DAAFDE4-F2C0-49E9-9E68-77F040A6AD37}
 		{53D8FAB1-F1D1-4CE6-A5B2-97E797173854} = {2DAAFDE4-F2C0-49E9-9E68-77F040A6AD37}
 		{20CEE1E5-3C67-445E-93FB-23895E0C481A} = {2DAAFDE4-F2C0-49E9-9E68-77F040A6AD37}
+		{53F7648D-16F5-42CC-90A6-24C52F2B53A9} = {2DAAFDE4-F2C0-49E9-9E68-77F040A6AD37}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96BCD65E-F406-47B8-AB87-0D40291976F2}
