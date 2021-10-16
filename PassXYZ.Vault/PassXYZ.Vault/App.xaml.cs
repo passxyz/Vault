@@ -36,6 +36,10 @@ namespace PassXYZ.Vault
             InBackgroup = false;
             InitTestDb();
 #if PASSXYZ_CLOUD_SERVICE
+            PxCloudConfig.Username = "tester";
+            PxCloudConfig.Password = "12345";
+            PxCloudConfig.Hostname = "";
+            PxCloudConfig.RemoteHomePath = "/home/tester/pxvault/";
             await LoginViewModel.SynchronizeUsersAsync();
 #endif // PASSXYZ_CLOUD_SERVICE
             Debug.WriteLine($"PassXYZ: OnStart, InBackgroup={InBackgroup}");

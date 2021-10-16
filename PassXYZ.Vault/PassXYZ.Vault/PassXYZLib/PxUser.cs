@@ -294,6 +294,19 @@ namespace PassXYZLib
         public virtual void Logout() { }
 
 #if PASSXYZ_CLOUD_SERVICE
+        public async Task DeleteAsync()
+        {
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+            if(await sftp.DeleteFileAsync(FileName))
+            {
+                Debug.WriteLine("PxUser: DeleteAsync successfully");
+            }
+            else
+            {
+                Debug.WriteLine("PxUser: DeleteAsync failure");
+            }
+            Delete();
+        }
 
         #region PxUserFileStatus
         public PxFileStatus RemoteFileStatus;

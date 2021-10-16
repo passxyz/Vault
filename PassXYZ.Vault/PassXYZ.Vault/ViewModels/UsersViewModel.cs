@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading.Tasks;
 using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Essentials;
@@ -53,17 +53,20 @@ namespace PassXYZ.Vault.ViewModels
         /// Delete a user.
         /// </summary>
         /// <param name="user">an instance of User</param>
-        public void Delete(User user)
+        public async Task DeleteAsync(User user)
         {
             if (IsBusy)
             {
                 Debug.WriteLine($"UsersViewModel: is busy and cannot delete {user.Username}");
-                return;
             }
 
             IsBusy = true;
-
+            PxUser pxUser = (PxUser)user;
+#if PASSXYZ_CLOUD_SERVICE
+            await pxUser.DeleteAsync();
+#else
             user.Delete();
+#endif // PASSXYZ_CLOUD_SERVICE
             Users.Remove((PxUser)user);
 
             IsBusy = false;

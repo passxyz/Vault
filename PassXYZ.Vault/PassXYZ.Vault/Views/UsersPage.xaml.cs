@@ -19,13 +19,13 @@ namespace PassXYZ.Vault.Views
             BindingContext = _viewModel = new UsersViewModel();
         }
 
-        private void OnMenuDeleteAsync(object sender, EventArgs e)
+        private async void OnMenuDeleteAsync(object sender, EventArgs e)
         {
             var mi = (MenuItem)sender;
 
             if (mi.BindingContext is User user)
             {
-                _viewModel.Delete(user);
+                await _viewModel.DeleteAsync(user);
             }
         }
 

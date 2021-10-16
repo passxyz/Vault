@@ -187,10 +187,6 @@ namespace PassXYZ.Vault.ViewModels
 #if PASSXYZ_CLOUD_SERVICE
             await SynchronizeUsersAsync();
 #endif // PASSXYZ_CLOUD_SERVICE
-            //if (DataStore.RootGroup != null)
-            //{
-            //    DataStore.Logout();
-            //}
         }
 
 #if PASSXYZ_CLOUD_SERVICE
@@ -264,6 +260,7 @@ namespace PassXYZ.Vault.ViewModels
             }
             catch (Exception ex)
             {
+                IsBusy = false;
                 await Shell.Current.DisplayAlert(AppResources.LoginErrorMessage, ex.Message, AppResources.alert_id_ok);
             }
         }
