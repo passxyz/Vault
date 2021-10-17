@@ -29,15 +29,39 @@ namespace PassXYZ.Vault.ViewModels
         public Command AddUserCommand { get; }
         public Command ImportUserCommand { get; }
         public Command ExportUserCommand { get; }
+        public Command CancelCommand { get; }
+        public Command SaveCloudConfigCommand { get; }
+        public Command CloudConfigCommand { get; }
+        public PxCloudConfigData CloudConfigData { get; set; }
 
-        public UsersViewModel()
+        public UsersViewModel() : this(true)
+        {
+        }
+
+        /// <summary>
+        /// This is a constructor for CloudConfigPage
+        /// </summary>
+        public UsersViewModel(bool isLoadUsers = true)
         {
             Users = App.Users;
             LoadUsersCommand = new Command(() => ExecuteLoadUsersCommand());
             AddUserCommand = new Command(OnAddUser);
             ImportUserCommand = new Command(() => ImportUser());
             ExportUserCommand = new Command(() => { ExportUserAsync(); });
-            ExecuteLoadUsersCommand();
+            CloudConfigCommand = new Command(OnCloudConfig);
+
+            if (isLoadUsers)
+            {
+                ExecuteLoadUsersCommand();
+            }
+            else
+            {
+                CloudConfigData = new PxCloudConfigData();
+                CancelCommand = new Command(OnCancelClicked);
+                SaveCloudConfigCommand = new Command(OnSaveCloudConfigSaveClicked);
+            }
+
+            Debug.WriteLine($"UsersViewModel: IsBusy={IsBusy}, isLoadUsers={isLoadUsers}");
         }
 
         public void OnUserSelected(User user)
@@ -239,6 +263,41 @@ namespace PassXYZ.Vault.ViewModels
                     });
                 IsBusy = false;
             })));
+        }
+
+        private bool ValidateCloudConfigData()
+        {
+            if (CloudConfigData == null) { return false; }
+
+            Debug.WriteLine($"UsersViewModel: ValidateCloudConfigData, IsConfigured={CloudConfigData.IsConfigured}");
+
+            return CloudConfigData.IsConfigured;
+        }
+
+        private async void OnSaveCloudConfigSaveClicked()
+        {
+            Debug.WriteLine($"UsersViewModel: save config, IsConfigured={CloudConfigData.IsConfigured}");
+            if (CloudConfigData.IsConfigured)
+            {
+                PxCloudConfig.SetConfig(CloudConfigData);
+                _ = await Shell.Current.Navigation.PopModalAsync();
+            }
+            else
+            {
+                CloudConfigData.ConfigMessage = AppResources.error_message_config1;
+                await Shell.Current.DisplayAlert("", AppResources.error_message_config2, AppResources.alert_id_ok);
+                CloudConfigData.ConfigMessage = "";
+            }
+        }
+
+        private async void OnCancelClicked()
+        {
+            _ = await Shell.Current.Navigation.PopModalAsync();
+        }
+
+        private async void OnCloudConfig(object obj)
+        {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new CloudConfigPage()));
         }
 
         #region INotifyPropertyChanged

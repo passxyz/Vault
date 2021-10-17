@@ -261,6 +261,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cloud Config.
+        /// </summary>
+        internal static string action_id_cloud_config {
+            get {
+                return ResourceManager.GetString("action_id_cloud_config", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         internal static string action_id_copy {
@@ -1233,6 +1242,24 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration is not correct..
+        /// </summary>
+        internal static string error_message_config1 {
+            get {
+                return ResourceManager.GetString("error_message_config1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please fill in the correct configuration..
+        /// </summary>
+        internal static string error_message_config2 {
+            get {
+                return ResourceManager.GetString("error_message_config2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid URL format..
         /// </summary>
         internal static string error_message_invalid_url {
@@ -1332,6 +1359,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hostname, such as sftp.passxyz.com.
+        /// </summary>
+        internal static string field_id_hostname {
+            get {
+                return ResourceManager.GetString("field_id_hostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hotline.
         /// </summary>
         internal static string field_id_hotline {
@@ -1427,6 +1463,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string field_id_query_pin {
             get {
                 return ResourceManager.GetString("field_id_query_pin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote folder, such as /home/tester/pxvault/.
+        /// </summary>
+        internal static string field_id_remote_folder {
+            get {
+                return ResourceManager.GetString("field_id_remote_folder", resourceCulture);
             }
         }
         
@@ -1841,6 +1886,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string message_id_attachment_options {
             get {
                 return ResourceManager.GetString("message_id_attachment_options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please fill in cloud storage configuration..
+        /// </summary>
+        internal static string message_id_cloud_config {
+            get {
+                return ResourceManager.GetString("message_id_cloud_config", resourceCulture);
             }
         }
         
@@ -2501,6 +2555,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string SiguUpMessage {
             get {
                 return ResourceManager.GetString("SiguUpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud storage configuration.
+        /// </summary>
+        internal static string title_cloud_config {
+            get {
+                return ResourceManager.GetString("title_cloud_config", resourceCulture);
             }
         }
         

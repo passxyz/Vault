@@ -1,6 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+
+using Xamarin.Essentials;
+
+using PassXYZ.Vault.Resx;
 
 namespace PassXYZLib
 {
@@ -14,19 +21,173 @@ namespace PassXYZLib
         SMB
     }
 
+    public class PxCloudConfigData : INotifyPropertyChanged
+    {
+        private string _username = PxCloudConfig.Username;
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+
+            set
+            {
+                _username = value;
+                OnPropertyChanged("Username");
+            }
+        }
+        private string _password = PxCloudConfig.Password;
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+
+            set
+            {
+                _password = value;
+                OnPropertyChanged("Password");
+            }
+        }
+        private string _hostname = PxCloudConfig.Hostname;
+        public string Hostname 
+        {
+            get
+            {
+                return _hostname;
+            }
+
+            set
+            {
+                _hostname = value;
+                OnPropertyChanged("Hostname");
+            }
+        }
+        private string _remoteHomePath = PxCloudConfig.RemoteHomePath;
+        public string RemoteHomePath 
+        {
+            get
+            {
+                return _remoteHomePath;
+            }
+
+            set
+            {
+                _remoteHomePath = value;
+                OnPropertyChanged("RemoteHomePath");
+            }
+        }
+        private string _configMessage = AppResources.message_id_cloud_config;
+        public string ConfigMessage 
+        {
+            get => _configMessage;
+            set 
+            {
+                _configMessage = value;
+                OnPropertyChanged("ConfigMessage");
+            }
+        }
+
+        public bool IsConfigured
+        {
+            get
+            {
+                return !string.IsNullOrWhiteSpace(Username)
+                    && !string.IsNullOrWhiteSpace(Password)
+                    && !string.IsNullOrWhiteSpace(Hostname)
+                    && !string.IsNullOrWhiteSpace(RemoteHomePath);
+            }
+        }
+
+        #region INotifyPropertyChanged
+        protected bool SetProperty<T>(ref T backingStore, T value,
+            [CallerMemberName] string propertyName = "",
+            Action onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            onChanged?.Invoke();
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion    
+    }
+
     public static class PxCloudConfig
     {
         public static PxCloudType CurrentServiceType { get => PxCloudType.SFTP; }
 
-        public static string Username { get; set; }
-        public static string Password { get; set; }
-        public static string Hostname { get; set; }
-        public static string RemoteHomePath { get; set; }
+        public static string Username 
+        {
+            get 
+            { 
+                return Preferences.Get(nameof(PxCloudConfig) + nameof(Username), "");
+            }
+            set 
+            {
+                Preferences.Set(nameof(PxCloudConfig) + nameof(Username), value);
+            }
+        }
+        public static string Password 
+        {
+            get
+            {
+                return Preferences.Get(nameof(PxCloudConfig) + nameof(Password), "");
+            }
+            set
+            {
+                Preferences.Set(nameof(PxCloudConfig) + nameof(Password), value);
+            }
+        }
+        public static string Hostname 
+        {
+            get
+            {
+                return Preferences.Get(nameof(PxCloudConfig) + nameof(Hostname), "");
+            }
+            set
+            {
+                Preferences.Set(nameof(PxCloudConfig) + nameof(Hostname), value);
+            }
+        }
+        public static string RemoteHomePath 
+        {
+            get
+            {
+                return Preferences.Get(nameof(PxCloudConfig) + nameof(RemoteHomePath), "");
+            }
+            set
+            {
+                Preferences.Set(nameof(PxCloudConfig) + nameof(RemoteHomePath), value);
+            }
+        }
 
         public static bool IsConfigured => !string.IsNullOrWhiteSpace(Username)
                     && !string.IsNullOrWhiteSpace(Password)
                     && !string.IsNullOrWhiteSpace(Hostname)
                     && !string.IsNullOrWhiteSpace(RemoteHomePath);
+
+        public static void SetConfig(PxCloudConfigData configData)
+        {
+            Username = configData.Username;
+            Password = configData.Password;
+            Hostname = configData.Hostname;
+            RemoteHomePath = configData.RemoteHomePath;
+        }
 
         private static PxSFtp pxSFtp = null;
         public static ICloudServices<PxUser> GetCloudServices()

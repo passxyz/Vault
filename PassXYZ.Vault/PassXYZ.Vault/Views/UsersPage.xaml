@@ -22,6 +22,11 @@
                 <iconsS:IconSource Icon="FileExport"  Color="White" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cloud_config}" Command="{Binding CloudConfigCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Cogs"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>
