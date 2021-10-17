@@ -36,12 +36,9 @@ namespace PassXYZ.Vault
             InBackgroup = false;
             InitTestDb();
 #if PASSXYZ_CLOUD_SERVICE
-            PxCloudConfig.Username = "tester";
-            PxCloudConfig.Password = "12345";
-            PxCloudConfig.Hostname = "";
-            PxCloudConfig.RemoteHomePath = "/home/tester/pxvault/";
             await LoginViewModel.SynchronizeUsersAsync();
 #endif // PASSXYZ_CLOUD_SERVICE
+            ExtractIcons();
             Debug.WriteLine($"PassXYZ: OnStart, InBackgroup={InBackgroup}");
         }
 
@@ -56,10 +53,7 @@ namespace PassXYZ.Vault
             {
                 if (InBackgroup)
                 {
-                    //_ = Task.Factory.StartNew(async () =>
-                    //  {
-                    //      await Shell.Current.GoToAsync("//LoginPage");
-                    //  });
+                    LoginViewModel.CurrentUser.Logout();
                     _isLogout = true;
                     Debug.WriteLine("PassXYZ: Timer, force logout.");
                     return false;
@@ -88,7 +82,23 @@ namespace PassXYZ.Vault
             Debug.WriteLine($"PassXYZ: OnResume, InBackgroup={InBackgroup}");
         }
 
-    [System.Diagnostics.Conditional("DEBUG")]
+        private void ExtractIcons()
+        {
+            foreach (EmbeddedDatabase iconFile in EmbeddedIcons.IconFiles)
+            {
+                if (!File.Exists(iconFile.Path))
+                {
+                    var assembly = this.GetType().GetTypeInfo().Assembly;
+                    using (var stream = assembly.GetManifestResourceStream(iconFile.ResourcePath))
+                    using (var fileStream = new FileStream(iconFile.Path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+            }
+        }
+
+        [System.Diagnostics.Conditional("DEBUG")]
         private void InitTestDb()
         {
             foreach(EmbeddedDatabase eDb in TEST_DB.DataFiles)

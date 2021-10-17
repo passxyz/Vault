@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;PASSXYZ_CLOUD_SERVICE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;PASSXYZ_CLOUD_SERVICE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -22,6 +22,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="data\ic_passxyz_cloud.png" />
+    <None Remove="data\ic_passxyz_disabled.png" />
+    <None Remove="data\ic_passxyz_local.png" />
+    <None Remove="data\ic_passxyz_sync.png" />
+    <None Remove="data\ic_passxyz_synced.png" />
     <None Remove="data\pass_d_E8f4pEk.xyz" />
     <None Remove="data\pass_e_JyHzpRxcopt.xyz" />
     <None Remove="data\pass_k_JyHzpRxcopt.k4xyz" />
@@ -32,6 +37,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="data\ic_passxyz_cloud.png" />
+    <EmbeddedResource Include="data\ic_passxyz_disabled.png" />
+    <EmbeddedResource Include="data\ic_passxyz_local.png" />
+    <EmbeddedResource Include="data\ic_passxyz_sync.png" />
+    <EmbeddedResource Include="data\ic_passxyz_synced.png" />
     <EmbeddedResource Include="data\pass_d_E8f4pEk.xyz" />
     <EmbeddedResource Include="data\pass_e_JyHzpRxcopt.xyz" />
     <EmbeddedResource Include="data\pass_k_JyHzpRxcopt.k4xyz" />

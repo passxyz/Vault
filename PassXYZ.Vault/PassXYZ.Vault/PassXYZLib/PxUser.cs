@@ -217,6 +217,20 @@ namespace PassXYZLib
             Icon = IsDeviceLockEnabled ? Icon.UserLock : Icon.User
         };
 
+        private string _syncStatusIconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_disabled.png");
+        public string SyncStatusIconPath
+        { 
+            get
+            {
+                return _syncStatusIconPath;
+            }
+            set 
+            {
+                _syncStatusIconPath = value;
+                OnPropertyChanged("SyncStatusIconPath");
+            }
+        }
+
         /// <summary>
         /// Load local users
         /// </summary>
@@ -306,13 +320,35 @@ namespace PassXYZLib
                 Debug.WriteLine("PxUser: DeleteAsync failure");
             }
             Delete();
+            SyncStatus = PxCloudSyncStatus.PxDisabled;
+        }
+
+        public async Task DisableSyncAsync()
+        {
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+            if (await sftp.DeleteFileAsync(FileName))
+            {
+                Debug.WriteLine("PxUser: DisableSyncAsync successfully");
+            }
+            else
+            {
+                Debug.WriteLine("PxUser: DisableSyncAsync failure");
+            }
+            SyncStatus = PxCloudSyncStatus.PxLocal;
+        }
+
+        public async Task EnableSyncAsync()
+        {
+            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+            await sftp.UploadFileAsync(FileName);
+            SyncStatus = PxCloudSyncStatus.PxSynced;
         }
 
         #region PxUserFileStatus
         public PxFileStatus RemoteFileStatus;
         public PxFileStatus LocalFileStatus;
         public PxFileStatus CurrentFileStatus;
-        private PxCloudSyncStatus _syncStatus = PxCloudSyncStatus.PxLocal;
+        private PxCloudSyncStatus _syncStatus = PxCloudSyncStatus.PxDisabled;
         public PxCloudSyncStatus SyncStatus
         {
             get => _syncStatus;
@@ -325,6 +361,26 @@ namespace PassXYZLib
                     LocalFileStatus.Length = RemoteFileStatus.Length;
                     CurrentFileStatus.IsModified = false;
                 }
+
+                switch (_syncStatus) 
+                {
+                    case PxCloudSyncStatus.PxSynced:
+                        SyncStatusIconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_synced.png");
+                        break;
+                    case PxCloudSyncStatus.PxSyncing:
+                        SyncStatusIconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_sync.png");
+                        break;
+                    case PxCloudSyncStatus.PxCloud:
+                        SyncStatusIconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_cloud.png");
+                        break;
+                    case PxCloudSyncStatus.PxLocal:
+                        SyncStatusIconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_local.png");
+                        break;
+                    default:
+                        SyncStatusIconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_disabled.png");
+                        break;
+                }
+                OnPropertyChanged("SyncStatus");
             }
         }
 

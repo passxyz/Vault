@@ -73,6 +73,31 @@ namespace PassXYZ.Vault.ViewModels
             Debug.WriteLine($"UsersViewModel: Delete {user.Username}");
         }
 
+#if PASSXYZ_CLOUD_SERVICE
+        public bool IsSynchronized
+        {
+            get
+            {
+                ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+                return sftp.IsSynchronized;
+            }
+        }
+
+        public async Task EnableSyncAsync(PxUser user)
+        {
+            // Upload local
+            await user.EnableSyncAsync();
+            Debug.WriteLine($"UsersViewModel: EnableSyncAsync for {user.Username}");
+        }
+
+        public async Task DisableSyncAsync(PxUser user)
+        {
+            // Delete remote
+            await user.DisableSyncAsync();
+            Debug.WriteLine($"UsersViewModel: DisableSyncAsync for {user.Username}");
+        }
+#endif // PASSXYZ_CLOUD_SERVICE
+
         private async void AddImportedUser(string userName, FileResult result, bool isDeviceLockEnabled = false)
         {
             PxUser newUser = new PxUser()

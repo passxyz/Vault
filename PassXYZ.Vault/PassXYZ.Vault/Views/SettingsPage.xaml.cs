@@ -62,7 +62,7 @@ namespace PassXYZ.Vault.Views
 
                 try
                 {
-                    string data = await SecureStorage.GetAsync(_viewModel.Username);
+                    string data = await LoginViewModel.CurrentUser.GetSecurityAsync();
                     FingerPrintSwitcher.IsToggled = data != null;
                 }
                 catch (Exception ex)
@@ -188,7 +188,7 @@ namespace PassXYZ.Vault.Views
             {
                 try
                 {
-                    await SecureStorage.SetAsync(_viewModel.Username, _viewModel.GetMasterPassword());
+                    await LoginViewModel.CurrentUser.SetSecurityAsync();
                 }
                 catch (Exception ex)
                 {
@@ -210,7 +210,7 @@ namespace PassXYZ.Vault.Views
             {
                 try
                 {
-                    string data = await SecureStorage.GetAsync(_viewModel.Username);
+                    string data = await LoginViewModel.CurrentUser.GetSecurityAsync();
                     if (data == null)
                     {
                         if (_initialized)
@@ -233,19 +233,7 @@ namespace PassXYZ.Vault.Views
             else
             {
                 // Turn off fingerprint
-                try
-                {
-                    string data = await SecureStorage.GetAsync(_viewModel.Username);
-                    if(data != null)
-                    {
-                        _ = SecureStorage.Remove(_viewModel.Username);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Possible that device doesn't support secure storage on device.
-                    Debug.WriteLine($"{ex}");
-                }
+                _ = await LoginViewModel.CurrentUser.DisableSecurityAsync();
             }
         }
     }

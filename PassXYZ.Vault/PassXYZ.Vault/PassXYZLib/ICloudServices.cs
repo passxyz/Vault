@@ -28,10 +28,14 @@ namespace PassXYZLib
                     && !string.IsNullOrWhiteSpace(Hostname)
                     && !string.IsNullOrWhiteSpace(RemoteHomePath);
 
+        private static PxSFtp pxSFtp = null;
         public static ICloudServices<PxUser> GetCloudServices()
         {
-            var service = new PxSFtp();
-            return service;
+            if (pxSFtp == null)
+            {
+                pxSFtp = new PxSFtp();
+            }
+            return pxSFtp;
         }
     }
 
@@ -45,6 +49,7 @@ namespace PassXYZLib
         Task<IEnumerable<T>> LoadRemoteUsersAsync();
         Task<IEnumerable<T>> SynchronizeUsersAsync();
         void Logout();
+        bool IsSynchronized { get; }
     }
 #endif // PASSXYZ_CLOUD_SERVICE
 }

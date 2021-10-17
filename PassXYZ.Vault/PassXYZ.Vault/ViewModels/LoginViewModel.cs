@@ -18,7 +18,7 @@ namespace PassXYZ.Vault.ViewModels
     /// <summary>
     /// Extend class PassXYZLib.User to support preference.
     /// </summary>
-    public class LoginUser : PassXYZLib.PxUser
+    public class LoginUser : PxUser
     {
         private BaseViewModel _baseViewModule;
         private const string PrivacyNotice = "Privacy Notice";
@@ -74,6 +74,73 @@ namespace PassXYZ.Vault.ViewModels
                 {
                     File.Delete(path);
                 }
+            }
+        }
+
+        private bool _isFingerprintEnabled = false;
+        public bool IsFingerprintEnabled => _isFingerprintEnabled;
+
+        public async Task<bool> IsFingerprintEnabledAsync()
+        {
+            string data = await GetSecurityAsync();
+            if (string.IsNullOrEmpty(data))
+            {
+                _isFingerprintEnabled = false;
+                return false;
+            }
+            else 
+            {
+                _isFingerprintEnabled = true;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Get password in secure storage
+        /// </summary>
+        public async Task<string> GetSecurityAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Username)) { return string.Empty; }
+
+            string data = await SecureStorage.GetAsync(Username);
+            if (string.IsNullOrEmpty(data)) 
+            {
+                _isFingerprintEnabled = true;
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Store password in secure storage
+        /// </summary>
+        public async Task SetSecurityAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password)) { return; }
+
+            await SecureStorage.SetAsync(Username, Password);
+        }
+
+        public async Task<bool> DisableSecurityAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Username)) { return false; }
+
+            try
+            {
+                string data = await SecureStorage.GetAsync(Username);
+                if (data != null)
+                {
+                    return SecureStorage.Remove(Username);
+                }
+                else 
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Possible that device doesn't support secure storage on device.
+                Debug.WriteLine($"{ex}");
+                return false;
             }
         }
 
@@ -211,10 +278,17 @@ namespace PassXYZ.Vault.ViewModels
 
         public async void OnLoginClicked()
         {
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             try
             {
                 IsBusy = true;
+
+                if (string.IsNullOrWhiteSpace(CurrentUser.Password))
+                {
+                    await Shell.Current.DisplayAlert("", AppResources.settings_empty_password, AppResources.alert_id_ok);
+                    IsBusy = false;
+                    return;
+                }
+
                 bool status = await DataStore.LoginAsync(CurrentUser);
 
                 if (status)

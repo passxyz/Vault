@@ -85,7 +85,7 @@ namespace PassXYZ.Vault.Views
 
         }
 
-        private async void InitFingerPrintButton() 
+        private async void InitFingerPrintButton()
         {
             if (LoginViewModel.CurrentUser.IsDeviceLockEnabled && !LoginViewModel.CurrentUser.IsKeyFileExist)
             {
@@ -120,7 +120,8 @@ namespace PassXYZ.Vault.Views
                     GetAvailabilityAsync();
                 }
 
-                if (availability == FingerprintAvailability.Available)
+                bool isFingerprintEnabled = await LoginViewModel.CurrentUser.IsFingerprintEnabledAsync();
+                if (availability == FingerprintAvailability.Available && isFingerprintEnabled)
                 {
                     fpButton.IsVisible = true;
                     if (!App.InBackgroup && !isFingerprintCancelled) { await FingerprintLogin(); }
@@ -243,7 +244,7 @@ namespace PassXYZ.Vault.Views
             {
                 try
                 {
-                    LoginViewModel.CurrentUser.Password = await SecureStorage.GetAsync(_viewModel.Username);
+                    LoginViewModel.CurrentUser.Password = await LoginViewModel.CurrentUser.GetSecurityAsync();
                     if(LoginViewModel.CurrentUser.Password != null)
                     {
                         _viewModel.OnLoginClicked();
@@ -298,13 +299,13 @@ namespace PassXYZ.Vault.Views
 
         private async Task FingerprintLogin()
         {
-            try 
+            try
             {
                 string data = string.Empty;
 
-                if (!string.IsNullOrEmpty(_viewModel.Username)) 
+                if (!string.IsNullOrEmpty(_viewModel.Username))
                 {
-                    data = await SecureStorage.GetAsync(_viewModel.Username);
+                    data = await LoginViewModel.CurrentUser.GetSecurityAsync();
                 }
 
                 if ((availability == FingerprintAvailability.Available) && (!string.IsNullOrWhiteSpace(data)))
@@ -323,7 +324,7 @@ namespace PassXYZ.Vault.Views
                     fpButton.IsVisible = false;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 Debug.Write($"{ex}");
             }
