@@ -30,7 +30,7 @@ namespace PassXYZLib
 
         private async Task<bool> ConnectAsync(Action<SftpClient> updateAction)
         {
-            if (!PxCloudConfig.IsConfigured)
+            if (!PxCloudConfig.IsConfigured || !PxCloudConfig.IsEnabled)
             {
                 Debug.WriteLine("PxSFtp: Cloud storage is not configured");
                 return false;

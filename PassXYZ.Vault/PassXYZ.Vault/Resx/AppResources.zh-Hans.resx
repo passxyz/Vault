@@ -1009,4 +1009,7 @@ PassXYZ应用帮助存储您的个人数据在本地设备并使用KeePass 加�
   <data name="title_cloud_config" xml:space="preserve">
     <value>云存储配置</value>
   </data>
+  <data name="field_id_port" xml:space="preserve">
+    <value>端口</value>
+  </data>
 </root>

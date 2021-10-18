@@ -18,6 +18,7 @@
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -39,12 +40,17 @@
                                    Text="{Binding CloudConfigData.Hostname}"
                                    HorizontalOptions="Fill" 
                                    Grid.Row="2" Grid.Column="1" />
+                            <Entry x:Name="portEntry"
+                                   Placeholder="{x:Static resources:AppResources.field_id_port}"
+                                   Text="{Binding CloudConfigData.Port}"
+                                   HorizontalOptions="Fill" 
+                                   Grid.Row="3" Grid.Column="1" />
                             <Entry x:Name="remoteHomePathEntry"
                                    Placeholder="{x:Static resources:AppResources.field_id_remote_folder}"
                                    ReturnType="Next"
                                    Text="{Binding CloudConfigData.RemoteHomePath}"
                                    HorizontalOptions="Fill" 
-                                   Grid.Row="3" Grid.Column="1" />
+                                   Grid.Row="4" Grid.Column="1" />
                         </Grid>
 
                         <Grid>
@@ -67,6 +73,17 @@
                                 Grid.Column="1" 
                                 Command="{Binding CancelCommand}" />
                         </Grid>
+                        
+                        <StackLayout Orientation="Horizontal">
+                            <Label x:Name="cloudConfigStatus"
+                                   Text="{x:Static resources:AppResources.title_cloud_config}" 
+                                   FontAttributes="Bold"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                            <Switch x:Name="cloudConfigSwitcher" HorizontalOptions="Center"
+                                    IsToggled="{Binding CloudConfigData.IsEnabled}" />
+                        </StackLayout>
+                        
                         <Label x:Name="messageLabel" Text="{Binding CloudConfigData.ConfigMessage, Mode=TwoWay}"/>
                     </StackLayout>
                 </Frame>

@@ -65,6 +65,26 @@ namespace PassXYZLib
                 OnPropertyChanged("Hostname");
             }
         }
+        private int _port = PxCloudConfig.Port;
+        /// <summary>
+        /// Gets connection port.
+        /// </summary>
+        /// <value>
+        /// The connection port. The default value is 22.
+        /// </value>
+        public int Port
+        {
+            get
+            {
+                return _port;
+            }
+
+            set
+            {
+                _port = value;
+                OnPropertyChanged("Port");
+            }
+        }
         private string _remoteHomePath = PxCloudConfig.RemoteHomePath;
         public string RemoteHomePath 
         {
@@ -77,6 +97,20 @@ namespace PassXYZLib
             {
                 _remoteHomePath = value;
                 OnPropertyChanged("RemoteHomePath");
+            }
+        }
+        private bool _isEnabled = PxCloudConfig.IsEnabled;
+        public bool IsEnabled 
+        {
+            get
+            {
+                return _isEnabled;
+            }
+
+            set
+            {
+                _isEnabled = value;
+                OnPropertyChanged("IsEnabled");
             }
         }
         private string _configMessage = AppResources.message_id_cloud_config;
@@ -164,6 +198,23 @@ namespace PassXYZLib
                 Preferences.Set(nameof(PxCloudConfig) + nameof(Hostname), value);
             }
         }
+        /// <summary>
+        /// Gets connection port.
+        /// </summary>
+        /// <value>
+        /// The connection port. The default value is 22.
+        /// </value>
+        public static int Port
+        {
+            get
+            {
+                return Preferences.Get(nameof(PxCloudConfig) + nameof(Port), 22);
+            }
+            set
+            {
+                Preferences.Set(nameof(PxCloudConfig) + nameof(Port), value);
+            }
+        }
         public static string RemoteHomePath 
         {
             get
@@ -175,7 +226,17 @@ namespace PassXYZLib
                 Preferences.Set(nameof(PxCloudConfig) + nameof(RemoteHomePath), value);
             }
         }
-
+        public static bool IsEnabled 
+        {
+            get
+            {
+                return Preferences.Get(nameof(PxCloudConfig) + nameof(IsEnabled), false);
+            }
+            set
+            {
+                Preferences.Set(nameof(PxCloudConfig) + nameof(IsEnabled), value);
+            }
+        }
         public static bool IsConfigured => !string.IsNullOrWhiteSpace(Username)
                     && !string.IsNullOrWhiteSpace(Password)
                     && !string.IsNullOrWhiteSpace(Hostname)
@@ -186,7 +247,9 @@ namespace PassXYZLib
             Username = configData.Username;
             Password = configData.Password;
             Hostname = configData.Hostname;
+            Port = configData.Port;
             RemoteHomePath = configData.RemoteHomePath;
+            IsEnabled = configData.IsEnabled;
         }
 
         private static PxSFtp pxSFtp = null;

@@ -1458,6 +1458,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Port.
+        /// </summary>
+        internal static string field_id_port {
+            get {
+                return ResourceManager.GetString("field_id_port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Query PIN.
         /// </summary>
         internal static string field_id_query_pin {

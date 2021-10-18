@@ -241,7 +241,7 @@ namespace PassXYZ.Vault.ViewModels
             IsBusy = true;
 
 #if PASSXYZ_CLOUD_SERVICE
-            if (PxCloudConfig.IsConfigured)
+            if (PxCloudConfig.IsConfigured && PxCloudConfig.IsEnabled)
             {
                 await LoginViewModel.SynchronizeUsersAsync();
             }
@@ -307,7 +307,7 @@ namespace PassXYZ.Vault.ViewModels
 
         private async void OnCloudConfig(object obj)
         {
-            if (PxCloudConfig.IsConfigured)
+            if (!string.IsNullOrWhiteSpace(PxCloudConfig.Password))
             {
                 string result = await Shell.Current.DisplayPromptAsync("", AppResources.ph_id_password, keyboard: Keyboard.Default);
                 if (string.IsNullOrEmpty(result))
