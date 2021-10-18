@@ -32,7 +32,6 @@ namespace PassXYZ.Vault.ViewModels
         public Command CancelCommand { get; }
         public Command SaveCloudConfigCommand { get; }
         public Command CloudConfigCommand { get; }
-        public PxCloudConfigData CloudConfigData { get; set; }
 
         public UsersViewModel() : this(true)
         {
@@ -48,18 +47,22 @@ namespace PassXYZ.Vault.ViewModels
             AddUserCommand = new Command(OnAddUser);
             ImportUserCommand = new Command(() => ImportUser());
             ExportUserCommand = new Command(() => { ExportUserAsync(); });
+#if PASSXYZ_CLOUD_SERVICE
             CloudConfigCommand = new Command(OnCloudConfig);
+#endif // PASSXYZ_CLOUD_SERVICE
 
             if (isLoadUsers)
             {
                 ExecuteLoadUsersCommand();
             }
+#if PASSXYZ_CLOUD_SERVICE
             else
             {
                 CloudConfigData = new PxCloudConfigData();
                 CancelCommand = new Command(OnCancelClicked);
                 SaveCloudConfigCommand = new Command(OnSaveCloudConfigSaveClicked);
             }
+#endif // PASSXYZ_CLOUD_SERVICE
 
             Debug.WriteLine($"UsersViewModel: IsBusy={IsBusy}, isLoadUsers={isLoadUsers}");
         }
@@ -98,6 +101,8 @@ namespace PassXYZ.Vault.ViewModels
         }
 
 #if PASSXYZ_CLOUD_SERVICE
+        public PxCloudConfigData CloudConfigData { get; set; }
+
         public bool IsSynchronized
         {
             get
@@ -235,11 +240,20 @@ namespace PassXYZ.Vault.ViewModels
 
             IsBusy = true;
 
-            Users.Clear();
-            var users = await PxUser.LoadLocalUsersAsync();
-            foreach (PxUser user in users)
+#if PASSXYZ_CLOUD_SERVICE
+            if (PxCloudConfig.IsConfigured)
             {
-                Users.Add(user);
+                await LoginViewModel.SynchronizeUsersAsync();
+            }
+            else
+#endif // PASSXYZ_CLOUD_SERVICE
+            {
+                Users.Clear();
+                var users = await PxUser.LoadLocalUsersAsync();
+                foreach (PxUser user in users)
+                {
+                    Users.Add(user);
+                }
             }
 
             IsBusy = false;
@@ -265,6 +279,7 @@ namespace PassXYZ.Vault.ViewModels
             })));
         }
 
+#if PASSXYZ_CLOUD_SERVICE
         private bool ValidateCloudConfigData()
         {
             if (CloudConfigData == null) { return false; }
@@ -290,17 +305,30 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        private async void OnCloudConfig(object obj)
+        {
+            if (PxCloudConfig.IsConfigured)
+            {
+                string result = await Shell.Current.DisplayPromptAsync("", AppResources.ph_id_password, keyboard: Keyboard.Default);
+                if (string.IsNullOrEmpty(result))
+                {
+                    return;
+                }
+                else
+                {
+                    if (!result.Equals(PxCloudConfig.Password)) { return; }
+                }
+            }
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new CloudConfigPage()));
+        }
+#endif // PASSXYZ_CLOUD_SERVICE
+
         private async void OnCancelClicked()
         {
             _ = await Shell.Current.Navigation.PopModalAsync();
         }
 
-        private async void OnCloudConfig(object obj)
-        {
-            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new CloudConfigPage()));
-        }
-
-        #region INotifyPropertyChanged
+#region INotifyPropertyChanged
         protected bool SetProperty<T>(ref T backingStore, T value,
             [CallerMemberName] string propertyName = "",
             Action onChanged = null)
@@ -323,6 +351,6 @@ namespace PassXYZ.Vault.ViewModels
 
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        #endregion
+#endregion
     }
 }

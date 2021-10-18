@@ -31,13 +31,10 @@ namespace PassXYZ.Vault
             MainPage = new AppShell();
         }
 
-        protected override async void OnStart()
+        protected override void OnStart()
         {
             InBackgroup = false;
             InitTestDb();
-#if PASSXYZ_CLOUD_SERVICE
-            await LoginViewModel.SynchronizeUsersAsync();
-#endif // PASSXYZ_CLOUD_SERVICE
             ExtractIcons();
             Debug.WriteLine($"PassXYZ: OnStart, InBackgroup={InBackgroup}");
         }
