@@ -15,10 +15,19 @@ using FontAwesome.Solid;
 namespace PassXYZLib
 {
 #if PASSXYZ_CLOUD_SERVICE
+    public enum PxSyncFileType
+    {
+        Local,
+        Remote,
+        Backup,
+        Temp
+    }
+
     public abstract class PxFileStatus
     {
         private readonly PxUser _user;
         public PxUser User { get => _user; }
+        virtual public PxSyncFileType FileType { get; } = PxSyncFileType.Local;
         virtual public bool IsModified { get; set; } = false;
         virtual public DateTime LastWriteTime { get; set; }
         virtual public long Length { get; set; }
@@ -30,6 +39,7 @@ namespace PassXYZLib
 
     public class PxRemoteFileStatus : PxFileStatus
     {
+        public override PxSyncFileType FileType { get; } = PxSyncFileType.Remote;
         public override DateTime LastWriteTime { get; set; }
         public override long Length { get; set; }
         public PxRemoteFileStatus(PxUser user) : base(user)
@@ -39,6 +49,7 @@ namespace PassXYZLib
 
     public class PxLocalFileStatus : PxFileStatus
     {
+        public override PxSyncFileType FileType { get; } = PxSyncFileType.Local;
         public override DateTime LastWriteTime
         {
             get
@@ -122,6 +133,7 @@ namespace PassXYZLib
 
     public class PxCurrentFileStatus : PxFileStatus
     {
+        public override PxSyncFileType FileType { get; } = PxSyncFileType.Local;
         public override DateTime LastWriteTime
         {
             get
@@ -183,6 +195,47 @@ namespace PassXYZLib
         }
 
         public PxCurrentFileStatus(PxUser user) : base(user)
+        {
+        }
+    }
+
+    public class PxBackupFileStatus : PxFileStatus
+    {
+        public override PxSyncFileType FileType { get; } = PxSyncFileType.Backup;
+        public override DateTime LastWriteTime
+        {
+            get
+            {
+                string backupFile = System.IO.Path.Combine(PxDataFile.BakFilePath, User.FileName);
+                if (File.Exists(backupFile))
+                {
+                    return File.GetLastWriteTime(backupFile);
+                }
+                else
+                {
+                    return default;
+                }
+            }
+        }
+
+        public override long Length
+        {
+            get
+            {
+                string backupFile = System.IO.Path.Combine(PxDataFile.BakFilePath, User.FileName);
+                if (File.Exists(backupFile))
+                {
+                    var fileInfo = new FileInfo(System.IO.Path.Combine(PxDataFile.BakFilePath, User.FileName));
+                    return fileInfo.Length;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public PxBackupFileStatus(PxUser user) : base(user)
         {
         }
     }
@@ -348,6 +401,7 @@ namespace PassXYZLib
         public PxFileStatus RemoteFileStatus;
         public PxFileStatus LocalFileStatus;
         public PxFileStatus CurrentFileStatus;
+        public PxFileStatus BackupFileStatus;
         private PxCloudSyncStatus _syncStatus = PxCloudSyncStatus.PxDisabled;
         public PxCloudSyncStatus SyncStatus
         {
@@ -389,6 +443,7 @@ namespace PassXYZLib
             RemoteFileStatus = new PxRemoteFileStatus(this);
             LocalFileStatus = new PxLocalFileStatus(this);
             CurrentFileStatus = new PxCurrentFileStatus(this);
+            BackupFileStatus = new PxBackupFileStatus(this);
         }
         #endregion
 #else

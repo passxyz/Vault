@@ -33,13 +33,17 @@ namespace PassXYZ.Vault.ViewModels
         public Command SaveCloudConfigCommand { get; }
         public Command CloudConfigCommand { get; }
 
+        /// <summary>
+        /// This is the default constructor for UsersPage
+        /// </summary>
         public UsersViewModel() : this(true)
         {
         }
 
         /// <summary>
-        /// This is a constructor for CloudConfigPage
+        /// This is a constructor for both UsersPage and CloudConfigPage
         /// </summary>
+        /// <param name="isLoadUsers">true - UsersPage is loaded and need to load users, false - CloudConfigPage</param>
         public UsersViewModel(bool isLoadUsers = true)
         {
             Users = App.Users;
@@ -326,6 +330,12 @@ namespace PassXYZ.Vault.ViewModels
         private async void OnCancelClicked()
         {
             _ = await Shell.Current.Navigation.PopModalAsync();
+        }
+
+        public async Task OnFileInfoAsync(PxUser pxUser)
+        {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FileInfoPage(pxUser)));
+            Debug.WriteLine($"UsersViewModel: OnFileInfoClicked {pxUser.Username}");
         }
 
 #region INotifyPropertyChanged

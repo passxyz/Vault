@@ -124,7 +124,7 @@
     <value>PassXYZ.Vault</value>
   </data>
   <data name="LoginErrorMessage" xml:space="preserve">
-    <value>登錄失敗，請檢查用戶名和密碼。</value>
+    <value>登錄失敗</value>
   </data>
   <data name="LoginPageTitle" xml:space="preserve">
     <value>登錄</value>
@@ -1011,5 +1011,23 @@ PassXYZ應用幫助存儲您的個人數據在本地設備並使用KeePass 加�
   </data>
   <data name="field_id_port" xml:space="preserve">
     <value>端口</value>
+  </data>
+  <data name="action_id_recover" xml:space="preserve">
+    <value>恢復</value>
+  </data>
+  <data name="message_id_recover_datafile" xml:space="preserve">
+    <value>**數據文件**可以從備份文件恢復。如果仍有問題，可嘗試從雲文件恢復。**雲文件**可以從數據文件恢復。</value>
+  </data>
+  <data name="field_id_backup_data" xml:space="preserve">
+    <value>備份數據</value>
+  </data>
+  <data name="field_id_local_data" xml:space="preserve">
+    <value>本地數據</value>
+  </data>
+  <data name="field_id_remote_data" xml:space="preserve">
+    <value>雲數據</value>
+  </data>
+  <data name="menu_id_data_recovery" xml:space="preserve">
+    <value>數據恢復</value>
   </data>
 </root>

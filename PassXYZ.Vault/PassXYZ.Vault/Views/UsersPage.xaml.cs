@@ -53,6 +53,16 @@ namespace PassXYZ.Vault.Views
 #endif // PASSXYZ_CLOUD_SERVICE
         }
 
+        private async void OnMenuFileInfoAsync(object sender, EventArgs e) 
+        {
+            var mi = (MenuItem)sender;
+
+            if (mi.BindingContext is PxUser user)
+            {
+                await _viewModel.OnFileInfoAsync(user);
+            }
+        }
+
         private void OnUserTap(object sender, ItemTappedEventArgs args)
         {
             var user = args.Item as User;

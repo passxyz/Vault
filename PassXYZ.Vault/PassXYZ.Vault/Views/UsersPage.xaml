@@ -45,6 +45,8 @@
                                       Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
                                 <MenuItem Clicked="OnMenuChangeStatus" CommandParameter="{Binding .}"
                                       Text="{x:Static resources:AppResources.action_id_disable_sync}" />
+                                <MenuItem  Clicked="OnMenuFileInfoAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.menu_id_data_recovery}" />
                             </ViewCell.ContextActions>
 
                             <Grid Margin="20,20,20,20" x:DataType="passxyzlib:PxUser">

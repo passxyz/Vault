@@ -335,7 +335,13 @@ namespace PassXYZ.Vault.ViewModels
             catch (Exception ex)
             {
                 IsBusy = false;
-                await Shell.Current.DisplayAlert(AppResources.LoginErrorMessage, ex.Message, AppResources.alert_id_ok);
+                string msg = ex.Message;
+                if (ex is System.IO.IOException ioException) 
+                {
+                    Debug.WriteLine("LoginViewModel: Need to recover");
+                    msg = Resx.AppResources.message_id_recover_datafile;
+                }
+                await Shell.Current.DisplayAlert(AppResources.LoginErrorMessage, msg, AppResources.alert_id_ok);
             }
         }
         private async void OnSignUpClicked()

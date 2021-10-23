@@ -263,6 +263,58 @@ namespace PassXYZLib
         }
     }
 
+    public class PxFileInfo : INotifyPropertyChanged
+    {
+        public string IconPath { get; set; }
+        public PxSyncFileType FileType { get; set; } = PxSyncFileType.Local;
+        public string FileTypeComments { get; set; }
+        private DateTime _lastWriteTime;
+        public DateTime LastWriteTime
+        {
+            get => _lastWriteTime;
+            set
+            {
+                _lastWriteTime = value;
+                OnPropertyChanged("LastWriteTime");
+            }
+        }
+        private long _length;
+        public long Length
+        {
+            get => _length;
+            set
+            {
+                _length = value;
+                OnPropertyChanged("Length");
+            }
+        }
+
+        #region INotifyPropertyChanged
+        protected bool SetProperty<T>(ref T backingStore, T value,
+            [CallerMemberName] string propertyName = "",
+            Action onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            onChanged?.Invoke();
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+    }
+
     public interface ICloudServices<T>
     {
         Task LoginAsync();
