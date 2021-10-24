@@ -33,8 +33,11 @@ namespace PassXYZ.Vault.Services
         }
     }
 
-    public static class EmbeddedIcons 
+    public static class EmbeddedIcons
     {
+        public static EmbeddedDatabase iconZipFile = new EmbeddedDatabase(Path.Combine(PxDataFile.TmpFilePath, "icons.zip"),
+            "icons", "PassXYZ.Vault.data.icons.zip");
+
         public static EmbeddedDatabase[] IconFiles = new EmbeddedDatabase[]
         {
             new EmbeddedDatabase(Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_cloud.png"), "ic_passxyz_cloud", "PassXYZ.Vault.data.ic_passxyz_cloud.png"),

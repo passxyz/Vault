@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO.Compression;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -81,17 +82,27 @@ namespace PassXYZ.Vault
 
         private void ExtractIcons()
         {
+            var assembly = this.GetType().GetTypeInfo().Assembly;
             foreach (EmbeddedDatabase iconFile in EmbeddedIcons.IconFiles)
             {
                 if (!File.Exists(iconFile.Path))
                 {
-                    var assembly = this.GetType().GetTypeInfo().Assembly;
                     using (var stream = assembly.GetManifestResourceStream(iconFile.ResourcePath))
                     using (var fileStream = new FileStream(iconFile.Path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
                     {
                         stream.CopyTo(fileStream);
                     }
                 }
+            }
+
+            if (!File.Exists(EmbeddedIcons.iconZipFile.Path))
+            {
+                using (var stream = assembly.GetManifestResourceStream(EmbeddedIcons.iconZipFile.ResourcePath))
+                using (var fileStream = new FileStream(EmbeddedIcons.iconZipFile.Path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                {
+                    stream.CopyTo(fileStream);
+                }
+                ZipFile.ExtractToDirectory(EmbeddedIcons.iconZipFile.Path, PxDataFile.IconFilePath);
             }
         }
 

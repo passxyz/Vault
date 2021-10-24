@@ -19,8 +19,13 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" x:DataType="kpclib:Item">
-                                    <Image Source="{Binding ImgSource}" />
+                                <StackLayout Padding="10" Orientation="Horizontal" HorizontalOptions="Fill" x:DataType="kpclib:Item">
+                                    <Grid >
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="32" />
+                                        </Grid.ColumnDefinitions>
+                                        <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                    </Grid>
                                     <StackLayout Padding="10">
                                         <Label Text="{Binding Name}" 
                                            LineBreakMode="NoWrap" 
