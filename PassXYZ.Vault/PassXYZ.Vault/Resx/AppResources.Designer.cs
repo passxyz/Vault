@@ -261,6 +261,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cloud Config.
+        /// </summary>
+        internal static string action_id_cloud_config {
+            get {
+                return ResourceManager.GetString("action_id_cloud_config", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         internal static string action_id_copy {
@@ -401,6 +410,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string action_id_properties {
             get {
                 return ResourceManager.GetString("action_id_properties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recover.
+        /// </summary>
+        internal static string action_id_recover {
+            get {
+                return ResourceManager.GetString("action_id_recover", resourceCulture);
             }
         }
         
@@ -1233,6 +1251,24 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configuration is not correct..
+        /// </summary>
+        internal static string error_message_config1 {
+            get {
+                return ResourceManager.GetString("error_message_config1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please fill in the correct configuration..
+        /// </summary>
+        internal static string error_message_config2 {
+            get {
+                return ResourceManager.GetString("error_message_config2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid URL format..
         /// </summary>
         internal static string error_message_invalid_url {
@@ -1287,6 +1323,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Backup Data.
+        /// </summary>
+        internal static string field_id_backup_data {
+            get {
+                return ResourceManager.GetString("field_id_backup_data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Camera.
         /// </summary>
         internal static string field_id_camera {
@@ -1332,6 +1377,15 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hostname, such as sftp.passxyz.com.
+        /// </summary>
+        internal static string field_id_hostname {
+            get {
+                return ResourceManager.GetString("field_id_hostname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hotline.
         /// </summary>
         internal static string field_id_hotline {
@@ -1355,6 +1409,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string field_id_internet_banking_u {
             get {
                 return ResourceManager.GetString("field_id_internet_banking_u", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local Data.
+        /// </summary>
+        internal static string field_id_local_data {
+            get {
+                return ResourceManager.GetString("field_id_local_data", resourceCulture);
             }
         }
         
@@ -1422,11 +1485,38 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Port.
+        /// </summary>
+        internal static string field_id_port {
+            get {
+                return ResourceManager.GetString("field_id_port", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Query PIN.
         /// </summary>
         internal static string field_id_query_pin {
             get {
                 return ResourceManager.GetString("field_id_query_pin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote Data.
+        /// </summary>
+        internal static string field_id_remote_data {
+            get {
+                return ResourceManager.GetString("field_id_remote_data", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remote folder, such as /home/tester/pxvault/.
+        /// </summary>
+        internal static string field_id_remote_folder {
+            get {
+                return ResourceManager.GetString("field_id_remote_folder", resourceCulture);
             }
         }
         
@@ -1728,7 +1818,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Login failed, please check your username and password.
+        ///   Looks up a localized string similar to Login failed.
         /// </summary>
         internal static string LoginErrorMessage {
             get {
@@ -1751,6 +1841,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string LoginPageWelcomeMessage {
             get {
                 return ResourceManager.GetString("LoginPageWelcomeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Recovery.
+        /// </summary>
+        internal static string menu_id_data_recovery {
+            get {
+                return ResourceManager.GetString("menu_id_data_recovery", resourceCulture);
             }
         }
         
@@ -1841,6 +1940,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string message_id_attachment_options {
             get {
                 return ResourceManager.GetString("message_id_attachment_options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please fill in cloud storage configuration..
+        /// </summary>
+        internal static string message_id_cloud_config {
+            get {
+                return ResourceManager.GetString("message_id_cloud_config", resourceCulture);
             }
         }
         
@@ -1940,6 +2048,18 @@ namespace PassXYZ.Vault.Resx {
         internal static string message_id_importDataSuccess {
             get {
                 return ResourceManager.GetString("message_id_importDataSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data file can be recovered from backup file. If cannot work, please try to recover from cloud file.
+        ///
+        ///- **Local Data** can be recovered from remote data or backup data
+        ///- **Remote Data** can be recovered using local data.
+        /// </summary>
+        internal static string message_id_recover_datafile {
+            get {
+                return ResourceManager.GetString("message_id_recover_datafile", resourceCulture);
             }
         }
         
@@ -2501,6 +2621,15 @@ namespace PassXYZ.Vault.Resx {
         internal static string SiguUpMessage {
             get {
                 return ResourceManager.GetString("SiguUpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud storage configuration.
+        /// </summary>
+        internal static string title_cloud_config {
+            get {
+                return ResourceManager.GetString("title_cloud_config", resourceCulture);
             }
         }
         

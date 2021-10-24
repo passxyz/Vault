@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
+
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
+using KeePassLib;
+using PassXYZLib;
 using PassXYZ.Vault.Resx;
 
 namespace PassXYZ.Vault.ViewModels
@@ -14,8 +18,9 @@ namespace PassXYZ.Vault.ViewModels
     /// <summary>
     /// Extend class PassXYZLib.User to support preference.
     /// </summary>
-    public class LoginUser : PassXYZLib.PxUser
+    public class LoginUser : PxUser
     {
+        private BaseViewModel _baseViewModule;
         private const string PrivacyNotice = "Privacy Notice";
         public override string Username
         {
@@ -55,6 +60,93 @@ namespace PassXYZ.Vault.ViewModels
             {
                 Preferences.Set(PrivacyNotice, value);
             }
+        }
+
+        public bool IsLogined => _baseViewModule.DataStore.IsOpen;
+
+        public override void Logout()
+        {
+            if (IsLogined)
+            {
+                _baseViewModule.DataStore.Logout();
+                string path = System.IO.Path.Combine(PxDataFile.TmpFilePath, FileName);
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+            }
+        }
+
+        private bool _isFingerprintEnabled = false;
+        public bool IsFingerprintEnabled => _isFingerprintEnabled;
+
+        public async Task<bool> IsFingerprintEnabledAsync()
+        {
+            string data = await GetSecurityAsync();
+            if (string.IsNullOrEmpty(data))
+            {
+                _isFingerprintEnabled = false;
+                return false;
+            }
+            else 
+            {
+                _isFingerprintEnabled = true;
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Get password in secure storage
+        /// </summary>
+        public async Task<string> GetSecurityAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Username)) { return string.Empty; }
+
+            string data = await SecureStorage.GetAsync(Username);
+            if (string.IsNullOrEmpty(data)) 
+            {
+                _isFingerprintEnabled = true;
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// Store password in secure storage
+        /// </summary>
+        public async Task SetSecurityAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password)) { return; }
+
+            await SecureStorage.SetAsync(Username, Password);
+        }
+
+        public async Task<bool> DisableSecurityAsync()
+        {
+            if (string.IsNullOrWhiteSpace(Username)) { return false; }
+
+            try
+            {
+                string data = await SecureStorage.GetAsync(Username);
+                if (data != null)
+                {
+                    return SecureStorage.Remove(Username);
+                }
+                else 
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Possible that device doesn't support secure storage on device.
+                Debug.WriteLine($"{ex}");
+                return false;
+            }
+        }
+
+        public LoginUser(BaseViewModel viewModule)
+        {
+            _baseViewModule = viewModule;
         }
     }
 
@@ -123,7 +215,7 @@ namespace PassXYZ.Vault.ViewModels
             this.PropertyChanged +=
                 (_, __) => SignUpCommand.ChangeCanExecute();
 
-            CurrentUser = new LoginUser();
+            CurrentUser = new LoginUser(this);
         }
 
         public LoginViewModel(bool isInitialized) : this()
@@ -155,21 +247,62 @@ namespace PassXYZ.Vault.ViewModels
                 && LoginUser.IsPrivacyNoticeAccepted;
         }
 
-        public void OnAppearing()
+        public async void OnAppearing()
         {
             IsBusy = false;
-            if (DataStore.RootGroup != null) 
+
+            await SynchronizeUsersAsync();
+        }
+
+        public static async Task SynchronizeUsersAsync()
+        {
+            IEnumerable<PxUser> pxUsers = null;
+
+#if PASSXYZ_CLOUD_SERVICE
+            if (PxCloudConfig.IsConfigured && PxCloudConfig.IsEnabled)
             {
-                DataStore.Logout();
+                if (PassXYZ.Vault.App.IsSshOperationTimeout)
+                {
+                    // If the last connection is timeout, we load local users first.
+                    pxUsers = await PxUser.LoadLocalUsersAsync();
+                }
+                else 
+                {
+                    ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+                    pxUsers = await sftp.SynchronizeUsersAsync();
+                }
+            }
+            else
+#endif // PASSXYZ_CLOUD_SERVICE
+            {
+                pxUsers = await PxUser.LoadLocalUsersAsync();
+            }
+
+            if (pxUsers != null)
+            {
+                App.IsBusyToLoadUsers = true;
+                App.Users.Clear();
+                foreach (PxUser pxUser in pxUsers)
+                {
+                    App.Users.Add(pxUser);
+                }
+                App.IsBusyToLoadUsers = false;
             }
         }
 
         public async void OnLoginClicked()
         {
-            // Prefixing with `//` switches to a different navigation stack instead of pushing to the active one
             try
             {
                 IsBusy = true;
+
+                if (string.IsNullOrWhiteSpace(CurrentUser.Password))
+                {
+                    await Shell.Current.DisplayAlert("", AppResources.settings_empty_password, AppResources.alert_id_ok);
+                    IsBusy = false;
+                    return;
+                }
+
                 bool status = await DataStore.LoginAsync(CurrentUser);
 
                 if (status)
@@ -177,6 +310,34 @@ namespace PassXYZ.Vault.ViewModels
                     if (AppShell.CurrentAppShell != null)
                     {
                         AppShell.CurrentAppShell.SetRootPageTitle(DataStore.RootGroup.Name);
+
+                        string path = Path.Combine(PxDataFile.TmpFilePath, CurrentUser.FileName);
+                        if (File.Exists(path))
+                        {
+                            // If there is file to merge, we merge it first.
+                            bool result = await DataStore.MergeAsync(path, PwMergeMethod.KeepExisting);
+                            //PwMergeMethod mm = PwMergeMethod.KeepExisting;
+                            //List<string> mergeMethodList = new List<string>
+                            //{
+                            //    nameof(PwMergeMethod.OverwriteExisting),
+                            //    nameof(PwMergeMethod.KeepExisting),
+                            //    nameof(PwMergeMethod.OverwriteIfNewer),
+                            //    nameof(PwMergeMethod.CreateNewUuids),
+                            //    nameof(PwMergeMethod.Synchronize)
+                            //};
+
+                            //var mmValue = await Shell.Current.DisplayActionSheet(AppResources.settings_merge_method_title, AppResources.action_id_cancel, null, mergeMethodList.ToArray());
+                            //if (mmValue == nameof(PwMergeMethod.OverwriteExisting)) { mm = PwMergeMethod.OverwriteExisting; }
+                            //else if (mmValue == nameof(PwMergeMethod.KeepExisting)) { mm = PwMergeMethod.KeepExisting; }
+                            //else if (mmValue == nameof(PwMergeMethod.OverwriteIfNewer)) { mm = PwMergeMethod.OverwriteIfNewer; }
+                            //else if (mmValue == nameof(PwMergeMethod.CreateNewUuids)) { mm = PwMergeMethod.CreateNewUuids; }
+                            //else if (mmValue == nameof(PwMergeMethod.Synchronize)) { mm = PwMergeMethod.Synchronize; }
+                            //bool result = await DataStore.MergeAsync(path, mm);
+                            //string message = "Merge failure";
+                            //if (result) { message = "Merged successfully"; }
+                            //await Shell.Current.DisplayAlert("", message, AppResources.alert_id_ok);
+                        }
+
                         await Shell.Current.GoToAsync($"//{nameof(ItemsPage)}");
                     }
                     else
@@ -187,7 +348,14 @@ namespace PassXYZ.Vault.ViewModels
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert(AppResources.LoginErrorMessage, ex.Message, AppResources.alert_id_ok);
+                IsBusy = false;
+                string msg = ex.Message;
+                if (ex is System.IO.IOException ioException) 
+                {
+                    Debug.WriteLine("LoginViewModel: Need to recover");
+                    msg = Resx.AppResources.message_id_recover_datafile;
+                }
+                await Shell.Current.DisplayAlert(AppResources.LoginErrorMessage, msg, AppResources.alert_id_ok);
             }
         }
         private async void OnSignUpClicked()
@@ -229,7 +397,7 @@ namespace PassXYZ.Vault.ViewModels
                 if (result != null)
                 {
                     var stream = await result.OpenReadAsync();
-                    var fileStream = File.Create(CurrentUser.KeFilePath);
+                    var fileStream = File.Create(CurrentUser.KeyFilePath);
                     stream.Seek(0, SeekOrigin.Begin);
                     stream.CopyTo(fileStream);
                     fileStream.Close();

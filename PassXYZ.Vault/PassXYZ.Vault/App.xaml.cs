@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO.Compression;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -10,6 +13,7 @@ using Xamarin.Forms.Xaml;
 using PassXYZLib;
 using PassXYZ.Vault.Services;
 using PassXYZ.Vault.Views;
+using PassXYZ.Vault.ViewModels;
 
 namespace PassXYZ.Vault
 {
@@ -17,18 +21,40 @@ namespace PassXYZ.Vault
     {
         public static bool InBackgroup = false;
         private static bool _isLogout = false;
+        public static ObservableCollection<PxUser> Users { get; set; }
+        private static readonly object _sync = new object();
+        private static bool _isBusyToLoadUsers = false;
+        public static bool IsBusyToLoadUsers
+        {
+            get => _isBusyToLoadUsers;
+            set
+            {
+                lock (_sync)
+                {
+                    _isBusyToLoadUsers = value;
+                }
+            }
+        }
+        /// <summary>
+        /// When a connection is timeout, the network is not stable.
+        /// We will try to connect again when the app resume or restart.
+        /// </summary>
+        public static bool IsSshOperationTimeout { get; set; } = false;
         public App()
         {
             InitializeComponent();
 
             DependencyService.Register<DataStore>();
+            Users = new ObservableCollection<PxUser>();
             MainPage = new AppShell();
         }
 
         protected override void OnStart()
         {
             InBackgroup = false;
-            InitTestDb();
+            IsSshOperationTimeout = false;
+            //InitTestDb();
+            ExtractIcons();
             Debug.WriteLine($"PassXYZ: OnStart, InBackgroup={InBackgroup}");
         }
 
@@ -43,10 +69,7 @@ namespace PassXYZ.Vault
             {
                 if (InBackgroup)
                 {
-                    //_ = Task.Factory.StartNew(async () =>
-                    //  {
-                    //      await Shell.Current.GoToAsync("//LoginPage");
-                    //  });
+                    LoginViewModel.CurrentUser.Logout();
                     _isLogout = true;
                     Debug.WriteLine("PassXYZ: Timer, force logout.");
                     return false;
@@ -62,6 +85,7 @@ namespace PassXYZ.Vault
         protected override void OnResume()
         {
             InBackgroup = false;
+            IsSshOperationTimeout = false;
             if (_isLogout)
             {
                 Device.BeginInvokeOnMainThread(async () =>
@@ -73,6 +97,32 @@ namespace PassXYZ.Vault
             }
 
             Debug.WriteLine($"PassXYZ: OnResume, InBackgroup={InBackgroup}");
+        }
+
+        private void ExtractIcons()
+        {
+            var assembly = this.GetType().GetTypeInfo().Assembly;
+            foreach (EmbeddedDatabase iconFile in EmbeddedIcons.IconFiles)
+            {
+                if (!File.Exists(iconFile.Path))
+                {
+                    using (var stream = assembly.GetManifestResourceStream(iconFile.ResourcePath))
+                    using (var fileStream = new FileStream(iconFile.Path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+                }
+            }
+
+            if (!File.Exists(EmbeddedIcons.iconZipFile.Path))
+            {
+                using (var stream = assembly.GetManifestResourceStream(EmbeddedIcons.iconZipFile.ResourcePath))
+                using (var fileStream = new FileStream(EmbeddedIcons.iconZipFile.Path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None))
+                {
+                    stream.CopyTo(fileStream);
+                }
+                ZipFile.ExtractToDirectory(EmbeddedIcons.iconZipFile.Path, PxDataFile.IconFilePath);
+            }
         }
 
         [System.Diagnostics.Conditional("DEBUG")]

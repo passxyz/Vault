@@ -22,6 +22,11 @@
                 <iconsS:IconSource Icon="FileExport"  Color="White" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cloud_config}" Command="{Binding CloudConfigCommand}">
+            <ToolbarItem.IconImageSource>
+                <iconsS:IconSource Icon="Cogs"  Color="White" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>
@@ -34,10 +39,14 @@
                 SelectionMode="None">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
+                        <ViewCell BindingContextChanged="OnBindingContextChanged">
                             <ViewCell.ContextActions>
                                 <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
                                       Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
+                                <MenuItem Clicked="OnMenuChangeStatus" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.action_id_disable_sync}" />
+                                <MenuItem  Clicked="OnMenuFileInfoAsync" CommandParameter="{Binding .}"
+                                      Text="{x:Static resources:AppResources.menu_id_data_recovery}" />
                             </ViewCell.ContextActions>
 
                             <Grid Margin="20,20,20,20" x:DataType="passxyzlib:PxUser">
@@ -45,6 +54,7 @@
                                     <ColumnDefinition Width="32" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="16" />
                                     </Grid.ColumnDefinitions>
                                     <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Center" VerticalOptions="Center" />
                                     <Label Grid.Column="1"
@@ -60,7 +70,8 @@
                                          Style="{DynamicResource ListItemDetailTextStyle}"
                                          VerticalOptions="Center"
                                          Text="{Binding LastAccessTime}"/>
-                                </Grid>
+                                    <Image Grid.Column="3" Source="{Binding SyncStatusIconPath}" HorizontalOptions="Center" VerticalOptions="Center" />
+                            </Grid>
 
                         </ViewCell>
                     </DataTemplate>

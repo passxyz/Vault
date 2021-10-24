@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
+             xmlns:viewmodels="clr-namespace:PassXYZ.Vault.Views"
+             Shell.NavBarIsVisible="False"
+             xmlns:passxyzlib="clr-namespace:PassXYZLib"
+             x:DataType="viewmodels:FileInfoModel"
+             x:Class="PassXYZ.Vault.Views.FileInfoPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_close}" Clicked="OnButtonCloseClicked" Icon="icon_cancel.png"/>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <StackLayout Padding="5,10">
+            <Label x:Name = "_title" FontSize="Large"  HorizontalOptions="Center"
+                       Text="{x:Static resources:AppResources.menu_id_data_recovery}" />
+            <StackLayout Padding="5,10">
+                <RefreshView Command="{Binding LoadFileAttributesCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+                    <ListView ItemsSource="{Binding FileAttributes}" VerticalOptions="FillAndExpand" HasUnevenRows="true">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <ViewCell.ContextActions>
+                                        <MenuItem Clicked="OnMenuUpdateAsync" CommandParameter="{Binding .}"
+                                            Text="{x:Static resources:AppResources.action_id_recover}" IsDestructive="True" />
+                                    </ViewCell.ContextActions>
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" x:DataType="passxyzlib:PxFileInfo">
+                                        <Grid Margin="10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="32" />
+                                                <ColumnDefinition Width="96" />
+                                                <ColumnDefinition Width="AUTO" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition />
+                                                <RowDefinition />
+                                            </Grid.RowDefinitions>
+                                            <Image Source="{Binding IconPath}" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+                                                   HorizontalOptions="Center" VerticalOptions="Center" />
+                                            <Label Text="{Binding FileTypeComments}"
+                                                LineBreakMode="NoWrap" 
+                                                MaxLines="1"
+                                                Style="{DynamicResource ListItemTextStyle}" 
+                                                FontAttributes="Bold"
+                                                VerticalOptions="Center"
+                                                FontSize="Small" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" />
+                                            <Label Text="{Binding LastWriteTime}" 
+                                                Style="{DynamicResource ListItemDetailTextStyle}" 
+                                                LineBreakMode="TailTruncation"
+                                                MaxLines="1"
+                                                HorizontalOptions="StartAndExpand"
+                                                FontSize="Small" Grid.Column="2" Grid.Row="0" />
+                                            <Label Text="{Binding Length}" 
+                                                Style="{DynamicResource ListItemDetailTextStyle}" 
+                                                LineBreakMode="TailTruncation"
+                                                HorizontalOptions="Start"
+                                                MaxLines="1"
+                                                FontSize="Small" Grid.Column="2"  Grid.Row="1" />
+                                        </Grid>
+                                    </StackLayout>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.Footer>
+                            <StackLayout Padding="5" Orientation="Horizontal">
+                                <Label  x:Name ="_footer" Text="{x:Static resources:AppResources.message_id_recover_datafile}" 
+                                FontSize="Micro" 
+                                TextType ="Html"
+                                Style="{DynamicResource ListItemDetailTextStyle}" />
+                            </StackLayout>
+                        </ListView.Footer>
+                    </ListView>
+                </RefreshView>
+            </StackLayout>
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -126,7 +126,7 @@
     <comment>Application name</comment>
   </data>
   <data name="LoginErrorMessage" xml:space="preserve">
-    <value>Login failed, please check your username and password</value>
+    <value>Login failed</value>
     <comment>The error message of login</comment>
   </data>
   <data name="LoginPageTitle" xml:space="preserve">
@@ -1030,5 +1030,50 @@ You can always go to PassXYZ website to find the latest Privacy Notice.</value>
   </data>
   <data name="error_message_privacy_notice" xml:space="preserve">
     <value>Please accept privacy notice to use this app.</value>
+  </data>
+  <data name="action_id_cloud_config" xml:space="preserve">
+    <value>Cloud Config</value>
+  </data>
+  <data name="error_message_config1" xml:space="preserve">
+    <value>Configuration is not correct.</value>
+  </data>
+  <data name="error_message_config2" xml:space="preserve">
+    <value>Please fill in the correct configuration.</value>
+  </data>
+  <data name="field_id_hostname" xml:space="preserve">
+    <value>Hostname, such as sftp.passxyz.com</value>
+  </data>
+  <data name="field_id_remote_folder" xml:space="preserve">
+    <value>Remote folder, such as /home/tester/pxvault/</value>
+  </data>
+  <data name="message_id_cloud_config" xml:space="preserve">
+    <value>Please fill in cloud storage configuration.</value>
+  </data>
+  <data name="title_cloud_config" xml:space="preserve">
+    <value>Cloud storage configuration</value>
+  </data>
+  <data name="field_id_port" xml:space="preserve">
+    <value>Port</value>
+  </data>
+  <data name="action_id_recover" xml:space="preserve">
+    <value>Recover</value>
+  </data>
+  <data name="message_id_recover_datafile" xml:space="preserve">
+    <value>Data file can be recovered from backup file. If cannot work, please try to recover from cloud file.
+
+- **Local Data** can be recovered from remote data or backup data
+- **Remote Data** can be recovered using local data</value>
+  </data>
+  <data name="field_id_backup_data" xml:space="preserve">
+    <value>Backup Data</value>
+  </data>
+  <data name="field_id_local_data" xml:space="preserve">
+    <value>Local Data</value>
+  </data>
+  <data name="field_id_remote_data" xml:space="preserve">
+    <value>Remote Data</value>
+  </data>
+  <data name="menu_id_data_recovery" xml:space="preserve">
+    <value>Data Recovery</value>
   </data>
 </root>

@@ -284,6 +284,35 @@ namespace PassXYZLib
 
         public static void SetIcon(this Item item)
         {
+            // 1. Get built-in icon
+            if (item.IsGroup) 
+            { 
+                // Group
+                if (item is PwGroup group)
+                {
+                    if (group.CustomData.Exists(PxDefs.PxCustomDataIconName))
+                    {
+                        string iconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, group.CustomData.Get(PxDefs.PxCustomDataIconName));
+                        item.ImgSource = ImageSource.FromFile(iconPath);
+                        return;
+                    }
+                }
+            }
+            else 
+            { 
+                // Entry
+                if (item is PwEntry entry)
+                {
+                    if (entry.CustomData.Exists(PxDefs.PxCustomDataIconName))
+                    {
+                        string iconPath = System.IO.Path.Combine(PxDataFile.IconFilePath, entry.CustomData.Get(PxDefs.PxCustomDataIconName));
+                        item.ImgSource = ImageSource.FromFile(iconPath);
+                        return;
+                    }
+                }
+            }
+
+            // 2. Get custom icon
             if (item.CustomIconUuid != PwUuid.Zero)
             {
                 PasswordDb db = PasswordDb.Instance;

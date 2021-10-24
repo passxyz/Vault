@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>1.0.3</Version>
+    <Version>1.1.0</Version>
     <Company>PassXYZ</Company>
     <Authors>Roger Ye</Authors>
     <Copyright>Roger Ye</Copyright>
@@ -13,7 +13,21 @@
     <PackageProjectUrl>https://passxyz.github.io/</PackageProjectUrl>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DEBUG;TRACE;PASSXYZ_CLOUD_SERVICE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;PASSXYZ_CLOUD_SERVICE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
+    <None Remove="data\icons.zip" />
+    <None Remove="data\ic_passxyz_cloud.png" />
+    <None Remove="data\ic_passxyz_disabled.png" />
+    <None Remove="data\ic_passxyz_local.png" />
+    <None Remove="data\ic_passxyz_sync.png" />
+    <None Remove="data\ic_passxyz_synced.png" />
     <None Remove="data\pass_d_E8f4pEk.xyz" />
     <None Remove="data\pass_e_JyHzpRxcopt.xyz" />
     <None Remove="data\pass_k_JyHzpRxcopt.k4xyz" />
@@ -24,6 +38,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="data\icons.zip" />
+    <EmbeddedResource Include="data\ic_passxyz_cloud.png" />
+    <EmbeddedResource Include="data\ic_passxyz_disabled.png" />
+    <EmbeddedResource Include="data\ic_passxyz_local.png" />
+    <EmbeddedResource Include="data\ic_passxyz_sync.png" />
+    <EmbeddedResource Include="data\ic_passxyz_synced.png" />
     <EmbeddedResource Include="data\pass_d_E8f4pEk.xyz" />
     <EmbeddedResource Include="data\pass_e_JyHzpRxcopt.xyz" />
     <EmbeddedResource Include="data\pass_k_JyHzpRxcopt.k4xyz" />
@@ -44,6 +64,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\KPCLib\KPCLib\KPCLib.csproj" />
     <ProjectReference Include="..\..\..\KPCLib\PassXYZLib\PassXYZLib.csproj" />
+    <ProjectReference Include="..\..\..\SSH.NET\src\Renci.SshNet\Renci.SshNet.csproj" />
     <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Brand\FontAwesome.Brand.csproj" />
     <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Regular\FontAwesome.Regular.csproj" />
     <ProjectReference Include="..\..\..\Xamarin.Forms.FontAwesome\src\FontAwesome.Solid\FontAwesome.Solid.csproj" />
@@ -63,7 +84,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\CloudConfigPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Views\FieldEditPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\FileInfoPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\SettingsPage.xaml">

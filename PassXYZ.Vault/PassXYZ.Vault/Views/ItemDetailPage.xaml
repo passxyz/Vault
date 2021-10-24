@@ -44,6 +44,8 @@
                                       Text="{x:Static resources:AppResources.action_id_edit}" />
                             <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"
                                       Text="{x:Static resources:AppResources.action_id_delete}" IsDestructive="True" />
+                            <MenuItem Clicked="OnMenuShow" CommandParameter="{Binding .}" 
+                                      Text="{x:Static resources:AppResources.action_id_show}" />
                         </ViewCell.ContextActions>
 
                         <StackLayout Padding="5" Orientation="Horizontal" x:DataType="passxyzlib:Field" >

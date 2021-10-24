@@ -33,6 +33,21 @@ namespace PassXYZ.Vault.Services
         }
     }
 
+    public static class EmbeddedIcons
+    {
+        public static EmbeddedDatabase iconZipFile = new EmbeddedDatabase(Path.Combine(PxDataFile.TmpFilePath, "icons.zip"),
+            "icons", "PassXYZ.Vault.data.icons.zip");
+
+        public static EmbeddedDatabase[] IconFiles = new EmbeddedDatabase[]
+        {
+            new EmbeddedDatabase(Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_cloud.png"), "ic_passxyz_cloud", "PassXYZ.Vault.data.ic_passxyz_cloud.png"),
+            new EmbeddedDatabase(Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_local.png"), "ic_passxyz_local", "PassXYZ.Vault.data.ic_passxyz_local.png"),
+            new EmbeddedDatabase(Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_disabled.png"), "ic_passxyz_disabled", "PassXYZ.Vault.data.ic_passxyz_disabled.png"),
+            new EmbeddedDatabase(Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_sync.png"), "ic_passxyz_sync", "PassXYZ.Vault.data.ic_passxyz_sync.png"),
+            new EmbeddedDatabase(Path.Combine(PxDataFile.IconFilePath, "ic_passxyz_synced.png"), "ic_passxyz_synced", "PassXYZ.Vault.data.ic_passxyz_synced.png")
+        };
+    }
+
     public static class TEST_DB
     {
         public static EmbeddedDatabase[] DataFiles = new EmbeddedDatabase[]
@@ -47,7 +62,7 @@ namespace PassXYZ.Vault.Services
     {
         // private List<Item> items;
         private readonly PasswordDb db = null;
-        private User _user;
+        private PxUser _user;
         private bool _isBusy = false;
 
         public DataStore()
@@ -91,16 +106,22 @@ namespace PassXYZ.Vault.Services
 
         public async Task SaveAsync()
         {
-            if (_isBusy)
+            if (_isBusy || App.IsBusyToLoadUsers)
             {
-                Debug.WriteLine($"DataStore: _isBusy={_isBusy}");
+                Debug.WriteLine($"DataStore: SaveAsync _isBusy={_isBusy}");
                 return;
             }
 
             _isBusy = true;
             KPCLibLogger logger = new KPCLibLogger();
             db.DescriptionChanged = DateTime.UtcNow;
-            await Task.Run(() => { db.Save(logger); _isBusy = false; });
+            await Task.Run(() => {
+                db.Save(logger);
+                _isBusy = false;
+#if PASSXYZ_CLOUD_SERVICE
+            _user.CurrentFileStatus.IsModified = true;
+#endif // PASSXYZ_CLOUD_SERVICE
+            });
             _ = await GetItemsAsync();
         }
 
@@ -198,13 +219,15 @@ namespace PassXYZ.Vault.Services
             return await Task.Run(() => { return db.GetOtpEntryList(); });
         }
 
-        public async Task<bool> LoginAsync(PassXYZLib.User user)
+        public async Task<bool> LoginAsync(PxUser user)
         {
             if (user == null) { Debug.Assert(false); throw new ArgumentNullException("user"); }
             _user = user;
 
             return await Task.Run(() =>
             {
+                if (string.IsNullOrEmpty(user.Password)) { return false; }
+
                 db.Open(user);
                 if (db.IsOpen)
                 {
@@ -339,6 +362,19 @@ namespace PassXYZ.Vault.Services
         public bool CreateKeyFile(string data, string username)
         {
             return db.CreateKeyFile(data, username);
+        }
+
+        public async Task<bool> MergeAsync(string path, PwMergeMethod mm)
+        {
+            return await Task.Run(() =>
+            {
+                bool result = false;
+                if (db.IsOpen)
+                {
+                    result = db.Merge(path, mm);
+                }
+                return result;
+            });
         }
     }
 }

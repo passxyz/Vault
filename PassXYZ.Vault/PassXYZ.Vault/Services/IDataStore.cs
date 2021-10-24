@@ -28,7 +28,7 @@ namespace PassXYZ.Vault.Services
         Task SaveAsync();
         Item RootGroup { get; }
         bool IsOpen { get; }
-        Task<bool> LoginAsync(PassXYZLib.User user);
+        Task<bool> LoginAsync(PxUser user);
         void Logout();
         string GetStoreName();
         DateTime GetStoreModifiedTime();
@@ -41,5 +41,6 @@ namespace PassXYZ.Vault.Services
         Task<bool> DeleteCustomIconAsync(PwUuid uuidIcon);
         ImageSource GetBuiltInImage(PwUuid uuid);
         bool CreateKeyFile(string data, string username);
+        Task<bool> MergeAsync(string path, PwMergeMethod mm);
     }
 }

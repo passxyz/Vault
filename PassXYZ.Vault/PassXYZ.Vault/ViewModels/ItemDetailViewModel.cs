@@ -139,7 +139,7 @@ namespace PassXYZ.Vault.ViewModels
                     string key = field.IsEncoded ? field.EncodedKey : field.Key;
                     if (dataEntry.Strings.Exists(key))
                     {
-                        field.Value = v;
+                        field.EditValue = v;
                         // We cannot set to field.Value, since it will return a masked string for protected data
                         dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
                         Debug.WriteLine($"ItemDetailViewModel: Update field {field.Key}={field.Value}.");
@@ -154,7 +154,7 @@ namespace PassXYZ.Vault.ViewModels
                     {
                         Debug.WriteLine($"ItemDetailViewModel: Cannot update field {field.Key}.");
                     }
-                }, field.Key, field.Value)));
+                }, field.Key, field.EditValue)));
             }
             else
             {
@@ -166,7 +166,7 @@ namespace PassXYZ.Vault.ViewModels
         /// Delete a field.
         /// </summary>
         /// <param name="field">an instance of Field</param>
-        public void Deleted(Field field)
+        public async void DeletedAsync(Field field)
         {
             if (field == null)
             {
@@ -213,6 +213,8 @@ namespace PassXYZ.Vault.ViewModels
                     }
                 }
             }
+
+            await DataStore.UpdateItemAsync(dataEntry);
         }
 
         private async void OnAddField(object obj)
@@ -220,25 +222,35 @@ namespace PassXYZ.Vault.ViewModels
             await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new FieldEditPage(async (string k, string v, bool isProtected) => {
                 Field field;
                 string key = k;
-                if (dataEntry.IsPxEntry())
+
+                if (key == PassXYZLib.PxDefs.PxCustomDataOtpUrl)
                 {
-                    key = dataEntry.EncodeKey(k);
-                    field = new Field(k, v, isProtected, key);
+                    // Add or update OTP URL
+                    dataEntry.UpdateOtpUrl(v);
                 }
-                else
+                else 
                 {
-                    field = new Field(k, v, isProtected);
+                    if (dataEntry.IsPxEntry())
+                    {
+                        key = dataEntry.EncodeKey(k);
+                        field = new Field(k, v, isProtected, key);
+                    }
+                    else
+                    {
+                        field = new Field(k, v, isProtected);
+                    }
+
+                    Fields.Add(field);
+                    dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
+                    if (key.EndsWith(PwDefs.UrlField) && dataEntry.CustomIconUuid.Equals(PwUuid.Zero))
+                    {
+                        // If this is a URL field and there is no custom icon, we can try to add a custom icon by URL.
+                        await dataEntry.SetCustomIconByUrl(v);
+                    }
                 }
 
-                Fields.Add(field);
-                dataEntry.Strings.Set(key, new KeePassLib.Security.ProtectedString(field.IsProtected, v));
-                if (key.EndsWith(PwDefs.UrlField) && dataEntry.CustomIconUuid.Equals(PwUuid.Zero))
-                {
-                    // If this is a URL field and there is no custom icon, we can try to add a custom icon by URL.
-                    await dataEntry.SetCustomIconByUrl(v);
-                }
                 await DataStore.UpdateItemAsync(dataEntry);
-            })));
+            }, dataEntry)));
         }
 
         private async Task LoadPhotoAsync(FileResult photo)

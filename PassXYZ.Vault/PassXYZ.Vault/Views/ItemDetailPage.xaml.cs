@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using Xamarin.Forms;
@@ -15,7 +16,6 @@ namespace PassXYZ.Vault.Views
     public partial class ItemDetailPage : ContentPage
     {
         private ItemDetailViewModel _viewModel;
-        private MenuItem showAction;
         public ItemDetailPage()
         {
             InitializeComponent();
@@ -28,15 +28,22 @@ namespace PassXYZ.Vault.Views
 
             if (mi.CommandParameter is Field field)
             {
-                if (field.IsHide)
+                if (field.IsProtected)
                 {
-                    field.ShowPassword();
-                    showAction.Text = AppResources.action_id_hide;
-                }
-                else
-                {
-                    field.HidePassword();
-                    showAction.Text = AppResources.action_id_show;
+                    if (field.ShowContextAction != null) 
+                    {
+                        MenuItem menuItem = (MenuItem)field.ShowContextAction;
+                        if (field.IsHide)
+                        {
+                            field.ShowPassword();
+                            menuItem.Text = AppResources.action_id_hide;
+                        }
+                        else
+                        {
+                            field.HidePassword();
+                            menuItem.Text = AppResources.action_id_show;
+                        }
+                    }
                 }
             }
         }
@@ -67,7 +74,7 @@ namespace PassXYZ.Vault.Views
 
             if (mi.CommandParameter is Field field)
             {
-                _viewModel.Deleted(field);
+                _viewModel.DeletedAsync(field);
             }
         }
 
@@ -80,18 +87,19 @@ namespace PassXYZ.Vault.Views
             }
 
             ViewCell theViewCell = (ViewCell)sender;
-            var field = theViewCell.BindingContext as Field;
-            if (field != null)
+            if (theViewCell.BindingContext is Field field)
             {
+                // We need to check CONTEXT_ACTIONS_NUM to prevent showAction will be added multiple times.
+                MenuItem menuItem = theViewCell.ContextActions[3];
                 if (field.IsProtected)
                 {
-                    showAction = new MenuItem
-                    {
-                        Text = AppResources.action_id_show
-                    };
-                    showAction.SetBinding(MenuItem.CommandParameterProperty, new Binding("."));
-                    showAction.Clicked += OnMenuShow;
-                    theViewCell.ContextActions.Add(showAction);
+                    // Keep ContextAction of show / hide password
+                    field.ShowContextAction = theViewCell.ContextActions[3];
+                    menuItem.IsEnabled = true;
+                }
+                else 
+                {
+                    menuItem.IsEnabled = false;
                 }
             }
         }

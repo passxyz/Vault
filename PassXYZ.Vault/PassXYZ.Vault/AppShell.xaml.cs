@@ -25,8 +25,12 @@ namespace PassXYZ.Vault
             CurrentAppShell = this;
         }
 
+        /// <summary>
+        /// Logout
+        /// </summary>
         private async void OnMenuItemClicked(object sender, EventArgs e)
         {
+            LoginViewModel.CurrentUser.Logout();
             await Current.GoToAsync("//LoginPage");
         }
 

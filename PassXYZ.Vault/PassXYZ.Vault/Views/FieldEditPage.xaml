@@ -38,12 +38,15 @@
         <ScrollView>
             <StackLayout Padding="5, 5, 5, 5">
                 <!-- Name -->
-                <StackLayout Orientation="Horizontal">
-                    <Entry x:Name="keyField" 
+                <Entry x:Name="keyField" 
                        VerticalOptions="Center" 
                        Placeholder="{x:Static resources:AppResources.ph_id_title}" 
                        HorizontalOptions="FillAndExpand"></Entry>
-                    <CheckBox x:Name="checkBox" />
+                <StackLayout x:Name="optionGroup" Orientation="Horizontal">
+                    <Label Text="{x:Static resources:AppResources.field_id_password}" />
+                    <CheckBox x:Name="pwCheckBox" Color="{StaticResource Primary}" CheckedChanged="OnPasswordCheckBoxChanged" />
+                    <Label Text="OTP"/>
+                    <CheckBox x:Name="otpCheckBox" Color="{StaticResource Primary}"  CheckedChanged="OnOtpCheckBoxChanged" />
                 </StackLayout>
                 <!-- Notes -->
                 <Editor x:Name="valueField" 

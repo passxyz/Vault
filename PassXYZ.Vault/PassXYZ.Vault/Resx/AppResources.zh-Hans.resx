@@ -124,7 +124,7 @@
     <value>PassXYZ.Vault</value>
   </data>
   <data name="LoginErrorMessage" xml:space="preserve">
-    <value>登录失败，请检查用户名和密码。</value>
+    <value>登录失败</value>
   </data>
   <data name="LoginPageTitle" xml:space="preserve">
     <value>登录</value>
@@ -987,5 +987,47 @@ PassXYZ应用帮助存储您的个人数据在本地设备并使用KeePass 加�
   </data>
   <data name="error_message_privacy_notice" xml:space="preserve">
     <value>您需要接受隐私保护声明以使用本应用。</value>
+  </data>
+  <data name="action_id_cloud_config" xml:space="preserve">
+    <value>云设置</value>
+  </data>
+  <data name="error_message_config1" xml:space="preserve">
+    <value>配置信息不正确。</value>
+  </data>
+  <data name="error_message_config2" xml:space="preserve">
+    <value>请填写正确的配置信息。</value>
+  </data>
+  <data name="field_id_hostname" xml:space="preserve">
+    <value>主机名，例如 sftp.passxyz.com</value>
+  </data>
+  <data name="field_id_remote_folder" xml:space="preserve">
+    <value>云端目录，例如 /home/tester/pxvault/</value>
+  </data>
+  <data name="message_id_cloud_config" xml:space="preserve">
+    <value>请填写云存储配置。</value>
+  </data>
+  <data name="title_cloud_config" xml:space="preserve">
+    <value>云存储配置</value>
+  </data>
+  <data name="field_id_port" xml:space="preserve">
+    <value>端口</value>
+  </data>
+  <data name="action_id_recover" xml:space="preserve">
+    <value>恢复</value>
+  </data>
+  <data name="message_id_recover_datafile" xml:space="preserve">
+    <value>**数据文件**可以从备份文件恢复。如果仍有问题，可尝试从云文件恢复。**云文件**可以从数据文件恢复。</value>
+  </data>
+  <data name="field_id_backup_data" xml:space="preserve">
+    <value>备份数据</value>
+  </data>
+  <data name="field_id_local_data" xml:space="preserve">
+    <value>本地数据</value>
+  </data>
+  <data name="field_id_remote_data" xml:space="preserve">
+    <value>云数据</value>
+  </data>
+  <data name="menu_id_data_recovery" xml:space="preserve">
+    <value>数据恢复</value>
   </data>
 </root>
