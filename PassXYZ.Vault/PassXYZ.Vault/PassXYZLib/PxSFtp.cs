@@ -19,6 +19,20 @@ namespace PassXYZLib
         {
         }
 
+        private readonly object _syncIsConnecting = new object();
+        private bool _isConnecting = false;
+        public bool IsConnecting 
+        { 
+            get => _isConnecting;
+            private set
+            {
+                lock (_syncIsConnecting)
+                {
+                    _isConnecting = value;
+                }
+            }
+        }
+
         private bool _isSynchronized = false;
         public bool IsSynchronized => _isSynchronized;
 
@@ -30,9 +44,15 @@ namespace PassXYZLib
 
         private async Task<bool> ConnectAsync(Action<SftpClient> updateAction)
         {
-            if (!PxCloudConfig.IsConfigured || !PxCloudConfig.IsEnabled)
+            if (!PxCloudConfig.IsConfigured || !PxCloudConfig.IsEnabled || PassXYZ.Vault.App.IsSshOperationTimeout)
             {
-                Debug.WriteLine("PxSFtp: Cloud storage is not configured");
+                Debug.WriteLine($"PxSFtp: ConnectAsync, Cloud storage is not configured or connect timeout {PassXYZ.Vault.App.IsSshOperationTimeout}.");
+                return false;
+            }
+
+            if (IsConnecting)
+            {
+                Debug.WriteLine("PxSFtp: ConnectAsync, another connection is running ...");
                 return false;
             }
 
@@ -44,6 +64,7 @@ namespace PassXYZLib
                     try
                     {
                         Debug.WriteLine($"PxSFtp: Trying to connect to {PxCloudConfig.Hostname}.");
+                        IsConnecting = true;
                         sftp.Connect();
 
                         if (sftp.IsConnected)
@@ -55,6 +76,12 @@ namespace PassXYZLib
                         {
                             Debug.WriteLine($"PxSFtp: connection error.");
                         }
+                    }
+                    catch (SshOperationTimeoutException ex)
+                    {
+                        _isConnected = false;
+                        PassXYZ.Vault.App.IsSshOperationTimeout = true;
+                        Debug.WriteLine($"PxSFtp: {ex}");
                     }
                     catch (SshAuthenticationException ex)
                     {
@@ -75,6 +102,10 @@ namespace PassXYZLib
                     {
                         _isConnected = false;
                         Debug.WriteLine($"PxSFtp: {ex}");
+                    }
+                    finally 
+                    {
+                        IsConnecting = false;
                     }
                 }
             });
@@ -203,9 +234,9 @@ namespace PassXYZLib
         {
             IEnumerable<PxUser> pxUsers = null;
 
-            if (!PxCloudConfig.IsConfigured)
+            if (!PxCloudConfig.IsConfigured || !PxCloudConfig.IsEnabled || PassXYZ.Vault.App.IsBusyToLoadUsers)
             {
-                Debug.WriteLine("PxSFtp: Cloud storage is not configured");
+                Debug.WriteLine("PxSFtp: SynchronizeUsersAsync, cloud storage is not configured or IsBusy");
                 return pxUsers;
             }
 
@@ -224,6 +255,9 @@ namespace PassXYZLib
                 IEnumerable<PxUser> localOnyUsers = localUsers.Except(remoteUsers, new PxUserComparer());
                 IEnumerable<PxUser> remoteOnyUsers = remoteUsers.Except(localUsers, new PxUserComparer());
                 IEnumerable<PxUser> syncedUsers = localUsers.Intersect(remoteUsers, new PxUserComparer());
+
+                PassXYZ.Vault.App.IsBusyToLoadUsers = true;
+
                 foreach (PxUser localOnlyUser in localOnyUsers)
                 {
 #if PASSXYZ_CLOUD_SERVICE_UPLOAD_LOCAL_AUTO
@@ -231,9 +265,9 @@ namespace PassXYZLib
                     localOnlyUser.RemoteFileStatus.Length = localOnlyUser.CurrentFileStatus.Length;
                     localOnlyUser.RemoteFileStatus.LastWriteTime = localOnlyUser.CurrentFileStatus.LastWriteTime;
                     localOnlyUser.SyncStatus = PxCloudSyncStatus.PxSynced;
+                    Debug.WriteLine($"PxSFtp: SynchronizeUsersAsync updated local Username={localOnlyUser.Username}, FileName={localOnlyUser.FileName}");
 #else
                     localOnlyUser.SyncStatus = PxCloudSyncStatus.PxLocal;
-                    Debug.WriteLine($"PxSFtp: SynchronizeUsersAsync updated local Username={localOnlyUser.Username}, FileName={localOnlyUser.FileName}");
 #endif // PASSXYZ_CLOUD_SERVICE_UPLOAD_LOCAL_AUTO
                 }
                 foreach (PxUser remoteOnlyUser in remoteOnyUsers)
@@ -243,7 +277,6 @@ namespace PassXYZLib
                     remoteOnlyUser.SyncStatus = PxCloudSyncStatus.PxSynced;
                     Debug.WriteLine($"PxSFtp: SynchronizeUsersAsync downloaded Username={remoteOnlyUser.Username}, FileName={remoteOnlyUser.FileName}");
                 }
-
                 foreach (PxUser syncedUser in syncedUsers)
                 {
                     // Need to sychronize users
@@ -294,7 +327,10 @@ namespace PassXYZLib
                 }
                 pxUsers = localUsers;
                 _isSynchronized = true;
+                PassXYZ.Vault.App.IsBusyToLoadUsers = false;
             });
+
+            Debug.WriteLine("PxSFtp: SynchronizeUsersAsync done");
 
             return pxUsers;
         }

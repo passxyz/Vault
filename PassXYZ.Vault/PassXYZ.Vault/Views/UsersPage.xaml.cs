@@ -111,7 +111,7 @@ namespace PassXYZ.Vault.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            Debug.WriteLine($"LoginPage: OnAppearing => CurrentUser: {LoginViewModel.CurrentUser.Username}");
+            Debug.WriteLine($"UsersPage: OnAppearing {LoginViewModel.CurrentUser.Username}, IsBusy={_viewModel.IsBusy}");
         }
     }
 }

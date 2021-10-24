@@ -251,18 +251,33 @@ namespace PassXYZ.Vault.ViewModels
         {
             IsBusy = false;
 
-#if PASSXYZ_CLOUD_SERVICE
             await SynchronizeUsersAsync();
-#endif // PASSXYZ_CLOUD_SERVICE
         }
 
-#if PASSXYZ_CLOUD_SERVICE
-        public async static Task SynchronizeUsersAsync()
+        public static async Task SynchronizeUsersAsync()
         {
-            if (App.IsBusyToLoadUsers) { return; }
+            IEnumerable<PxUser> pxUsers = null;
 
-            ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
-            IEnumerable<PxUser> pxUsers = await sftp.SynchronizeUsersAsync();
+#if PASSXYZ_CLOUD_SERVICE
+            if (PxCloudConfig.IsConfigured && PxCloudConfig.IsEnabled)
+            {
+                if (PassXYZ.Vault.App.IsSshOperationTimeout)
+                {
+                    // If the last connection is timeout, we load local users first.
+                    pxUsers = await PxUser.LoadLocalUsersAsync();
+                }
+                else 
+                {
+                    ICloudServices<PxUser> sftp = PxCloudConfig.GetCloudServices();
+                    pxUsers = await sftp.SynchronizeUsersAsync();
+                }
+            }
+            else
+#endif // PASSXYZ_CLOUD_SERVICE
+            {
+                pxUsers = await PxUser.LoadLocalUsersAsync();
+            }
+
             if (pxUsers != null)
             {
                 App.IsBusyToLoadUsers = true;
@@ -274,7 +289,6 @@ namespace PassXYZ.Vault.ViewModels
                 App.IsBusyToLoadUsers = false;
             }
         }
-#endif // PASSXYZ_CLOUD_SERVICE
 
         public async void OnLoginClicked()
         {

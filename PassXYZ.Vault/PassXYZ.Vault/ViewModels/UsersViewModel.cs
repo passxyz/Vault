@@ -18,10 +18,15 @@ namespace PassXYZ.Vault.ViewModels
 {
     public class UsersViewModel : INotifyPropertyChanged
     {
+        private bool _isBusy = App.IsBusyToLoadUsers;
         public bool IsBusy
         {
             get => App.IsBusyToLoadUsers;
-            set => _ = SetProperty(ref App.IsBusyToLoadUsers, value);
+            set
+            {
+                _ = SetProperty(ref _isBusy, value);
+                App.IsBusyToLoadUsers = value;
+            }
         }
 
         public ObservableCollection<PxUser> Users { get; }
@@ -57,7 +62,8 @@ namespace PassXYZ.Vault.ViewModels
 
             if (isLoadUsers)
             {
-                ExecuteLoadUsersCommand();
+                // ExecuteLoadUsersCommand();
+                Debug.WriteLine($"UsersViewModel: IsBusy={IsBusy}, isLoadUsers={isLoadUsers}");
             }
 #if PASSXYZ_CLOUD_SERVICE
             else
@@ -67,8 +73,6 @@ namespace PassXYZ.Vault.ViewModels
                 SaveCloudConfigCommand = new Command(OnSaveCloudConfigSaveClicked);
             }
 #endif // PASSXYZ_CLOUD_SERVICE
-
-            Debug.WriteLine($"UsersViewModel: IsBusy={IsBusy}, isLoadUsers={isLoadUsers}");
         }
 
         public void OnUserSelected(User user)
@@ -242,25 +246,9 @@ namespace PassXYZ.Vault.ViewModels
                 return;
             }
 
-            IsBusy = true;
+            await LoginViewModel.SynchronizeUsersAsync();
 
-#if PASSXYZ_CLOUD_SERVICE
-            if (PxCloudConfig.IsConfigured && PxCloudConfig.IsEnabled)
-            {
-                await LoginViewModel.SynchronizeUsersAsync();
-            }
-            else
-#endif // PASSXYZ_CLOUD_SERVICE
-            {
-                Users.Clear();
-                var users = await PxUser.LoadLocalUsersAsync();
-                foreach (PxUser user in users)
-                {
-                    Users.Add(user);
-                }
-            }
-
-            IsBusy = false;
+            Debug.WriteLine("UsersViewModel: ExecuteLoadUsersCommand done");
         }
 
         private async void OnAddUser(object obj)

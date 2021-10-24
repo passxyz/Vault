@@ -106,9 +106,9 @@ namespace PassXYZ.Vault.Services
 
         public async Task SaveAsync()
         {
-            if (_isBusy)
+            if (_isBusy || App.IsBusyToLoadUsers)
             {
-                Debug.WriteLine($"DataStore: _isBusy={_isBusy}");
+                Debug.WriteLine($"DataStore: SaveAsync _isBusy={_isBusy}");
                 return;
             }
 
