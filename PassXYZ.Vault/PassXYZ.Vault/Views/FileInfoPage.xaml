@@ -30,7 +30,7 @@
                                         <Grid Margin="10">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="32" />
-                                                <ColumnDefinition Width="96" />
+                                                <ColumnDefinition Width="128" />
                                                 <ColumnDefinition Width="AUTO" />
                                             </Grid.ColumnDefinitions>
                                             <Grid.RowDefinitions>
@@ -51,13 +51,13 @@
                                                 LineBreakMode="TailTruncation"
                                                 MaxLines="1"
                                                 HorizontalOptions="StartAndExpand"
-                                                FontSize="Small" Grid.Column="2" Grid.Row="0" />
+                                                FontSize="Micro" Grid.Column="2" Grid.Row="0" />
                                             <Label Text="{Binding Length}" 
                                                 Style="{DynamicResource ListItemDetailTextStyle}" 
                                                 LineBreakMode="TailTruncation"
                                                 HorizontalOptions="Start"
                                                 MaxLines="1"
-                                                FontSize="Small" Grid.Column="2"  Grid.Row="1" />
+                                                FontSize="Micro" Grid.Column="2"  Grid.Row="1" />
                                         </Grid>
                                     </StackLayout>
                                 </ViewCell>

@@ -243,9 +243,20 @@ namespace PassXYZLib
             }
         }
 
+        /// <summary>
+        /// Return the Notes field in PwEntry. This is an extension method of PwEntry.
+        /// </summary>
         public static string GetNotes(this PwEntry entry)
         {
             return entry.Strings.ReadSafe(PwDefs.NotesField);
+        }
+
+        /// <summary>
+        /// Return the Notes field in HTML format. This is an extension method of PwEntry.
+        /// </summary>
+        public static string GetNotesInHtml(this PwEntry entry)
+        {
+            return Markdig.Markdown.ToHtml(entry.Strings.ReadSafe(PwDefs.NotesField));
         }
 
         /// <summary>
