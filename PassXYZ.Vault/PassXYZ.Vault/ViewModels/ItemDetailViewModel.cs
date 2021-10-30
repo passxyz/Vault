@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
-using Markdig;
 using KeePassLib.Security;
 using PassXYZ.Vault.Resx;
 using PassXYZ.Vault.Views;
@@ -111,10 +110,11 @@ namespace PassXYZ.Vault.ViewModels
                 dataEntry = (PwEntry)item;
 
                 // Configure the pipeline with all advanced extensions active
-                var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-                Description = Markdig.Markdown.ToHtml(dataEntry.GetNotes(), pipeline);
+                // var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                // Description = Markdig.Markdown.ToHtml(dataEntry.GetNotes(), pipeline);
                 // Description = dataEntry.GetNotes();
-                //ExecuteLoadFieldsCommand();
+                // ExecuteLoadFieldsCommand();
+                Description = dataEntry.GetNotesInHtml();
             }
             catch (Exception ex)
             {

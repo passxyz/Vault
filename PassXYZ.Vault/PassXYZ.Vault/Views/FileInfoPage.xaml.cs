@@ -12,9 +12,8 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-using Markdig;
-
 using PassXYZLib;
+using PassXYZ.Vault.Resx;
 using PassXYZ.Vault.ViewModels;
 
 namespace PassXYZ.Vault.Views
@@ -49,9 +48,10 @@ namespace PassXYZ.Vault.Views
 
         protected override void OnAppearing()
         {
-            var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
-            _footer.Text = Markdig.Markdown.ToHtml(Resx.AppResources.message_id_recover_datafile, pipeline);
-            _title.Text = Resx.AppResources.menu_id_data_recovery + " - " + pxUser.Username;
+            //var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+            _footer.Text = Markdig.Markdown.ToHtml(Resx.AppResources.message_id_recover_datafile);
+            //_footer.Text = AppResources.message_id_recover_datafile;
+            _title.Text = AppResources.menu_id_data_recovery + " - " + pxUser.Username;
             _viewModel.LoadFileAttributes();
         }
     }
