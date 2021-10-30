@@ -62,6 +62,16 @@ namespace PassXYZ.xunit
             Assert.NotNull(entry);
         }
 
+        [Theory]
+        [InlineData("{'Strings':{'Email':{'Value':'','IsProtected':false},'Mobile':{'Value':'','IsProtected':false},'Notes':{'Value':'','IsProtected':false},'Password':{'Value':'','IsProtected':true},'Title':{'Value':'KeePass Entry','IsProtected':false},'URL':{'Value':'','IsProtected':false},'UserName':{'Value':'test1','IsProtected':false}}}")]
+        [InlineData("{'Strings':{'002Email':{'Value':'test@webdev.com','IsProtected':false},'Email':{'Value':'test@webdev.com','IsProtected':false},'Notes':{'Value':'This is a WebDAV entry.','IsProtected':false},'Password':{'Value':'','IsProtected':true},'QQ':{'Value':'123456789','IsProtected':false},'Title':{'Value':'WebDAV','IsProtected':false},'UserName':{'Value':'','IsProtected':false},'WebDAV URL':{'Value':'http://www.bing.com','IsProtected':false},'WeChat':{'Value':'webdev','IsProtected':false}}}")]
+        public void CreatePxEntryFromJsonTest(string str)
+        {
+            PxEntry pxEntry = new PxEntry(str);
+            Assert.NotEmpty(pxEntry.Name);
+            Debug.WriteLine($"{pxEntry}");
+        }
+
         [Fact]
         public void PrintPxEntryTest() 
         {

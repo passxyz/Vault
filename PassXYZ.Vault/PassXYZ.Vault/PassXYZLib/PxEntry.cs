@@ -7,9 +7,10 @@ using System.Diagnostics;
 using System.Text;
 using Xamarin.Forms;
 
-using PureOtp;
+using Newtonsoft.Json;
 
 using KeePassLib;
+using KeePassLib.Collections;
 using KeePassLib.Interfaces;
 using KeePassLib.Security;
 using KeePassLib.Utility;
@@ -183,9 +184,35 @@ namespace PassXYZLib
     public class PxEntry : PwEntry
     {
         public PxEntry(bool bCreateNewUuid, bool bSetTimes) : base(bCreateNewUuid, bSetTimes) { }
+
         public PxEntry() : base() { }
+
+        /// <summary>
+        /// Create PxEntry instance from a JSON string.
+        /// </summary>
+        public PxEntry(string str) : base(true, true)
+        {
+            PxPlainFields fields = JsonConvert.DeserializeObject<PxPlainFields>(str);
+            foreach (var itemInDict in fields.Strings)
+            {
+                PxFieldValue data = itemInDict.Value;
+                Strings.Set(itemInDict.Key, new ProtectedString(data.IsProtected, data.Value));
+            }
+        }
+
+        /// <summary>
+        /// Convert PxEntry instance to a JSON string.
+        /// </summary>
+        public override string ToString()
+        {
+            var fields = new PxPlainFields(this);
+            return fields.ToString();
+        }
     }
 
+    /// <summary>
+    /// A class defined extension methods for PwEntry.
+    /// </summary>
     public static class PwEntryEx
     {
         public static bool IsNotes(this PwEntry entry)
@@ -338,6 +365,7 @@ namespace PassXYZLib
             }
             return string.Empty;
         }
+
     }
 
     public static class FieldIcons
@@ -610,4 +638,54 @@ namespace PassXYZLib
         }
     }
 
+    #region PwEntryJsonSerializer
+    public class PxFieldValue
+    {
+        public string Value = string.Empty;
+        public bool IsProtected = false;
+
+        public PxFieldValue() 
+        {
+            Value = string.Empty;
+            IsProtected = false;
+        }
+
+        public PxFieldValue(string newValue, bool isProtected)
+        {
+            Value = newValue;
+            IsProtected = isProtected;
+        }
+    }
+
+    public class PxPlainFields
+    {
+        public SortedDictionary<string, PxFieldValue> Strings = new SortedDictionary<string, PxFieldValue>();
+
+        public PxPlainFields() 
+        {
+        }
+
+        public PxPlainFields(PwEntry entry)
+        {
+            if (entry == null)
+            {
+                Debug.WriteLine("PxPlainFields: entry is null, error!");
+                return;
+            }
+
+            var fields = entry.GetFields();
+            Strings.Add(PwDefs.TitleField, new PxFieldValue(entry.Name, false));
+            foreach (var field in fields)
+            {
+                Strings.Add(field.Key, new PxFieldValue(field.EditValue, field.IsProtected));
+            }
+            Strings.Add(PwDefs.NotesField, new PxFieldValue(entry.Notes, false));
+        }
+
+        public override string ToString()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+    }
+    #endregion
 }
