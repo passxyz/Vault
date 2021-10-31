@@ -63,12 +63,20 @@ namespace PassXYZ.xunit
         }
 
         [Theory]
-        [InlineData("{'Strings':{'Email':{'Value':'','IsProtected':false},'Mobile':{'Value':'','IsProtected':false},'Notes':{'Value':'','IsProtected':false},'Password':{'Value':'','IsProtected':true},'Title':{'Value':'KeePass Entry','IsProtected':false},'URL':{'Value':'','IsProtected':false},'UserName':{'Value':'test1','IsProtected':false}}}")]
-        [InlineData("{'Strings':{'002Email':{'Value':'test@webdev.com','IsProtected':false},'Email':{'Value':'test@webdev.com','IsProtected':false},'Notes':{'Value':'This is a WebDAV entry.','IsProtected':false},'Password':{'Value':'','IsProtected':true},'QQ':{'Value':'123456789','IsProtected':false},'Title':{'Value':'WebDAV','IsProtected':false},'UserName':{'Value':'','IsProtected':false},'WebDAV URL':{'Value':'http://www.bing.com','IsProtected':false},'WeChat':{'Value':'webdev','IsProtected':false}}}")]
+        [InlineData("pxdat://{'IsPxEntry':true,'Strings':{'000UserName':{'Value':'','IsProtected':false},'001Password':{'Value':'','IsProtected':true},'002Email':{'Value':'test@webdev.com','IsProtected':false},'003WebDAV URL':{'Value':'http://www.bing.com','IsProtected':false},'004QQ':{'Value':'123456789','IsProtected':false},'005WeChat':{'Value':'webdev','IsProtected':false},'006002Email':{'Value':'test@webdev.com','IsProtected':false},'Notes':{'Value':'This is a WebDAV entry.','IsProtected':false},'Title':{'Value':'WebDAV','IsProtected':false}}}")]
         public void CreatePxEntryFromJsonTest(string str)
         {
             PxEntry pxEntry = new PxEntry(str);
-            Assert.NotEmpty(pxEntry.Name);
+            Assert.True(pxEntry.IsPxEntry());
+            Debug.WriteLine($"{pxEntry}");
+        }
+
+        [Theory]
+        [InlineData("pxdat://{'IsPxEntry':false,'Strings':{'Email':{'Value':'','IsProtected':false},'Mobile':{'Value':'','IsProtected':false},'Notes':{'Value':'','IsProtected':false},'Password':{'Value':'','IsProtected':true},'Title':{'Value':'KeePass Entry','IsProtected':false},'URL':{'Value':'','IsProtected':false},'UserName':{'Value':'test1','IsProtected':false}}}")]
+        public void CreatePwEntryFromJsonTest(string str)
+        {
+            PxEntry pxEntry = new PxEntry(str);
+            Assert.False(pxEntry.IsPxEntry());
             Debug.WriteLine($"{pxEntry}");
         }
 
@@ -80,6 +88,9 @@ namespace PassXYZ.xunit
             {
                 if (entry.IsPxEntry())
                 {
+                    var plainFields = new PxPlainFields(entry);
+                    Debug.WriteLine($"{plainFields}");
+
                     Debug.WriteLine($"Title: {entry.Name}");
                     Debug.WriteLine($"{entry.EncodeKey("TestKey")}");
                     var fields = entry.GetFields();
@@ -103,6 +114,8 @@ namespace PassXYZ.xunit
                 {
                     if (!entry.IsPxEntry())
                     {
+                        var plainFields = new PxPlainFields(entry);
+                        Debug.WriteLine($"{plainFields}");
                         Debug.WriteLine($"Title: {entry.Name}");
                         var fields = entry.GetFields();
                         foreach (var field in fields) { Debug.WriteLine($"{field.Key}={field.Value}"); }

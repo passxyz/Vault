@@ -192,11 +192,23 @@ namespace PassXYZLib
         /// </summary>
         public PxEntry(string str) : base(true, true)
         {
-            PxPlainFields fields = JsonConvert.DeserializeObject<PxPlainFields>(str);
-            foreach (var itemInDict in fields.Strings)
+            if (str.StartsWith(PxDefs.PxJsonData))
             {
-                PxFieldValue data = itemInDict.Value;
-                Strings.Set(itemInDict.Key, new ProtectedString(data.IsProtected, data.Value));
+                PxPlainFields fields = JsonConvert.DeserializeObject<PxPlainFields>(str.Substring(PxDefs.PxJsonData.Length));
+                foreach (var itemInDict in fields.Strings)
+                {
+                    PxFieldValue data = itemInDict.Value;
+                    Strings.Set(itemInDict.Key, new ProtectedString(data.IsProtected, data.Value));
+                }
+
+                if (fields.IsPxEntry)
+                {
+                    CustomData.Set(PxDefs.PxCustomDataItemSubType, ItemSubType.PxEntry.ToString());
+                }
+                else
+                {
+                    CustomData.Set(PxDefs.PxCustomDataItemSubType, ItemSubType.Entry.ToString());
+                }
             }
         }
 
@@ -239,6 +251,11 @@ namespace PassXYZLib
         public static bool IsPxEntry(this PwEntry entry)
         {
             return PxDefs.IsPxEntry(entry);
+        }
+
+        public static void SetPxEntry(this PwEntry entry)
+        {            
+            entry.CustomData.Set(PxDefs.PxCustomDataItemSubType, ItemSubType.PxEntry.ToString());
         }
 
         public static string EncodeKey(this PwEntry entry, string key)
@@ -287,15 +304,15 @@ namespace PassXYZLib
         }
 
         /// <summary>
-        /// This is an extension method of PwEntry.
         /// Convert ProtectedStringDictionary into a list of fields. TitleField and NotesField
         /// are not included in the list.
         /// TitleField will be used to display the title in UI and NotesField will be displayed at the
         /// bottom of a page with Markdown support.
         /// </summary>
         /// <param name="entry">an instance of PwEntry</param>
+        /// <param name="encodeKey">true - decode key, false - does not decode key</param>
 		/// <returns>A list of fields</returns>
-        public static List<Field> GetFields(this PwEntry entry)
+        public static List<Field> GetFields(this PwEntry entry, bool encodeKey = false)
         {
             List<Field> fields = new List<Field>();
             bool isPxEntry = PxDefs.IsPxEntry(entry);
@@ -307,7 +324,14 @@ namespace PassXYZLib
                 {
                     if (!pstr.Key.Equals(PwDefs.TitleField) && !pstr.Key.Equals(PwDefs.NotesField))
                     {
-                        fields.Add(new Field(PxDefs.DecodeKey(pstr.Key), entry.Strings.ReadSafe(pstr.Key), entry.Strings.GetSafe(pstr.Key).IsProtected, pstr.Key));
+                        if (encodeKey)
+                        {
+                            fields.Add(new Field(pstr.Key, entry.Strings.ReadSafe(pstr.Key), entry.Strings.GetSafe(pstr.Key).IsProtected));
+                        }
+                        else
+                        {
+                            fields.Add(new Field(PxDefs.DecodeKey(pstr.Key), entry.Strings.ReadSafe(pstr.Key), entry.Strings.GetSafe(pstr.Key).IsProtected, pstr.Key));
+                        }
                     }
                 }
             }
@@ -659,21 +683,25 @@ namespace PassXYZLib
 
     public class PxPlainFields
     {
+        public bool IsPxEntry = false;
         public SortedDictionary<string, PxFieldValue> Strings = new SortedDictionary<string, PxFieldValue>();
 
-        public PxPlainFields() 
+        public PxPlainFields()
         {
+            IsPxEntry = false;
         }
 
         public PxPlainFields(PwEntry entry)
         {
+            IsPxEntry = entry.IsPxEntry();
+
             if (entry == null)
             {
                 Debug.WriteLine("PxPlainFields: entry is null, error!");
                 return;
             }
 
-            var fields = entry.GetFields();
+            var fields = entry.GetFields(IsPxEntry);
             Strings.Add(PwDefs.TitleField, new PxFieldValue(entry.Name, false));
             foreach (var field in fields)
             {
@@ -684,7 +712,7 @@ namespace PassXYZLib
 
         public override string ToString()
         {
-            return JsonConvert.SerializeObject(this);
+            return PxDefs.PxJsonData + JsonConvert.SerializeObject(this);
         }
     }
     #endregion
