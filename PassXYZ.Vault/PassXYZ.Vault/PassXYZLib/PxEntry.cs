@@ -190,11 +190,12 @@ namespace PassXYZLib
         /// <summary>
         /// Create PxEntry instance from a JSON string.
         /// </summary>
-        public PxEntry(string str) : base(true, true)
+        public PxEntry(string str, string password = null) : base(true, true)
         {
-            if (str.StartsWith(PxDefs.PxJsonData))
+            PxPlainFields fields = new PxPlainFields(str, password);
+
+            if (fields.Strings.Count > 0)
             {
-                PxPlainFields fields = JsonConvert.DeserializeObject<PxPlainFields>(str.Substring(PxDefs.PxJsonData.Length));
                 foreach (var itemInDict in fields.Strings)
                 {
                     PxFieldValue data = itemInDict.Value;
@@ -691,6 +692,42 @@ namespace PassXYZLib
             IsPxEntry = false;
         }
 
+        /// <summary>
+        /// Create an instance of PxPlainFields from a JSON string
+        /// </summary>
+        public PxPlainFields(string str, string password = null)
+        {
+            string decryptedMessage;
+            if (str.StartsWith(PxDefs.PxJsonTemplate))
+            {
+                decryptedMessage = str.Substring(PxDefs.PxJsonTemplate.Length);
+            }
+            else if (str.StartsWith(PxDefs.PxJsonData) && !string.IsNullOrEmpty(password))
+            {
+                string encryptedMessage = str.Substring(PxDefs.PxJsonData.Length);
+                decryptedMessage = PxEncryption.DecryptWithPassword(encryptedMessage, password);
+            }
+            else
+            {
+                Debug.WriteLine("PxPlainFields: wrong JSON string, error!");
+                return;
+            }
+
+            try
+            {
+                PxPlainFields fields = JsonConvert.DeserializeObject<PxPlainFields>(decryptedMessage);
+                IsPxEntry = fields.IsPxEntry;
+                Strings = fields.Strings;
+            }
+            catch (JsonReaderException ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
+        }
+
+        /// <summary>
+        /// Create an instance of PxPlainFields from a PwEntry
+        /// </summary>
         public PxPlainFields(PwEntry entry)
         {
             IsPxEntry = entry.IsPxEntry();
@@ -710,9 +747,37 @@ namespace PassXYZLib
             Strings.Add(PwDefs.NotesField, new PxFieldValue(entry.Notes, false));
         }
 
+        private PxFieldValue FindPasswordField(SortedDictionary<string, PxFieldValue> fields)
+        {
+            foreach (var field in fields)
+            {
+                if (field.Key.Equals(PxDefs.PasswordField) || field.Key.EndsWith("Password"))
+                {
+                    return field.Value;
+                }
+            }
+
+            return null;
+        }
+
         public override string ToString()
         {
-            return PxDefs.PxJsonData + JsonConvert.SerializeObject(this);
+            PxFieldValue fieldV = FindPasswordField(Strings);
+
+            if (fieldV != null && !string.IsNullOrEmpty(fieldV.Value))
+            {
+                return PxDefs.PxJsonData + PxEncryption.EncryptWithPassword(JsonConvert.SerializeObject(this), fieldV.Value);
+            }
+
+            //if (Strings.TryGetValue(PxDefs.PasswordField, out PxFieldValue fieldV))
+            //{
+            //    if (fieldV.IsProtected && !string.IsNullOrEmpty(fieldV.Value))
+            //    {
+            //        return PxDefs.PxJsonData + PxEncryption.EncryptWithPassword(JsonConvert.SerializeObject(this), fieldV.Value);
+            //    }
+            //}
+
+            return PxDefs.PxJsonTemplate + JsonConvert.SerializeObject(this);
         }
     }
     #endregion
