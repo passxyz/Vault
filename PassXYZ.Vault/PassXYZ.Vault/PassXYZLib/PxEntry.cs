@@ -706,6 +706,11 @@ namespace PassXYZLib
             {
                 string encryptedMessage = str.Substring(PxDefs.PxJsonData.Length);
                 decryptedMessage = PxEncryption.DecryptWithPassword(encryptedMessage, password);
+                if (string.IsNullOrEmpty(decryptedMessage))
+                {
+                    Debug.WriteLine("PxPlainFields: cannot decrypt message, error!");
+                    return;
+                }
             }
             else
             {

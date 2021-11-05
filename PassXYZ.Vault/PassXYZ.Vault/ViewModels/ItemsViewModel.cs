@@ -240,8 +240,54 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        private async void HandleJsonData(string data)
+        {
+            PxEntry pxEntry = null;
+
+            if (data.StartsWith(PxDefs.PxJsonTemplate))
+            {
+                pxEntry = new PxEntry(data);
+                if (pxEntry != null && pxEntry.Strings.UCount != 0)
+                {
+                    await DataStore.AddItemAsync(pxEntry);
+                    IsBusy = true;
+                }
+            }
+            else if (data.StartsWith(PxDefs.PxJsonData))
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    string passwd = await Shell.Current.DisplayPromptAsync("", AppResources.ph_id_password, keyboard: Keyboard.Default);
+                    if (!string.IsNullOrEmpty(passwd))
+                    {
+                        await Task.Run(async () => {
+                            pxEntry = new PxEntry(data, passwd);
+                            if (pxEntry != null && pxEntry.Strings.UCount != 0)
+                            {
+                                await DataStore.AddItemAsync(pxEntry);
+                                IsBusy = true;
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Debug.WriteLine("HandleJsonData: password is empty, error!");
+                        return;
+                    }
+                });
+            }
+            else
+            {
+                Debug.WriteLine("HandleJsonData: wrong JSON string, error!");
+                return;
+            }
+
+        }
+
         private void ScanQRCode()
         {
+            if (IsBusy) { return; }
+
             var scanPage = new ZXingScannerPage();
             Device.BeginInvokeOnMainThread(async () =>
             {
@@ -261,14 +307,12 @@ namespace PassXYZ.Vault.ViewModels
 
                 if (result.Text != null)
                 {
-                    Debug.WriteLine($"ItemsViewModel: IsScanning={scanPage.IsScanning}, {result.Text}");
-                    PxEntry pxEntry = new PxEntry(result.Text);
-                    if (pxEntry != null)
-                    {
-                        await DataStore.AddItemAsync(pxEntry);
-                    }
-                }
+                    // Debug.WriteLine($"ItemsViewModel: IsScanning={scanPage.IsScanning}, {result.Text}");
+                    await Task.Run(() => {
+                        HandleJsonData(result.Text);
+                    });
 
+                }
             };
 
         }
