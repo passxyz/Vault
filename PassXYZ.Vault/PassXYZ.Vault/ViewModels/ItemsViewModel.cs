@@ -240,18 +240,36 @@ namespace PassXYZ.Vault.ViewModels
             }
         }
 
+        private async void CreatePxEntryfromJsonData(string data, string passwd = null)
+        {
+            PxEntry pxEntry = new PxEntry(data, passwd);
+            if (pxEntry != null && pxEntry.Strings.UCount != 0)
+            {
+                await DataStore.AddItemAsync(pxEntry);
+                IsBusy = true;
+            }
+        }
+
         private async void HandleJsonData(string data)
         {
-            PxEntry pxEntry = null;
-
             if (data.StartsWith(PxDefs.PxJsonTemplate))
             {
-                pxEntry = new PxEntry(data);
-                if (pxEntry != null && pxEntry.Strings.UCount != 0)
+                PxPlainFields plainFields = new PxPlainFields(data);
+
+                if (plainFields.IsGroup)
                 {
-                    await DataStore.AddItemAsync(pxEntry);
-                    IsBusy = true;
+                    PxGroup pxGroup = new PxGroup(data);
+                    if (pxGroup != null)
+                    {
+                        await DataStore.AddItemAsync(pxGroup);
+                        IsBusy = true;
+                    }
                 }
+                else
+                {
+                    CreatePxEntryfromJsonData(data);
+                }
+
             }
             else if (data.StartsWith(PxDefs.PxJsonData))
             {
@@ -260,13 +278,8 @@ namespace PassXYZ.Vault.ViewModels
                     string passwd = await Shell.Current.DisplayPromptAsync("", AppResources.ph_id_password, keyboard: Keyboard.Default);
                     if (!string.IsNullOrEmpty(passwd))
                     {
-                        await Task.Run(async () => {
-                            pxEntry = new PxEntry(data, passwd);
-                            if (pxEntry != null && pxEntry.Strings.UCount != 0)
-                            {
-                                await DataStore.AddItemAsync(pxEntry);
-                                IsBusy = true;
-                            }
+                        await Task.Run(() => {
+                            CreatePxEntryfromJsonData(data, passwd);
                         });
                     }
                     else

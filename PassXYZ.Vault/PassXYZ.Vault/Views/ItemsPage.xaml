@@ -40,6 +40,8 @@
                         <ViewCell.ContextActions>
                             <MenuItem Clicked="OnMenuEdit" CommandParameter="{Binding .}" 
                                       Text="{x:Static resources:AppResources.action_id_edit}" />
+                            <MenuItem Clicked="OnMenuShare" CommandParameter="{Binding .}" 
+                                      Text="{x:Static resources:AppResources.action_id_share}" />
                             <MenuItem Clicked="OnMenuChangeIconAsync" CommandParameter="{Binding .}"
                                       Text="{x:Static resources:AppResources.action_id_change_icon}" />
                             <MenuItem Clicked="OnMenuDeleteAsync" CommandParameter="{Binding .}"

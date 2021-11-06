@@ -188,8 +188,10 @@ namespace PassXYZLib
         public PxEntry() : base() { }
 
         /// <summary>
-        /// Create PxEntry instance from a JSON string.
+        /// Create a PxEntry instance from a JSON string.
         /// </summary>
+        /// <param name="str">JSON data</param>
+        /// <param name="password">Password of PwEntry</param>
         public PxEntry(string str, string password = null) : base(true, true)
         {
             PxPlainFields fields = new PxPlainFields(str, password);
@@ -202,13 +204,9 @@ namespace PassXYZLib
                     Strings.Set(itemInDict.Key, new ProtectedString(data.IsProtected, data.Value));
                 }
 
-                if (fields.IsPxEntry)
+                if (!string.IsNullOrEmpty(fields.CustomDataType))
                 {
-                    CustomData.Set(PxDefs.PxCustomDataItemSubType, ItemSubType.PxEntry.ToString());
-                }
-                else
-                {
-                    CustomData.Set(PxDefs.PxCustomDataItemSubType, ItemSubType.Entry.ToString());
+                    CustomData.Set(PxDefs.PxCustomDataItemSubType, fields.CustomDataType);
                 }
             }
         }
@@ -378,7 +376,17 @@ namespace PassXYZLib
 
             return fields;
         }
-    
+
+        /// <summary>
+        /// Create an instance of PxPlainFields from PwEntry
+        /// </summary>
+        /// <param name="entry">an instance of PwEntry</param>
+		/// <returns>an instance of PxPlainFields</returns>
+        public static PxPlainFields GetPlainFields(this PwEntry entry)
+        {
+            return new PxPlainFields(entry);
+        }
+
         public static string GetUrlField(this PwEntry entry)
         {
             foreach (KeyValuePair<string, ProtectedString> pstr in entry.Strings)
@@ -669,7 +677,7 @@ namespace PassXYZLib
         public string Value = string.Empty;
         public bool IsProtected = false;
 
-        public PxFieldValue() 
+        public PxFieldValue()
         {
             Value = string.Empty;
             IsProtected = false;
@@ -685,11 +693,14 @@ namespace PassXYZLib
     public class PxPlainFields
     {
         public bool IsPxEntry = false;
+        public bool IsGroup = false;
+        public string CustomDataType = string.Empty;
         public SortedDictionary<string, PxFieldValue> Strings = new SortedDictionary<string, PxFieldValue>();
 
         public PxPlainFields()
         {
             IsPxEntry = false;
+            IsGroup = false;
         }
 
         /// <summary>
@@ -722,7 +733,9 @@ namespace PassXYZLib
             {
                 PxPlainFields fields = JsonConvert.DeserializeObject<PxPlainFields>(decryptedMessage);
                 IsPxEntry = fields.IsPxEntry;
+                IsGroup = fields.IsGroup;
                 Strings = fields.Strings;
+                CustomDataType = fields.CustomDataType;
             }
             catch (JsonReaderException ex)
             {
@@ -731,17 +744,32 @@ namespace PassXYZLib
         }
 
         /// <summary>
+        /// Create an instance of PxPlainFields from a PwGroup
+        /// </summary>
+        public PxPlainFields(PwGroup group)
+        {
+            if (group == null)
+            {
+                Debug.Assert(false); throw new ArgumentNullException("group");
+            }
+
+            IsGroup = true;
+
+            Strings.Add(PwDefs.TitleField, new PxFieldValue(group.Name, false));
+            Strings.Add(PwDefs.NotesField, new PxFieldValue(group.Notes, false));
+        }
+
+        /// <summary>
         /// Create an instance of PxPlainFields from a PwEntry
         /// </summary>
         public PxPlainFields(PwEntry entry)
         {
-            IsPxEntry = entry.IsPxEntry();
-
             if (entry == null)
             {
-                Debug.WriteLine("PxPlainFields: entry is null, error!");
-                return;
+                Debug.Assert(false); throw new ArgumentNullException("entry");
             }
+
+            IsPxEntry = entry.IsPxEntry();
 
             var fields = entry.GetFields(IsPxEntry);
             Strings.Add(PwDefs.TitleField, new PxFieldValue(entry.Name, false));
@@ -750,6 +778,7 @@ namespace PassXYZLib
                 Strings.Add(field.Key, new PxFieldValue(field.EditValue, field.IsProtected));
             }
             Strings.Add(PwDefs.NotesField, new PxFieldValue(entry.Notes, false));
+            CustomDataType = entry.CustomData.Get(PxDefs.PxCustomDataItemSubType);
         }
 
         private PxFieldValue FindPasswordField(SortedDictionary<string, PxFieldValue> fields)
