@@ -33,6 +33,7 @@ namespace PassXYZ.Vault.Views
             {
                 isSyncing.IsRunning = true;
                 PxCloudConfig.IsEnabled = true;
+                _viewModel.SaveCloudConfigData();
                 messageLabel.Text = AppResources.user_id_syncing;
                 await LoginViewModel.SynchronizeUsersAsync();
                 isSyncing.IsRunning = false;
