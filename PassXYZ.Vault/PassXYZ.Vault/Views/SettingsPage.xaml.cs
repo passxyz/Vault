@@ -113,6 +113,11 @@ namespace PassXYZ.Vault.Views
             timerField.Text = AppResources.settings_timer_title + " " + PxUser.AppTimeout.ToString() + " " + AppResources.settings_timer_unit_seconds;
         }
 
+        private async void OnCloudConfigAsync(object sender, System.EventArgs e)
+        {
+            await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new CloudConfigPage()));
+        }
+
         private async void OnSecuritySettingsTappedAsync(object sender, System.EventArgs e)
         {
             string msg = _viewModel.GetDeviceLockData();

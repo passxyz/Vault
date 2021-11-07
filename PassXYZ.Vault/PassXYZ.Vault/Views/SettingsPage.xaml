@@ -14,11 +14,16 @@
                     <!-- Timer -->
                     <ViewCell Tapped="OnTimerTappedAsync">
                         <StackLayout Orientation="Horizontal" Padding="10">
-                            <Image Margin="10">
-                                <Image.Source>
-                                    <iconsS:IconSource Icon="Clock" />
-                                </Image.Source>
-                            </Image>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0">
+                                    <Image.Source>
+                                        <iconsS:IconSource Icon="Clock" />
+                                    </Image.Source>
+                                </Image>
+                            </Grid>
                             <StackLayout Margin="0, 10, 0, 10">
                                 <Label x:Name="timerField" Text="{x:Static resources:AppResources.settings_timer_title}" 
                                        FontAttributes="Bold"  WidthRequest="290" />
@@ -27,14 +32,40 @@
                         </StackLayout>
                     </ViewCell>
 
+                    <!-- Cloud configuration -->
+                    <ViewCell Tapped="OnCloudConfigAsync">
+                        <StackLayout Orientation="Horizontal" Padding="10">
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0">
+                                    <Image.Source>
+                                        <iconsS:IconSource Icon="Cogs" />
+                                    </Image.Source>
+                                </Image>
+                            </Grid>
+                            <StackLayout Margin="0, 10, 0, 10">
+                                <Label x:Name="cloudConfigField" Text="{x:Static resources:AppResources.action_id_cloud_config}"
+                                       FontAttributes="Bold"  WidthRequest="290" />
+                                <Label Text="{x:Static resources:AppResources.error_message_config2}" />
+                            </StackLayout>
+                        </StackLayout>
+                    </ViewCell>
+
                     <!-- Fingerprint setup -->
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" Padding="10">
-                            <Image Margin="10">
-                                <Image.Source>
-                                    <iconsS:IconSource Icon="Fingerprint" />
-                                </Image.Source>
-                            </Image>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0">
+                                    <Image.Source>
+                                        <iconsS:IconSource Icon="Fingerprint" />
+                                    </Image.Source>
+                                </Image>
+                            </Grid>
                             <StackLayout Margin="0, 10, 0, 10">
                                 <Label Text="{x:Static resources:AppResources.settings_fingerprint_title}" 
                                        FontAttributes="Bold"  WidthRequest="290" />
@@ -51,11 +82,16 @@
                     <!-- Security Settings -->
                     <ViewCell Tapped="OnSecuritySettingsTappedAsync" IsEnabled="{Binding IsDeviceLockEnabled}">
                         <StackLayout Orientation="Horizontal" Padding="10" IsVisible="{Binding IsDeviceLockEnabled}">
-                            <Image Margin="10">
-                                <Image.Source>
-                                    <iconsS:IconSource Icon="ShieldAlt" />
-                                </Image.Source>
-                            </Image>
+                            <Grid >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0">
+                                    <Image.Source>
+                                        <iconsS:IconSource Icon="ShieldAlt" />
+                                    </Image.Source>
+                                </Image>
+                            </Grid>
                             <StackLayout Margin="0, 10, 0, 10">
                                 <Label Text="{x:Static resources:AppResources.settings_keyFileField_Key}" 
                                        FontAttributes="Bold"  WidthRequest="290" />
