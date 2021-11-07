@@ -9,6 +9,8 @@ using Xamarin.Forms;
 
 using Newtonsoft.Json;
 
+using Markdig;
+
 using KeePassLib;
 using KeePassLib.Collections;
 using KeePassLib.Interfaces;
@@ -299,7 +301,15 @@ namespace PassXYZLib
         /// </summary>
         public static string GetNotesInHtml(this PwEntry entry)
         {
-            return Markdig.Markdown.ToHtml(entry.Strings.ReadSafe(PwDefs.NotesField));
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                return Markdig.Markdown.ToHtml(entry.Strings.ReadSafe(PwDefs.NotesField));
+            }
+            else
+            {
+                var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                return Markdig.Markdown.ToHtml(entry.Strings.ReadSafe(PwDefs.NotesField), pipeline);
+            }
         }
 
         /// <summary>

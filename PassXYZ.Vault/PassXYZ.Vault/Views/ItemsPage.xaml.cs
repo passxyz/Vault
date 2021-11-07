@@ -37,6 +37,11 @@ namespace PassXYZ.Vault.Views
             barcode.BarcodeFormat = ZXing.BarcodeFormat.QR_CODE;
             barcode.BarcodeOptions.Width = 300;
             barcode.BarcodeOptions.Height = 300;
+            var isHintsExist = barcode.BarcodeOptions.Hints.ContainsKey(ZXing.EncodeHintType.CHARACTER_SET);
+            if (!isHintsExist)
+            {
+                barcode.BarcodeOptions.Hints.Add(ZXing.EncodeHintType.CHARACTER_SET, "UTF-8");
+            }
             barcode.BarcodeValue = msg;
 
             var qrcodeTitle = new Label()
@@ -51,7 +56,8 @@ namespace PassXYZ.Vault.Views
             {
                 Text = AppResources.alert_id_ok,
                 VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.Center
+                HorizontalOptions = LayoutOptions.Center,
+                Padding = new Thickness(20, 10, 20, 10)
             };
             button.Clicked += async (sender1, e1) => { await Navigation.PopModalAsync(); };
 

@@ -3,8 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:resources="clr-namespace:PassXYZ.Vault.Resx"
              xmlns:viewmodels="clr-namespace:PassXYZ.Vault.ViewModels"
-             Shell.NavBarIsVisible="False"
+             x:DataType="viewmodels:UsersViewModel"
              x:Class="PassXYZ.Vault.Views.CloudConfigPage">
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_scan}" Command="{Binding ScanQrCodeCommand}" Icon="barcode_scan.png"/>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_save}" Command="{Binding SaveCloudConfigCommand}" Icon="icon_save.png"/>
+        <ToolbarItem Text="{x:Static resources:AppResources.action_id_cancel}" Command="{Binding CancelCommand}" Icon="icon_cancel.png"/>
+    </ContentPage.ToolbarItems>
+    
     <ContentPage.Content>
         <StackLayout Padding="10,20">
             <StackLayout Padding="20,10" >
@@ -55,25 +62,15 @@
 
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Button Text="{x:Static resources:AppResources.action_id_save}"
-                                TextColor="White"  
-                                BackgroundColor="{StaticResource Primary}"
-                                HorizontalOptions="Fill" 
-                                Grid.Column="0"
-                                IsEnabled="{Binding CloudConfigData.IsConfigured, Mode=TwoWay}"
-                                Command="{Binding SaveCloudConfigCommand}" />
-                            <Button Text="{x:Static resources:AppResources.action_id_cancel}"
-                                TextColor="White"  
-                                BackgroundColor="{StaticResource Primary}" 
-                                HorizontalOptions="Fill" 
-                                Grid.Column="1" 
-                                Command="{Binding CancelCommand}" />
+                            <!-- Row 1 (ActivityIndicator ) -->
+                            <ActivityIndicator x:Name="isSyncing" Grid.Column="1"  />
+
                         </Grid>
-                        
+
                         <StackLayout Orientation="Horizontal">
                             <Label x:Name="cloudConfigStatus"
                                    Text="{x:Static resources:AppResources.title_cloud_config}" 
@@ -81,12 +78,14 @@
                                    HorizontalOptions="Center"
                                    VerticalOptions="Center" />
                             <Switch x:Name="cloudConfigSwitcher" HorizontalOptions="Center"
+                                    Toggled="OnSwitchToggled"
                                     IsToggled="{Binding CloudConfigData.IsEnabled}" />
                         </StackLayout>
-                        
+
                         <Label x:Name="messageLabel" Text="{Binding CloudConfigData.ConfigMessage, Mode=TwoWay}"/>
                     </StackLayout>
                 </Frame>
             </StackLayout>
-        </StackLayout>    </ContentPage.Content>
+        </StackLayout>
+    </ContentPage.Content>
 </ContentPage>

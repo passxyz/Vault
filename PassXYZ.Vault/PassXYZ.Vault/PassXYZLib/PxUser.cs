@@ -289,6 +289,12 @@ namespace PassXYZLib
         /// </summary>
         public static async Task<IEnumerable<PxUser>> LoadLocalUsersAsync()
         {
+            if (PassXYZ.Vault.App.IsBusyToLoadUsers)
+            {
+                Debug.WriteLine("PxUser: LoadLocalUsersAsync IsBusy");
+                return null;
+            }
+
             List<PxUser> localUsers = new List<PxUser>();
 
             return await Task.Run(() => {
