@@ -35,7 +35,6 @@
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>
-        <ScrollView>
             <StackLayout Padding="5, 5, 5, 5">
                 <!-- Name -->
                 <Entry x:Name="keyField" 
@@ -49,19 +48,22 @@
                     <CheckBox x:Name="otpCheckBox" Color="{StaticResource Primary}"  CheckedChanged="OnOtpCheckBoxChanged" />
                 </StackLayout>
                 <!-- Notes -->
-                <Editor x:Name="valueField" 
+                <ScrollView VerticalOptions="FillAndExpand">
+                    <StackLayout>
+                        <Editor x:Name="valueField" 
                         Placeholder="{x:Static resources:AppResources.ph_id_value}"
                         VerticalOptions="FillAndExpand" 
                         HorizontalOptions="FillAndExpand">
-                    <Editor.FontFamily>
-                        <OnPlatform x:TypeArguments="x:String">
-                            <On Platform="iOS" Value="Courier New" />
-                            <On Platform="Android" Value="monospace" />
-                            <On Platform="UWP" Value="Courier New" />
-                        </OnPlatform>
-                    </Editor.FontFamily>
-                </Editor>
+                            <Editor.FontFamily>
+                                <OnPlatform x:TypeArguments="x:String">
+                                    <On Platform="iOS" Value="Courier New" />
+                                    <On Platform="Android" Value="monospace" />
+                                    <On Platform="UWP" Value="Courier New" />
+                                </OnPlatform>
+                            </Editor.FontFamily>
+                        </Editor>
+                    </StackLayout>
+                </ScrollView>
             </StackLayout>
-        </ScrollView>
     </ContentPage.Content>
 </ContentPage>

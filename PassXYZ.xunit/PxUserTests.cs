@@ -26,10 +26,10 @@ namespace PassXYZ.xunit
                 Username = TEST_DB_USER,
                 Password = TEST_DB_KEY
             };
-            PxCloudConfig.Username = "tester";
-            PxCloudConfig.Password = "12345";
-            PxCloudConfig.Hostname = "172.28.67.181";
-            PxCloudConfig.RemoteHomePath = "/home/tester/pxvault/";
+            //PxCloudConfig.Username = "tester";
+            //PxCloudConfig.Password = "12345";
+            //PxCloudConfig.Hostname = "172.28.67.181";
+            //PxCloudConfig.RemoteHomePath = "/home/tester/pxvault/";
 
             PxDb = new PxDatabase();
             if (user.IsUserExist) 
@@ -66,7 +66,7 @@ namespace PassXYZ.xunit
             userFixture = fixture;
         }
 
-        [Fact]
+        [Fact (Skip = "test manually")]
         public async void Test1LoginWithPassword()
         {
             PxUser user = userFixture.user;
@@ -94,7 +94,7 @@ namespace PassXYZ.xunit
             Debug.WriteLine("Done");
         }
 
-        [Fact]
+        [Fact (Skip = "test manually")]
         public async void Test2UploadFile()
         {
             PxUser user = userFixture.user;
@@ -112,7 +112,7 @@ namespace PassXYZ.xunit
             Debug.WriteLine($"UploadFileTests: {user.FileName}, {user1.FileName}");
         }
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         public async void Test3DownloadFile()
         {
             PxUser user = userFixture.user;
@@ -129,7 +129,7 @@ namespace PassXYZ.xunit
             Debug.WriteLine($"DownloadTests: {path}");
         }
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         public async void Test4GetLocalUsers() 
         {
             IEnumerable<PxUser> localUsers = await PxUser.LoadLocalUsersAsync();
@@ -139,7 +139,7 @@ namespace PassXYZ.xunit
             }
         }
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         public async void Test5GetRemoteUsers()
         {
             PxUser user = userFixture.user;
@@ -161,7 +161,7 @@ namespace PassXYZ.xunit
             }
         }
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         public async void Test6DeleteFile()
         {
             PxUser user = userFixture.user;
@@ -173,7 +173,7 @@ namespace PassXYZ.xunit
             Debug.WriteLine($"DeleteFileTest: {user.FileName}");
         }
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         public async void Test7DeleteFileFailed() 
         {
             PxUser user = userFixture.user;
@@ -185,7 +185,7 @@ namespace PassXYZ.xunit
             Debug.WriteLine($"DeleteFileTest: {user.FileName}");
         }
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         /// <summary>
         /// Get users only exist locally.
         /// </summary>
@@ -212,7 +212,7 @@ namespace PassXYZ.xunit
         }
     
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         /// <summary>
         /// Get users only exist remotely.
         /// </summary>
@@ -238,7 +238,7 @@ namespace PassXYZ.xunit
             }
         }
 
-        [Fact]
+        [Fact(Skip = "test manually")]
         /// <summary>
         /// Get users exist both locally and remotely.
         /// </summary>

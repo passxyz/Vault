@@ -82,7 +82,7 @@ namespace PassXYZ.Vault.Views
                     // PassXYZ.Vault.App.Current.Quit();
                 }
             }
-
+            passwordEntry.Text = "";
         }
 
         private async void InitFingerPrintButton()

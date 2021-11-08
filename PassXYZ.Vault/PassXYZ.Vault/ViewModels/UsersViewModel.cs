@@ -10,6 +10,8 @@ using System.Runtime.CompilerServices;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 
+using ZXing.Net.Mobile.Forms;
+
 using PassXYZLib;
 using PassXYZ.Vault.Views;
 using PassXYZ.Vault.Resx;
@@ -36,6 +38,7 @@ namespace PassXYZ.Vault.ViewModels
         public Command ExportUserCommand { get; }
         public Command CancelCommand { get; }
         public Command SaveCloudConfigCommand { get; }
+        public Command ScanQrCodeCommand { get; }
         public Command CloudConfigCommand { get; }
 
         /// <summary>
@@ -71,6 +74,7 @@ namespace PassXYZ.Vault.ViewModels
                 CloudConfigData = new PxCloudConfigData();
                 CancelCommand = new Command(OnCancelClicked);
                 SaveCloudConfigCommand = new Command(OnSaveCloudConfigSaveClicked);
+                ScanQrCodeCommand = new Command(OnScanQrCode);
             }
 #endif // PASSXYZ_CLOUD_SERVICE
         }
@@ -313,6 +317,95 @@ namespace PassXYZ.Vault.ViewModels
             }
             await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new CloudConfigPage()));
         }
+
+        private void HandleJsonData(string data)
+        {
+            if (data.StartsWith(PxDefs.PxJsonData))
+            {
+                Debug.WriteLine($"UsersViewModel: HandleJsonData(Length={data.Length})");
+
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    string passwd = await Shell.Current.DisplayPromptAsync("", AppResources.ph_id_password, keyboard: Keyboard.Default);
+                    if (!string.IsNullOrEmpty(passwd))
+                    {
+                        await Task.Run(() => {
+                            PxPlainFields plainFields = new PxPlainFields(data, passwd);
+                            PxFieldValue pxField;
+                            if (plainFields.Strings.TryGetValue(nameof(PxCloudConfig.Username), out pxField))
+                            {
+                                CloudConfigData.Username = pxField.Value;
+                                Debug.WriteLine($"Username={pxField.Value}");
+                            }
+
+                            if (plainFields.Strings.TryGetValue(nameof(PxCloudConfig.Password), out pxField))
+                            {
+                                CloudConfigData.Password = pxField.Value;
+                                Debug.WriteLine($"Password={pxField.Value}");
+                            }
+
+                            if (plainFields.Strings.TryGetValue(nameof(PxCloudConfig.Port), out pxField))
+                            {
+                                CloudConfigData.Port = Int32.Parse(pxField.Value);
+                                Debug.WriteLine($"Port={pxField.Value}");
+                            }
+
+                            if (plainFields.Strings.TryGetValue(nameof(PxCloudConfig.Hostname), out pxField))
+                            {
+                                CloudConfigData.Username = pxField.Value;
+                                Debug.WriteLine($"Hostname={pxField.Value}");
+                            }
+
+                            if (plainFields.Strings.TryGetValue(nameof(PxCloudConfig.RemoteHomePath), out pxField))
+                            {
+                                CloudConfigData.Username = pxField.Value;
+                                Debug.WriteLine($"RemoteHomePath={pxField.Value}");
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Debug.WriteLine("UsersViewModel: HandleJsonData(password is empty, error!)");
+                        return;
+                    }
+                });
+            }
+            else
+            {
+                Debug.WriteLine("UsersViewModel: HandleJsonData(wrong JSON string, error!)");
+                return;
+            }
+
+        }
+
+        private void OnScanQrCode()
+        {
+            var scanPage = new ZXingScannerPage();
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.Navigation.PushAsync(scanPage);
+            });
+
+            scanPage.OnScanResult += async (result) =>
+            {
+                // Stop scanning
+                scanPage.IsScanning = false;
+
+                // Pop the page and show the result
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    _ = await Shell.Current.Navigation.PopAsync();
+                });
+
+                if (result.Text != null)
+                {
+                    await Task.Run(() => {
+                        HandleJsonData(result.Text);
+                    });
+                }
+            };
+        }
+
 #endif // PASSXYZ_CLOUD_SERVICE
 
         private async void OnCancelClicked()

@@ -10,7 +10,28 @@ namespace PassXYZLib
     public class PxGroup: PwGroup
     {
         public PxGroup(bool bCreateNewUuid, bool bSetTimes) : base(bCreateNewUuid, bSetTimes) { }
+
         public PxGroup() : base() { }
+
+		/// <summary>
+		/// Create a PxGroup instance from a JSON string
+		/// </summary>
+		/// <param name="str">JSON data</param>
+		/// <param name="password">Password of PwGroup</param>
+		public PxGroup(string str, string password = null) : base(true, true)
+		{
+            PxPlainFields fields = new PxPlainFields(str, password);
+
+            if (fields.Strings.Count > 0)
+            {
+				PxFieldValue data;
+				fields.Strings.TryGetValue(PwDefs.TitleField, out data);
+				Name = data.Value;
+				fields.Strings.TryGetValue(PwDefs.NotesField, out data);
+				Notes = data.Value;
+			}
+		}
+
     }
 
     public static class PwGroupEx 
@@ -62,6 +83,11 @@ namespace PassXYZLib
 			}
 
 			return null;
+		}
+
+		public static PxPlainFields GetPlainFields(this PwGroup group)
+		{
+			return new PxPlainFields(group);
 		}
 	}
 }

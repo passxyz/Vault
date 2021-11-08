@@ -24,7 +24,7 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="32" />
                                         </Grid.ColumnDefinitions>
-                                        <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Center" VerticalOptions="Center" />
+                                        <Image Grid.Column="0" Source="{Binding ImgSource}" HorizontalOptions="Fill" VerticalOptions="Fill" />
                                     </Grid>
                                     <StackLayout Padding="10">
                                         <Label Text="{Binding Name}" 

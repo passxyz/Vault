@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
+using ZXing.Net.Mobile.Forms;
+
 using KeePassLib;
 using PassXYZLib;
 using PassXYZ.Vault.Views;
@@ -192,7 +194,8 @@ namespace PassXYZ.Vault.ViewModels
                 AppResources.item_subtype_group,
                 AppResources.item_subtype_entry,
                 AppResources.item_subtype_notes,
-                AppResources.item_subtype_pxentry
+                AppResources.item_subtype_pxentry,
+                AppResources.action_id_scan
             };
 
             var template = await Shell.Current.DisplayActionSheet(AppResources.pt_id_choosetemplate, AppResources.action_id_cancel, null, templates);
@@ -218,6 +221,12 @@ namespace PassXYZ.Vault.ViewModels
                 type = ItemSubType.None;
                 Debug.WriteLine("Canceled the Template selection.");
             }
+            else if (template == AppResources.action_id_scan)
+            {
+                type = ItemSubType.None;
+                ScanQRCode();
+                Debug.WriteLine("ItemsViewModel: Scan QR code");
+            }
             else
             {
                 type = ItemSubType.None;
@@ -229,6 +238,96 @@ namespace PassXYZ.Vault.ViewModels
                 //await Shell.Current.GoToAsync(nameof(NewItemPage));
                 await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new NewItemPage(type)));
             }
+        }
+
+        private async void CreatePxEntryfromJsonData(string data, string passwd = null)
+        {
+            PxEntry pxEntry = new PxEntry(data, passwd);
+            if (pxEntry != null && pxEntry.Strings.UCount != 0)
+            {
+                await DataStore.AddItemAsync(pxEntry);
+                IsBusy = true;
+            }
+        }
+
+        private async void HandleJsonData(string data)
+        {
+            if (data.StartsWith(PxDefs.PxJsonTemplate))
+            {
+                PxPlainFields plainFields = new PxPlainFields(data);
+
+                if (plainFields.IsGroup)
+                {
+                    PxGroup pxGroup = new PxGroup(data);
+                    if (pxGroup != null)
+                    {
+                        await DataStore.AddItemAsync(pxGroup);
+                        IsBusy = true;
+                    }
+                }
+                else
+                {
+                    CreatePxEntryfromJsonData(data);
+                }
+
+            }
+            else if (data.StartsWith(PxDefs.PxJsonData))
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    string passwd = await Shell.Current.DisplayPromptAsync("", AppResources.ph_id_password, keyboard: Keyboard.Default);
+                    if (!string.IsNullOrEmpty(passwd))
+                    {
+                        await Task.Run(() => {
+                            CreatePxEntryfromJsonData(data, passwd);
+                        });
+                    }
+                    else
+                    {
+                        Debug.WriteLine("HandleJsonData: password is empty, error!");
+                        return;
+                    }
+                });
+            }
+            else
+            {
+                Debug.WriteLine("HandleJsonData: wrong JSON string, error!");
+                return;
+            }
+
+        }
+
+        private void ScanQRCode()
+        {
+            if (IsBusy) { return; }
+
+            var scanPage = new ZXingScannerPage();
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Shell.Current.Navigation.PushAsync(scanPage);
+            });
+
+            scanPage.OnScanResult += async (result) =>
+            {
+                // Stop scanning
+                scanPage.IsScanning = false;
+
+                // Pop the page and show the result
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    _ = await Shell.Current.Navigation.PopAsync();
+                });
+
+                if (result.Text != null)
+                {
+                    // Debug.WriteLine($"ItemsViewModel: IsScanning={scanPage.IsScanning}, {result.Text}");
+                    await Task.Run(() => {
+                        HandleJsonData(result.Text);
+                    });
+
+                }
+            };
+
         }
 
         public async void OnItemSelected(Item item)

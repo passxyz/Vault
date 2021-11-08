@@ -488,7 +488,7 @@ PassXYZ built-in template files can be downloaded at the below links:
     <value>Cannot synchronize file</value>
   </data>
   <data name="message_id_sync_success" xml:space="preserve">
-    <value>You have successfully synced file</value>
+    <value>Synchronization completed</value>
   </data>
   <data name="settings_export_remark" xml:space="preserve">
     <value>Export database to other devices or cloud storage</value>

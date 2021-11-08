@@ -285,8 +285,8 @@ namespace PassXYZLib
         public static void SetIcon(this Item item)
         {
             // 1. Get built-in icon
-            if (item.IsGroup) 
-            { 
+            if (item.IsGroup)
+            {
                 // Group
                 if (item is PwGroup group)
                 {
@@ -298,8 +298,8 @@ namespace PassXYZLib
                     }
                 }
             }
-            else 
-            { 
+            else
+            {
                 // Entry
                 if (item is PwEntry entry)
                 {
@@ -403,6 +403,16 @@ namespace PassXYZLib
             }
             Debug.WriteLine("AddNewIcon: cannot add the new icon.");
             return null;
+        }
+
+        public static PxPlainFields GetPlainFields(this Item item)
+        {
+            return item.IsGroup ? ((PwGroup)item).GetPlainFields() : ((PwEntry)item).GetPlainFields();
+        }
+
+        public static bool IsNotes(this Item item)
+        {
+            return !item.IsGroup && ((PwEntry)item).IsNotes();
         }
     }
 }

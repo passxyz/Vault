@@ -2073,7 +2073,7 @@ namespace PassXYZ.Vault.Resx {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have successfully synced file.
+        ///   Looks up a localized string similar to Synchronization completed.
         /// </summary>
         internal static string message_id_sync_success {
             get {

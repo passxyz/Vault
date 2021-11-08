@@ -7,9 +7,12 @@ using System.Diagnostics;
 using System.Text;
 using Xamarin.Forms;
 
-using PureOtp;
+using Newtonsoft.Json;
+
+using Markdig;
 
 using KeePassLib;
+using KeePassLib.Collections;
 using KeePassLib.Interfaces;
 using KeePassLib.Security;
 using KeePassLib.Utility;
@@ -183,9 +186,46 @@ namespace PassXYZLib
     public class PxEntry : PwEntry
     {
         public PxEntry(bool bCreateNewUuid, bool bSetTimes) : base(bCreateNewUuid, bSetTimes) { }
+
         public PxEntry() : base() { }
+
+        /// <summary>
+        /// Create a PxEntry instance from a JSON string.
+        /// </summary>
+        /// <param name="str">JSON data</param>
+        /// <param name="password">Password of PwEntry</param>
+        public PxEntry(string str, string password = null) : base(true, true)
+        {
+            PxPlainFields fields = new PxPlainFields(str, password);
+
+            if (fields.Strings.Count > 0)
+            {
+                foreach (var itemInDict in fields.Strings)
+                {
+                    PxFieldValue data = itemInDict.Value;
+                    Strings.Set(itemInDict.Key, new ProtectedString(data.IsProtected, data.Value));
+                }
+
+                if (!string.IsNullOrEmpty(fields.CustomDataType))
+                {
+                    CustomData.Set(PxDefs.PxCustomDataItemSubType, fields.CustomDataType);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convert PxEntry instance to a JSON string.
+        /// </summary>
+        public override string ToString()
+        {
+            var fields = new PxPlainFields(this);
+            return fields.ToString();
+        }
     }
 
+    /// <summary>
+    /// A class defined extension methods for PwEntry.
+    /// </summary>
     public static class PwEntryEx
     {
         public static bool IsNotes(this PwEntry entry)
@@ -212,6 +252,11 @@ namespace PassXYZLib
         public static bool IsPxEntry(this PwEntry entry)
         {
             return PxDefs.IsPxEntry(entry);
+        }
+
+        public static void SetPxEntry(this PwEntry entry)
+        {            
+            entry.CustomData.Set(PxDefs.PxCustomDataItemSubType, ItemSubType.PxEntry.ToString());
         }
 
         public static string EncodeKey(this PwEntry entry, string key)
@@ -256,19 +301,27 @@ namespace PassXYZLib
         /// </summary>
         public static string GetNotesInHtml(this PwEntry entry)
         {
-            return Markdig.Markdown.ToHtml(entry.Strings.ReadSafe(PwDefs.NotesField));
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                return Markdig.Markdown.ToHtml(entry.Strings.ReadSafe(PwDefs.NotesField));
+            }
+            else
+            {
+                var pipeline = new Markdig.MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                return Markdig.Markdown.ToHtml(entry.Strings.ReadSafe(PwDefs.NotesField), pipeline);
+            }
         }
 
         /// <summary>
-        /// This is an extension method of PwEntry.
         /// Convert ProtectedStringDictionary into a list of fields. TitleField and NotesField
         /// are not included in the list.
         /// TitleField will be used to display the title in UI and NotesField will be displayed at the
         /// bottom of a page with Markdown support.
         /// </summary>
         /// <param name="entry">an instance of PwEntry</param>
+        /// <param name="encodeKey">true - decode key, false - does not decode key</param>
 		/// <returns>A list of fields</returns>
-        public static List<Field> GetFields(this PwEntry entry)
+        public static List<Field> GetFields(this PwEntry entry, bool encodeKey = false)
         {
             List<Field> fields = new List<Field>();
             bool isPxEntry = PxDefs.IsPxEntry(entry);
@@ -280,7 +333,14 @@ namespace PassXYZLib
                 {
                     if (!pstr.Key.Equals(PwDefs.TitleField) && !pstr.Key.Equals(PwDefs.NotesField))
                     {
-                        fields.Add(new Field(PxDefs.DecodeKey(pstr.Key), entry.Strings.ReadSafe(pstr.Key), entry.Strings.GetSafe(pstr.Key).IsProtected, pstr.Key));
+                        if (encodeKey)
+                        {
+                            fields.Add(new Field(pstr.Key, entry.Strings.ReadSafe(pstr.Key), entry.Strings.GetSafe(pstr.Key).IsProtected));
+                        }
+                        else
+                        {
+                            fields.Add(new Field(PxDefs.DecodeKey(pstr.Key), entry.Strings.ReadSafe(pstr.Key), entry.Strings.GetSafe(pstr.Key).IsProtected, pstr.Key));
+                        }
                     }
                 }
             }
@@ -326,7 +386,17 @@ namespace PassXYZLib
 
             return fields;
         }
-    
+
+        /// <summary>
+        /// Create an instance of PxPlainFields from PwEntry
+        /// </summary>
+        /// <param name="entry">an instance of PwEntry</param>
+		/// <returns>an instance of PxPlainFields</returns>
+        public static PxPlainFields GetPlainFields(this PwEntry entry)
+        {
+            return new PxPlainFields(entry);
+        }
+
         public static string GetUrlField(this PwEntry entry)
         {
             foreach (KeyValuePair<string, ProtectedString> pstr in entry.Strings)
@@ -338,6 +408,7 @@ namespace PassXYZLib
             }
             return string.Empty;
         }
+
     }
 
     public static class FieldIcons
@@ -610,4 +681,148 @@ namespace PassXYZLib
         }
     }
 
+    #region PwEntryJsonSerializer
+    public class PxFieldValue
+    {
+        public string Value = string.Empty;
+        public bool IsProtected = false;
+
+        public PxFieldValue()
+        {
+            Value = string.Empty;
+            IsProtected = false;
+        }
+
+        public PxFieldValue(string newValue, bool isProtected)
+        {
+            Value = newValue;
+            IsProtected = isProtected;
+        }
+    }
+
+    public class PxPlainFields
+    {
+        public bool IsPxEntry = false;
+        public bool IsGroup = false;
+        public string CustomDataType = string.Empty;
+        public SortedDictionary<string, PxFieldValue> Strings = new SortedDictionary<string, PxFieldValue>();
+
+        public PxPlainFields()
+        {
+            IsPxEntry = false;
+            IsGroup = false;
+        }
+
+        /// <summary>
+        /// Create an instance of PxPlainFields from a JSON string
+        /// </summary>
+        public PxPlainFields(string str, string password = null)
+        {
+            string decryptedMessage;
+            if (str.StartsWith(PxDefs.PxJsonTemplate))
+            {
+                decryptedMessage = str.Substring(PxDefs.PxJsonTemplate.Length);
+            }
+            else if (str.StartsWith(PxDefs.PxJsonData) && !string.IsNullOrEmpty(password))
+            {
+                string encryptedMessage = str.Substring(PxDefs.PxJsonData.Length);
+                decryptedMessage = PxEncryption.DecryptWithPassword(encryptedMessage, password);
+                if (string.IsNullOrEmpty(decryptedMessage))
+                {
+                    Debug.WriteLine("PxPlainFields: cannot decrypt message, error!");
+                    return;
+                }
+            }
+            else
+            {
+                Debug.WriteLine("PxPlainFields: wrong JSON string, error!");
+                return;
+            }
+
+            try
+            {
+                PxPlainFields fields = JsonConvert.DeserializeObject<PxPlainFields>(decryptedMessage);
+                IsPxEntry = fields.IsPxEntry;
+                IsGroup = fields.IsGroup;
+                Strings = fields.Strings;
+                CustomDataType = fields.CustomDataType;
+            }
+            catch (JsonReaderException ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
+        }
+
+        /// <summary>
+        /// Create an instance of PxPlainFields from a PwGroup
+        /// </summary>
+        public PxPlainFields(PwGroup group)
+        {
+            if (group == null)
+            {
+                Debug.Assert(false); throw new ArgumentNullException("group");
+            }
+
+            IsGroup = true;
+
+            Strings.Add(PwDefs.TitleField, new PxFieldValue(group.Name, false));
+            Strings.Add(PwDefs.NotesField, new PxFieldValue(group.Notes, false));
+        }
+
+        /// <summary>
+        /// Create an instance of PxPlainFields from a PwEntry
+        /// </summary>
+        public PxPlainFields(PwEntry entry)
+        {
+            if (entry == null)
+            {
+                Debug.Assert(false); throw new ArgumentNullException("entry");
+            }
+
+            IsPxEntry = entry.IsPxEntry();
+
+            var fields = entry.GetFields(IsPxEntry);
+            Strings.Add(PwDefs.TitleField, new PxFieldValue(entry.Name, false));
+            foreach (var field in fields)
+            {
+                Strings.Add(field.Key, new PxFieldValue(field.EditValue, field.IsProtected));
+            }
+            Strings.Add(PwDefs.NotesField, new PxFieldValue(entry.Notes, false));
+            CustomDataType = entry.CustomData.Get(PxDefs.PxCustomDataItemSubType);
+        }
+
+        private PxFieldValue FindPasswordField(SortedDictionary<string, PxFieldValue> fields)
+        {
+            foreach (var field in fields)
+            {
+                if (field.Key.Equals(PxDefs.PasswordField) || field.Key.EndsWith("Password"))
+                {
+                    return field.Value;
+                }
+            }
+
+            return null;
+        }
+
+        public override string ToString()
+        {
+            PxFieldValue fieldV = FindPasswordField(Strings);
+
+            if (fieldV != null && !string.IsNullOrEmpty(fieldV.Value))
+            {
+                return PxDefs.PxJsonData + PxEncryption.EncryptWithPassword(JsonConvert.SerializeObject(this), fieldV.Value);
+            }
+
+            //if (Strings.TryGetValue(PxDefs.PasswordField, out PxFieldValue fieldV))
+            //{
+            //    if (fieldV.IsProtected && !string.IsNullOrEmpty(fieldV.Value))
+            //    {
+            //        return PxDefs.PxJsonData + PxEncryption.EncryptWithPassword(JsonConvert.SerializeObject(this), fieldV.Value);
+            //    }
+            //}
+
+            return PxDefs.PxJsonTemplate + JsonConvert.SerializeObject(this);
+        }
+    }
+    #endregion
 }
