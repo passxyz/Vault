@@ -254,7 +254,7 @@ namespace PassXYZ.Vault.ViewModels
             await SynchronizeUsersAsync();
         }
 
-        public static async Task SynchronizeUsersAsync()
+        public static async Task<bool> SynchronizeUsersAsync()
         {
             IEnumerable<PxUser> pxUsers = null;
 
@@ -287,6 +287,12 @@ namespace PassXYZ.Vault.ViewModels
                     App.Users.Add(pxUser);
                 }
                 App.IsBusyToLoadUsers = false;
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("LoginViewModel: SynchronizeUsersAsync failed");
+                return false;
             }
         }
 

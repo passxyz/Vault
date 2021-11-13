@@ -59,7 +59,7 @@ namespace PassXYZLib
             await Task.Run(() =>
             {
                 _isConnected = false;
-                using (var sftp = new SftpClient(PxCloudConfig.Hostname, PxCloudConfig.Username, PxCloudConfig.Password))
+                using (var sftp = new SftpClient(PxCloudConfig.Hostname, PxCloudConfig.Port, PxCloudConfig.Username, PxCloudConfig.Password))
                 {
                     try
                     {
