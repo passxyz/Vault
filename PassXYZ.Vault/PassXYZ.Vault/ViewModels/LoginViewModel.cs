@@ -115,9 +115,11 @@ namespace PassXYZ.Vault.ViewModels
         /// </summary>
         public async Task SetSecurityAsync()
         {
-            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password)) { return; }
+            string passwd = _baseViewModule.DataStore.GetMasterPassword();
 
-            await SecureStorage.SetAsync(Username, Password);
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(passwd)) { return; }
+
+            await SecureStorage.SetAsync(Username, passwd);
         }
 
         public async Task<bool> DisableSecurityAsync()
