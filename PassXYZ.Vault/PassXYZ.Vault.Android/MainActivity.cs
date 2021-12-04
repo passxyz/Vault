@@ -5,6 +5,8 @@ using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
 
+using Xamarin.Forms;
+
 using Serilog;
 using Plugin.CurrentActivity;
 using Plugin.Fingerprint;
@@ -24,6 +26,7 @@ namespace PassXYZ.Vault.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
+            DependencyService.Register<PassXYZ.Droid.Share>();
             LoadApplication(new App());
 
             Log.Logger = new LoggerConfiguration()

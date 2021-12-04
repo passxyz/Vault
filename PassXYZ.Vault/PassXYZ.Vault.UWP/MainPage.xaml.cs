@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+using Xamarin.Forms;
+
 namespace PassXYZ.Vault.UWP
 {
     public sealed partial class MainPage
@@ -23,6 +25,7 @@ namespace PassXYZ.Vault.UWP
 
             LoadApplication(new PassXYZ.Vault.App());
             ZXing.Net.Mobile.Forms.WindowsUniversal.ZXingScannerViewRenderer.Init();
+            DependencyService.Register<PassXYZ.UWP.Share>();
         }
     }
 }
