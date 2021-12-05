@@ -5,6 +5,8 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
+using Xamarin.Forms;
+
 using Serilog;
 using PassXYZLib;
 
@@ -28,6 +30,7 @@ namespace PassXYZ.Vault.iOS
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
+            DependencyService.Register<PassXYZ.iOS.Share>();
 
             Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Warning()

@@ -5,7 +5,9 @@ using System.Windows.Input;
 using Xamarin.Forms;
 
 using KeePassLib;
+using KeePassLib.Security;
 using PassXYZLib;
+using PassXYZ.Resx;
 
 namespace PassXYZ.Vault.ViewModels
 {
@@ -88,6 +90,24 @@ namespace PassXYZ.Vault.ViewModels
                     Notes = Description
                 };
                 entry.SetType(Type);
+
+                // Init standard field
+                if (Type == ItemSubType.Entry)
+                {
+                    entry.Strings.Set(PwDefs.UserNameField, new ProtectedString(false, ""));
+                    entry.Strings.Set(PwDefs.PasswordField, new ProtectedString(true, ""));
+                    entry.Strings.Set(PwDefs.UrlField, new ProtectedString(false, ""));
+                }
+                else if(Type == ItemSubType.PxEntry)
+                {
+                    uint idx = 0;
+                    entry.Strings.Set(PxDefs.EncodeKey(AppResource.field_id_username, idx++), new ProtectedString(false, ""));
+                    entry.Strings.Set(PxDefs.EncodeKey(AppResource.field_id_password, idx++), new ProtectedString(true, ""));
+                    entry.Strings.Set(PxDefs.EncodeKey(AppResource.field_id_url, idx++), new ProtectedString(false, ""));
+                    entry.Strings.Set(PxDefs.EncodeKey(AppResource.field_id_email, idx++), new ProtectedString(false, ""));
+                    entry.Strings.Set(PxDefs.EncodeKey(AppResource.field_id_mobile, idx++), new ProtectedString(false, ""));
+                }
+
                 newItem = entry;
             }
 

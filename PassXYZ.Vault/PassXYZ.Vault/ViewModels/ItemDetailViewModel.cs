@@ -390,7 +390,11 @@ namespace PassXYZ.Vault.ViewModels
                 {
                     await Shell.Current.Navigation.PushModalAsync(new NavigationPage(new ImagePreviewPage(field.Binary)));
                 }
-                Debug.WriteLine($"ItemDetailViewModel: Attachment {field.Key} selected");
+                else 
+                {
+                    PassXYZ.Utils.BinaryDataUtil.Open(field.Key, field.Binary, null);
+                    Debug.WriteLine($"ItemDetailViewModel: Attachment {field.Key} selected");
+                }
             }
         }
         public void OnAppearing()

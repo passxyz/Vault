@@ -259,6 +259,12 @@ namespace PassXYZLib
             entry.CustomData.Set(PxDefs.PxCustomDataItemSubType, ItemSubType.PxEntry.ToString());
         }
 
+        /// <summary>
+        /// Create a new encoded key for PxEntry.
+        /// </summary>
+        /// <param name="entry">an instance of PwEntry</param>
+        /// <param name="key">key of PwEntry</param>
+		/// <returns>encoded key</returns>
         public static string EncodeKey(this PwEntry entry, string key)
         {
             if(PxDefs.IsPxEntry(entry))
@@ -272,7 +278,7 @@ namespace PassXYZLib
                     }
                 }
 
-                if(string.IsNullOrEmpty(lastKey))
+                if (string.IsNullOrEmpty(lastKey))
                 {
                     return "000" + key;
                 }

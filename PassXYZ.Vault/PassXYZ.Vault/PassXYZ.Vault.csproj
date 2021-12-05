@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>1.2.1</Version>
+    <Version>1.2.4</Version>
     <Company>PassXYZ</Company>
     <Authors>Roger Ye</Authors>
     <Copyright>Roger Ye</Copyright>

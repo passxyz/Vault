@@ -115,9 +115,11 @@ namespace PassXYZ.Vault.ViewModels
         /// </summary>
         public async Task SetSecurityAsync()
         {
-            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password)) { return; }
+            string passwd = _baseViewModule.DataStore.GetMasterPassword();
 
-            await SecureStorage.SetAsync(Username, Password);
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(passwd)) { return; }
+
+            await SecureStorage.SetAsync(Username, passwd);
         }
 
         public async Task<bool> DisableSecurityAsync()
@@ -254,7 +256,7 @@ namespace PassXYZ.Vault.ViewModels
             await SynchronizeUsersAsync();
         }
 
-        public static async Task SynchronizeUsersAsync()
+        public static async Task<bool> SynchronizeUsersAsync()
         {
             IEnumerable<PxUser> pxUsers = null;
 
@@ -287,6 +289,12 @@ namespace PassXYZ.Vault.ViewModels
                     App.Users.Add(pxUser);
                 }
                 App.IsBusyToLoadUsers = false;
+                return true;
+            }
+            else
+            {
+                Debug.WriteLine("LoginViewModel: SynchronizeUsersAsync failed");
+                return false;
             }
         }
 

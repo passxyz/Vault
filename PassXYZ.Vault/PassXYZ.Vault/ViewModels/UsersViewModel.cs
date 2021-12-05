@@ -352,13 +352,13 @@ namespace PassXYZ.Vault.ViewModels
 
                             if (plainFields.Strings.TryGetValue(nameof(PxCloudConfig.Hostname), out pxField))
                             {
-                                CloudConfigData.Username = pxField.Value;
+                                CloudConfigData.Hostname = pxField.Value;
                                 Debug.WriteLine($"Hostname={pxField.Value}");
                             }
 
                             if (plainFields.Strings.TryGetValue(nameof(PxCloudConfig.RemoteHomePath), out pxField))
                             {
-                                CloudConfigData.Username = pxField.Value;
+                                CloudConfigData.RemoteHomePath = pxField.Value;
                                 Debug.WriteLine($"RemoteHomePath={pxField.Value}");
                             }
                         });
@@ -406,6 +406,13 @@ namespace PassXYZ.Vault.ViewModels
             };
         }
 
+        public void SaveCloudConfigData()
+        {
+            if (CloudConfigData.IsConfigured)
+            {
+                PxCloudConfig.SetConfig(CloudConfigData);
+            }
+        }
 #endif // PASSXYZ_CLOUD_SERVICE
 
         private async void OnCancelClicked()
